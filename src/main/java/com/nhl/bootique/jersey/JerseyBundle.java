@@ -17,7 +17,7 @@ public class JerseyBundle {
 
 	private Class<? extends Application> application;
 	private Collection<Class<?>> resources;
-	private Collection<String> resourcePackages;
+	private Collection<String> packageRoots;
 
 	public static JerseyBundle create() {
 		return new JerseyBundle();
@@ -25,7 +25,7 @@ public class JerseyBundle {
 
 	private JerseyBundle() {
 		this.resources = new HashSet<>();
-		this.resourcePackages = new HashSet<>();
+		this.packageRoots = new HashSet<>();
 	}
 
 	public <T extends Application> JerseyBundle application(Class<T> application) {
@@ -38,19 +38,19 @@ public class JerseyBundle {
 		return this;
 	}
 
-	public JerseyBundle resourcePackage(Package aPackage) {
-		resourcePackages.add(aPackage.getName());
+	public JerseyBundle packageRoot(Package aPackage) {
+		packageRoots.add(aPackage.getName());
 		return this;
 	}
 
-	public JerseyBundle resourcePackage(Class<?> classFromPackage) {
+	public JerseyBundle packageRoot(Class<?> classFromPackage) {
 		String name = classFromPackage.getName();
 		int dot = name.lastIndexOf('.');
 		if (dot <= 0) {
 			throw new IllegalArgumentException("Class is in default package - unsupported");
 		}
 
-		resourcePackages.add(name.substring(0, dot));
+		packageRoots.add(name.substring(0, dot));
 		return this;
 	}
 
@@ -70,7 +70,7 @@ public class JerseyBundle {
 			ResourceConfig config = application != null ? ResourceConfig.forApplicationClass(application)
 					: new ResourceConfig();
 
-			resourcePackages.forEach(p -> config.packages(true, p));
+			packageRoots.forEach(p -> config.packages(true, p));
 			resources.forEach(r -> config.register(r));
 			return new ServletContainer(config);
 		}
