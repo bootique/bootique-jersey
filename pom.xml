@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.nhl.bootique.parent</groupId>
+		<artifactId>bootique-parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.nhl.bootique.jersey</groupId>
+	<artifactId>bootique-jersey</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>Jersey JAX-RS Provider Integration Bundle for Bootique</name>
+	<description>
+		Provides Jersey JAX-RS integration with Bootique.
+	</description>
+
+	<properties>
+		<bootique-version>1.0-SNAPSHOT</bootique-version>
+		<bootique-jetty-version>1.0-SNAPSHOT</bootique-jetty-version>
+		<jersey-version>2.21</jersey-version>
+	</properties>
+
+	<scm>
+		<developerConnection>scm:git:ssh://git@github.com/nhl/bootique-jersey</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+
+	<repositories>
+		<repository>
+			<id>bootique-dependencies</id>
+			<name>Bootique Dependencies Repo</name>
+			<url>http://maven.objectstyle.org/nexus/content/groups/linkrest</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>bootique-dependencies</id>
+			<name>Bootique Dependencies Repo</name>
+			<url>http://maven.objectstyle.org/nexus/content/groups/linkrest</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.glassfish.jersey.containers</groupId>
+				<artifactId>jersey-container-servlet</artifactId>
+				<version>${jersey-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.nhl.bootique</groupId>
+				<artifactId>bootique</artifactId>
+				<version>${bootique-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.nhl.bootique.jetty</groupId>
+				<artifactId>bootique-jetty</artifactId>
+				<version>${bootique-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.containers</groupId>
+				<artifactId>jersey-container-servlet</artifactId>
+				<version>${jersey-version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<!-- Unit test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Compile dependencies -->
+		<dependency>
+			<groupId>com.nhl.bootique</groupId>
+			<artifactId>bootique</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.nhl.bootique.jetty</groupId>
+			<artifactId>bootique-jetty</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet</artifactId>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+</project>
