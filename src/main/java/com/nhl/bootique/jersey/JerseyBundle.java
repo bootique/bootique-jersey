@@ -3,14 +3,16 @@ package com.nhl.bootique.jersey;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.servlet.Servlet;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 import com.google.inject.Binder;
+import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.nhl.bootique.jetty.JettyBundle;
 
 public class JerseyBundle {
@@ -63,15 +65,20 @@ public class JerseyBundle {
 		@Override
 		public void configure(Binder binder) {
 			// TODO: map servlet path as a YAML property
-			JettyBundle.servletBinder(binder).addBinding("/*").toInstance(createJerseyServlet());
+			JettyBundle.servletBinder(binder).addBinding("/*").to(ServletContainer.class);
 		}
 
-		private Servlet createJerseyServlet() {
+		@Singleton
+		@Provides
+		private ServletContainer createJerseyServlet(Injector injector) {
 			ResourceConfig config = application != null ? ResourceConfig.forApplicationClass(application)
 					: new ResourceConfig();
 
 			packageRoots.forEach(p -> config.packages(true, p));
 			resources.forEach(r -> config.register(r));
+
+			config.property(GuiceBridgeFeature.INJECTOR_PROPERTY, injector);
+			config.register(GuiceBridgeFeature.class);
 			return new ServletContainer(config);
 		}
 	}
