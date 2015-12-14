@@ -77,8 +77,7 @@ public class JerseyBundle {
 			packageRoots.forEach(p -> config.packages(true, p));
 			resources.forEach(r -> config.register(r));
 
-			config.property(GuiceBridgeFeature.INJECTOR_PROPERTY, injector);
-			config.register(GuiceBridgeFeature.class);
+			GuiceBridgeFeature.register(config, injector);
 			return new ServletContainer(config);
 		}
 	}

@@ -1,23 +1,25 @@
 package com.nhl.bootique.jersey;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
 import org.glassfish.hk2.api.InjectionResolver;
-import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.jvnet.hk2.guice.bridge.api.GuiceBridge;
-import org.jvnet.hk2.guice.bridge.api.GuiceIntoHK2Bridge;
+import org.glassfish.jersey.server.ResourceConfig;
 
 import com.google.inject.Injector;
 
 public class GuiceBridgeFeature implements Feature {
 
-	static final String INJECTOR_PROPERTY = "com.nhl.bootique.jersey.injector";
+	private static final String INJECTOR_PROPERTY = "com.nhl.bootique.jersey.injector";
+
+	static void register(ResourceConfig config, Injector injector) {
+		config.property(GuiceBridgeFeature.INJECTOR_PROPERTY, injector);
+		config.register(GuiceBridgeFeature.class);
+	}
 
 	static Injector getInjector(Configuration configuration) {
 		Injector injector = (Injector) configuration.getProperty(GuiceBridgeFeature.INJECTOR_PROPERTY);
@@ -29,24 +31,18 @@ public class GuiceBridgeFeature implements Feature {
 		return injector;
 	}
 
-	private ServiceLocator hk2Container;
-
-	@Inject
-	public GuiceBridgeFeature(ServiceLocator hk2Container) {
-		this.hk2Container = hk2Container;
-	}
-
 	@Override
 	public boolean configure(FeatureContext context) {
-		GuiceBridge.getGuiceBridge().initializeGuiceBridge(hk2Container);
 
-		GuiceIntoHK2Bridge guiceBridge = hk2Container.getService(GuiceIntoHK2Bridge.class);
+		// for now only supporting Guice injection to resources
 
-		Injector injector = getInjector(context.getConfiguration());
+		// TODO: if we want to inject web environment objects back into Guice
+		// services or to use JSR-330 annotations in Resources, we need
+		// org.glassfish.hk2:guice-bridge integration
 
-		guiceBridge.bridgeGuiceInjector(injector);
+		// This feature can inject HK2 ServiceLocator in constructor, and then
+		// we can bridge it both ways with Guice
 
-		// also allow Guice Inject flavor
 		context.register(new AbstractBinder() {
 			@Override
 			protected void configure() {
