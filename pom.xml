@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -22,6 +23,7 @@
 		<bootique-version>0.5</bootique-version>
 		<bootique-jetty-version>0.5</bootique-jetty-version>
 		<jersey-version>2.21</jersey-version>
+		<hk2-version>2.4.0-b31</hk2-version>
 	</properties>
 
 	<scm>
@@ -72,6 +74,30 @@
 				<artifactId>jersey-container-servlet</artifactId>
 				<version>${jersey-version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.glassfish.hk2</groupId>
+				<artifactId>hk2-api</artifactId>
+				<version>${hk2-version}</version>
+				<exclusions>
+					<!-- Guice includes this one -->
+					<exclusion>
+						<groupId>org.glassfish.hk2.external</groupId>
+						<artifactId>aopalliance-repackaged</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.hk2</groupId>
+				<artifactId>hk2-locator</artifactId>
+				<version>${hk2-version}</version>
+				<exclusions>
+					<!-- Guice includes this one -->
+					<exclusion>
+						<groupId>org.glassfish.hk2.external</groupId>
+						<artifactId>aopalliance-repackaged</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -102,6 +128,19 @@
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-servlet</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<!-- Including HK2 dependencies explicitly to exclude their repackaged 
+			libraries conflicting with Guice. Make sure HK2 version is bumped whenever 
+			we upgrade Jersey. -->
+		<dependency>
+			<groupId>org.glassfish.hk2</groupId>
+			<artifactId>hk2-api</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.hk2</groupId>
+			<artifactId>hk2-locator</artifactId>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
