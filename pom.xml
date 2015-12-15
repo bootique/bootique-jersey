@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>com.nhl.bootique.parent</groupId>
 		<artifactId>bootique-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>0.5-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.nhl.bootique.jersey</groupId>
 	<artifactId>bootique-jersey</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Jersey JAX-RS Provider Integration Bundle for Bootique</name>
@@ -20,8 +20,8 @@
 	</description>
 
 	<properties>
-		<bootique-version>1.0-SNAPSHOT</bootique-version>
-		<bootique-jetty-version>1.0-SNAPSHOT</bootique-jetty-version>
+		<bootique-version>0.5-SNAPSHOT</bootique-version>
+		<bootique-jetty-version>0.5-SNAPSHOT</bootique-jetty-version>
 		<jersey-version>2.21</jersey-version>
 	</properties>
 
