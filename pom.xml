@@ -20,7 +20,7 @@
 	</description>
 
 	<properties>
-		<bootique-version>0.5</bootique-version>
+		<bootique-version>0.6</bootique-version>
 		<bootique-jetty-version>0.5</bootique-jetty-version>
 		<jersey-version>2.21</jersey-version>
 		<hk2-version>2.4.0-b31</hk2-version>
@@ -73,6 +73,13 @@
 				<groupId>org.glassfish.jersey.containers</groupId>
 				<artifactId>jersey-container-servlet</artifactId>
 				<version>${jersey-version}</version>
+				<exclusions>
+					<!-- Guice includes this one -->
+					<exclusion>
+						<artifactId>javax.inject</artifactId>
+						<groupId>org.glassfish.hk2.external</groupId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.glassfish.hk2</groupId>
@@ -95,6 +102,10 @@
 					<exclusion>
 						<groupId>org.glassfish.hk2.external</groupId>
 						<artifactId>aopalliance-repackaged</artifactId>
+					</exclusion>
+					<exclusion>
+						<artifactId>javax.inject</artifactId>
+						<groupId>org.glassfish.hk2.external</groupId>
 					</exclusion>
 				</exclusions>
 			</dependency>
