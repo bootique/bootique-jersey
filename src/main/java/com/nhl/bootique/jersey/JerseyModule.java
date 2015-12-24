@@ -15,7 +15,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.nhl.bootique.jetty.JettyModule;
 
-// TODO: should we turn this into factorymodule? we'll be able to start Jersey from YAML then
+// TODO: should we turn this into ConfigModule? we'll be able to start Jersey from YAML then
 public class JerseyModule implements Module {
 
 	private Class<? extends Application> application;

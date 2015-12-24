@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.nhl.bootique.parent</groupId>
 		<artifactId>bootique-parent</artifactId>
-		<version>0.6</version>
+		<version>0.9</version>
 	</parent>
 
 	<groupId>com.nhl.bootique.jersey</groupId>
@@ -19,37 +19,17 @@
 	</description>
 
 	<properties>
-		<bootique-version>0.8</bootique-version>
-		<bootique-jetty-version>0.6</bootique-jetty-version>
+		<bootique-version>0.10</bootique-version>
+		<bootique-jetty-version>0.7</bootique-jetty-version>
 		<jersey-version>2.21</jersey-version>
 		<hk2-version>2.4.0-b31</hk2-version>
 	</properties>
 
 	<scm>
 		<developerConnection>scm:git:ssh://git@github.com/nhl/bootique-jersey</developerConnection>
+		<url>https://github.com/nhl/bootique-jersey</url>
 		<tag>HEAD</tag>
 	</scm>
-
-	<repositories>
-		<repository>
-			<id>bootique-dependencies</id>
-			<name>Bootique Dependencies Repo</name>
-			<url>http://maven.objectstyle.org/nexus/content/groups/bootique-upstream</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>bootique-dependencies</id>
-			<name>Bootique Dependencies Repo</name>
-			<url>http://maven.objectstyle.org/nexus/content/groups/bootique-upstream</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<dependencyManagement>
 		<dependencies>
@@ -157,4 +137,28 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<!-- Optional profile used to sign artifacts -->
+	<profiles>
+		<profile>
+			<id>gpg</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
