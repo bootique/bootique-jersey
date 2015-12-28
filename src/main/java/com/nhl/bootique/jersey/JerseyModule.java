@@ -2,8 +2,10 @@ package com.nhl.bootique.jersey;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Feature;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -50,20 +52,35 @@ public class JerseyModule implements Module {
 
 	@Override
 	public void configure(Binder binder) {
+
+		// don't bind any actual features here, but make sure that Set<Feature>
+		// collection is available...
+		JerseyBinder.contributeTo(binder).features();
+
 		// TODO: map servlet path as a YAML property
 		JettyModule.servletBinder(binder).addBinding("/*").to(ServletContainer.class);
 	}
 
 	@Singleton
 	@Provides
-	private ServletContainer createJerseyServlet(Injector injector) {
+	private ResourceConfig createResourceConfig(Injector injector, Set<Feature> features) {
 		ResourceConfig config = application != null ? ResourceConfig.forApplicationClass(application)
 				: new ResourceConfig();
 
 		packageRoots.forEach(p -> config.packages(true, p));
 		resources.forEach(r -> config.register(r));
+		features.forEach(f -> config.register(f));
 
+		// register Guice Injector as a service in Jersey HK2, and
+		// GuiceBridgeFeature as a
 		GuiceBridgeFeature.register(config, injector);
+
+		return config;
+	}
+
+	@Singleton
+	@Provides
+	private ServletContainer createJerseyServlet(ResourceConfig config) {
 		return new ServletContainer(config);
 	}
 }

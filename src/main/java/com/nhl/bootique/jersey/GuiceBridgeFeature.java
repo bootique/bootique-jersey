@@ -16,6 +16,7 @@ public class GuiceBridgeFeature implements Feature {
 
 	private static final String INJECTOR_PROPERTY = "com.nhl.bootique.jersey.injector";
 
+	// TODO: can all of this happen inside this Feature "configure(..)" method?
 	static void register(ResourceConfig config, Injector injector) {
 		config.property(GuiceBridgeFeature.INJECTOR_PROPERTY, injector);
 		config.register(GuiceBridgeFeature.class);
