@@ -17,7 +17,7 @@ public class CustomFeaturesIT extends BQJerseyTest {
 	@Override
 	protected Module createTestModule() {
 		return (b) -> {
-			JerseyBinder.contributeTo(b).features(Feature1.class, Feature2.class);
+			JerseyBinder.contributeTo(b).featureTypes(Feature1.class, Feature2.class);
 			b.bind(ConfigurationFactory.class).toInstance(mock(ConfigurationFactory.class));
 		};
 	}

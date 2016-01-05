@@ -29,13 +29,34 @@ public class JerseyBinder {
 	}
 
 	@SafeVarargs
-	public final void features(Class<? extends Feature>... features) {
+	public final void featureTypes(Class<? extends Feature>... features) {
+		Objects.requireNonNull(features);
+		featureTypes(Arrays.asList(features));
+	}
+
+	public void featureTypes(Collection<Class<? extends Feature>> features) {
+		Multibinder<Feature> featureBinder = Multibinder.newSetBinder(binder, Feature.class);
+		features.forEach(f -> featureBinder.addBinding().to(f).in(Singleton.class));
+	}
+
+	/**
+	 * @since 0.11
+	 * @param features
+	 *            an array of features to register in JAX-RS environment.
+	 */
+	@SafeVarargs
+	public final void features(Feature... features) {
 		Objects.requireNonNull(features);
 		features(Arrays.asList(features));
 	}
 
-	public void features(Collection<Class<? extends Feature>> features) {
+	/**
+	 * @since 0.11
+	 * @param features
+	 *            a collection of features to register in JAX-RS environment.
+	 */
+	public void features(Collection<? extends Feature> features) {
 		Multibinder<Feature> featureBinder = Multibinder.newSetBinder(binder, Feature.class);
-		features.forEach(f -> featureBinder.addBinding().to(f).in(Singleton.class));
+		features.forEach(f -> featureBinder.addBinding().toInstance(f));
 	}
 }

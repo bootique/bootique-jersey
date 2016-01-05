@@ -1,4 +1,8 @@
-0.10
+0.11:
+
+#5 JerseyBinder: register feature instances
+ 
+0.10:
 
 #2 Upgrade to bootique-jetty:0.9
 #4 Support for Jersey servlet path property 
