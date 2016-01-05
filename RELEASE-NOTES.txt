@@ -1,6 +1,7 @@
 0.10
 
-#2  Upgrade to bootique-jetty:0.9
+#2 Upgrade to bootique-jetty:0.9
+#4 Support for Jersey servlet path property 
 
 0.9:
 

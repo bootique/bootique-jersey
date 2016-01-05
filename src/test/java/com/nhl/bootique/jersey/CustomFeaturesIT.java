@@ -1,6 +1,7 @@
 package com.nhl.bootique.jersey;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
@@ -8,6 +9,7 @@ import javax.ws.rs.core.FeatureContext;
 import org.junit.Test;
 
 import com.google.inject.Module;
+import com.nhl.bootique.config.ConfigurationFactory;
 import com.nhl.bootique.jersey.unit.BQJerseyTest;
 
 public class CustomFeaturesIT extends BQJerseyTest {
@@ -16,6 +18,7 @@ public class CustomFeaturesIT extends BQJerseyTest {
 	protected Module createTestModule() {
 		return (b) -> {
 			JerseyBinder.contributeTo(b).features(Feature1.class, Feature2.class);
+			b.bind(ConfigurationFactory.class).toInstance(mock(ConfigurationFactory.class));
 		};
 	}
 

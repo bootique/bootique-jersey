@@ -8,24 +8,31 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Feature;
 
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.servlet.ServletContainer;
 
 import com.google.inject.Binder;
 import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.nhl.bootique.jetty.JettyModule;
+import com.nhl.bootique.ConfigModule;
+import com.nhl.bootique.config.ConfigurationFactory;
+import com.nhl.bootique.jetty.JettyBinder;
+import com.nhl.bootique.jetty.MappedServlet;
 
 // TODO: should we turn this into ConfigModule? we'll be able to start Jersey from YAML then
-public class JerseyModule implements Module {
+public class JerseyModule extends ConfigModule {
 
+	private String servletPath = "/*";
 	private Class<? extends Application> application;
 	private Collection<Class<?>> resources = new HashSet<>();
 	private Collection<String> packageRoots = new HashSet<>();
 
 	public <T extends Application> JerseyModule application(Class<T> application) {
 		this.application = application;
+		return this;
+	}
+
+	public JerseyModule servletPath(String servletPath) {
+		this.servletPath = servletPath;
 		return this;
 	}
 
@@ -56,9 +63,8 @@ public class JerseyModule implements Module {
 		// don't bind any actual features here, but make sure that Set<Feature>
 		// collection is available...
 		JerseyBinder.contributeTo(binder).features();
-
-		// TODO: map servlet path as a YAML property
-		JettyModule.servletBinder(binder).addBinding("/*").to(ServletContainer.class);
+		
+		JettyBinder.contributeTo(binder).servlet(JerseyServlet.class);
 	}
 
 	@Singleton
@@ -78,9 +84,11 @@ public class JerseyModule implements Module {
 		return config;
 	}
 
-	@Singleton
+	@JerseyServlet
 	@Provides
-	private ServletContainer createJerseyServlet(ResourceConfig config) {
-		return new ServletContainer(config);
+	@Singleton
+	private MappedServlet createJerseyServlet(ConfigurationFactory configFactory, ResourceConfig config) {
+		return configFactory.config(JerseyServletFactory.class, configPrefix).initServletPathIfNotSet(servletPath)
+				.createJerseyServlet(config);
 	}
 }
