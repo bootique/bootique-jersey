@@ -23,9 +23,10 @@ public class JerseyServletFactory {
 	/**
 	 * Conditionally initializes servlet path if it is null.
 	 * 
-	 * @param config
+	 * @param servletPath
 	 *            a servlet path for the Jersey servlet to use if it was not
 	 *            already initialized.
+	 * @return self.
 	 */
 	public JerseyServletFactory initServletPathIfNotSet(String servletPath) {
 
