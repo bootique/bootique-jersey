@@ -11,12 +11,13 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import com.google.inject.Binder;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
 import com.nhl.bootique.ConfigModule;
 import com.nhl.bootique.config.ConfigurationFactory;
-import com.nhl.bootique.jetty.JettyBinder;
+import com.nhl.bootique.jetty.JettyModule;
 import com.nhl.bootique.jetty.MappedServlet;
 
 // TODO: should we turn this into ConfigModule? we'll be able to start Jersey from YAML then
@@ -71,10 +72,10 @@ public class JerseyModule extends ConfigModule {
 	@Override
 	public void configure(Binder binder) {
 
+		JettyModule.contributeServlets(binder).addBinding().to(Key.get(MappedServlet.class, JerseyServlet.class));
+
 		// trigger extension points creation and provide default contributions
 		JerseyModule.contributeFeatures(binder);
-
-		JettyBinder.contributeTo(binder).servlet(JerseyServlet.class);
 	}
 
 	@Singleton

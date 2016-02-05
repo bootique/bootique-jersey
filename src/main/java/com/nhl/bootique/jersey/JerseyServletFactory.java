@@ -1,5 +1,9 @@
 package com.nhl.bootique.jersey;
 
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Set;
+
 import javax.servlet.Servlet;
 
 import org.glassfish.jersey.server.ResourceConfig;
@@ -39,6 +43,8 @@ public class JerseyServletFactory {
 
 	public MappedServlet createJerseyServlet(ResourceConfig resourceConfig) {
 		Servlet servlet = new ServletContainer(resourceConfig);
-		return new MappedServlet(servlet, servletPath);
+		Set<String> urlPatterns = Collections.singleton(Objects.requireNonNull(servletPath));
+		
+		return new MappedServlet(servlet, urlPatterns);
 	}
 }
