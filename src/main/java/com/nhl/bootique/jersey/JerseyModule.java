@@ -13,6 +13,7 @@ import com.google.inject.Binder;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.multibindings.Multibinder;
 import com.nhl.bootique.ConfigModule;
 import com.nhl.bootique.config.ConfigurationFactory;
 import com.nhl.bootique.jetty.JettyBinder;
@@ -25,6 +26,16 @@ public class JerseyModule extends ConfigModule {
 	private Class<? extends Application> application;
 	private Collection<Class<?>> resources = new HashSet<>();
 	private Collection<String> packageRoots = new HashSet<>();
+
+	/**
+	 * @param binder
+	 *            DI binder passed to the Module that invokes this method.
+	 * @since 0.11
+	 * @return returns a {@link Multibinder} for JAX-RS Features.
+	 */
+	public static Multibinder<Feature> contributeFeatures(Binder binder) {
+		return Multibinder.newSetBinder(binder, Feature.class);
+	}
 
 	public <T extends Application> JerseyModule application(Class<T> application) {
 		this.application = application;
@@ -60,10 +71,9 @@ public class JerseyModule extends ConfigModule {
 	@Override
 	public void configure(Binder binder) {
 
-		// don't bind any actual features here, but make sure that Set<Feature>
-		// collection is available...
-		JerseyBinder.contributeTo(binder).features();
-		
+		// trigger extension points creation and provide default contributions
+		JerseyModule.contributeFeatures(binder);
+
 		JettyBinder.contributeTo(binder).servlet(JerseyServlet.class);
 	}
 

@@ -15,6 +15,7 @@ import com.google.inject.multibindings.Multibinder;
  * {@link Feature}'s to Jersey.
  * 
  * @since 0.9
+ * @deprecated since 0.11 use {@link JerseyModule#contributeFeatures(Binder)}.
  */
 public class JerseyBinder {
 

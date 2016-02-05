@@ -1,6 +1,7 @@
 0.11:
 
 #5 JerseyBinder: register feature instances
+#6 Move contribution API from JerseyBinder into static methods on JerseyModule
  
 0.10:
 
