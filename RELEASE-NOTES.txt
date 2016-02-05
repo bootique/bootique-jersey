@@ -3,6 +3,7 @@
 #5 JerseyBinder: register feature instances
 #6 Move contribution API from JerseyBinder into static methods on JerseyModule
 #7 Upgrade Bootique to 0.12 and bootique-jetty - to 0.11
+#8 Rename "servletPath" property of JerseyServletFactory to "urlPattern"
  
 0.10:
 

@@ -23,7 +23,7 @@ import com.nhl.bootique.jetty.MappedServlet;
 // TODO: should we turn this into ConfigModule? we'll be able to start Jersey from YAML then
 public class JerseyModule extends ConfigModule {
 
-	private String servletPath = "/*";
+	private String urlPattern = "/*";
 	private Class<? extends Application> application;
 	private Collection<Class<?>> resources = new HashSet<>();
 	private Collection<String> packageRoots = new HashSet<>();
@@ -43,8 +43,25 @@ public class JerseyModule extends ConfigModule {
 		return this;
 	}
 
+	/**
+	 * @deprecated since 0.11 in favor of {@link #urlPattern(String)}.
+	 * @param urlPattern
+	 *            a URL pattern for the Jersey servlet within Jetty app context.
+	 * @return self
+	 */
 	public JerseyModule servletPath(String servletPath) {
-		this.servletPath = servletPath;
+		this.urlPattern = servletPath;
+		return this;
+	}
+
+	/**
+	 * @since 0.11
+	 * @param urlPattern
+	 *            a URL pattern for the Jersey servlet within Jetty app context.
+	 * @return self
+	 */
+	public JerseyModule urlPattern(String urlPattern) {
+		this.urlPattern = urlPattern;
 		return this;
 	}
 
@@ -99,7 +116,7 @@ public class JerseyModule extends ConfigModule {
 	@Provides
 	@Singleton
 	private MappedServlet createJerseyServlet(ConfigurationFactory configFactory, ResourceConfig config) {
-		return configFactory.config(JerseyServletFactory.class, configPrefix).initServletPathIfNotSet(servletPath)
+		return configFactory.config(JerseyServletFactory.class, configPrefix).initUrlPatternIfNotSet(urlPattern)
 				.createJerseyServlet(config);
 	}
 }
