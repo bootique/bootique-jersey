@@ -47,6 +47,7 @@ public class JerseyModule extends ConfigModule {
 	 * @deprecated since 0.11 in favor of {@link #urlPattern(String)}.
 	 * @param urlPattern
 	 *            a URL pattern for the Jersey servlet within Jetty app context.
+	 *            Default is "/*".
 	 * @return self
 	 */
 	public JerseyModule servletPath(String servletPath) {
