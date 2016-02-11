@@ -22,12 +22,12 @@ public abstract class BQJerseyTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		this.injector = Guice.createInjector(createJerseyModule(), createTestModule());
+		this.injector = Guice.createInjector(createJerseyModule().build(), createTestModule());
 		return injector.getInstance(ResourceConfig.class);
 	}
 
-	protected JerseyModule createJerseyModule() {
-		return new JerseyModule();
+	protected JerseyModule.Builder createJerseyModule() {
+		return JerseyModule.builder();
 	}
 
 	/**

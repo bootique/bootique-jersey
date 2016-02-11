@@ -20,7 +20,6 @@ import com.nhl.bootique.config.ConfigurationFactory;
 import com.nhl.bootique.jetty.JettyModule;
 import com.nhl.bootique.jetty.MappedServlet;
 
-// TODO: should we turn this into ConfigModule? we'll be able to start Jersey from YAML then
 public class JerseyModule extends ConfigModule {
 
 	private String urlPattern = "/*";
@@ -38,53 +37,17 @@ public class JerseyModule extends ConfigModule {
 		return Multibinder.newSetBinder(binder, Feature.class);
 	}
 
-	public <T extends Application> JerseyModule application(Class<T> application) {
-		this.application = application;
-		return this;
-	}
-
 	/**
-	 * @deprecated since 0.11 in favor of {@link #urlPattern(String)}.
-	 * @param urlPattern
-	 *            a URL pattern for the Jersey servlet within Jetty app context.
-	 *            Default is "/*".
-	 * @return self
-	 */
-	public JerseyModule servletPath(String servletPath) {
-		this.urlPattern = servletPath;
-		return this;
-	}
-
-	/**
+	 * Creates a builder of {@link JerseyModule}.
+	 * 
 	 * @since 0.11
-	 * @param urlPattern
-	 *            a URL pattern for the Jersey servlet within Jetty app context.
-	 * @return self
 	 */
-	public JerseyModule urlPattern(String urlPattern) {
-		this.urlPattern = urlPattern;
-		return this;
+	public static Builder builder() {
+		return new Builder();
 	}
 
-	public JerseyModule resource(Class<?> resourceType) {
-		resources.add(resourceType);
-		return this;
-	}
-
-	public JerseyModule packageRoot(Package aPackage) {
-		packageRoots.add(aPackage.getName());
-		return this;
-	}
-
-	public JerseyModule packageRoot(Class<?> classFromPackage) {
-		String name = classFromPackage.getName();
-		int dot = name.lastIndexOf('.');
-		if (dot <= 0) {
-			throw new IllegalArgumentException("Class is in default package - unsupported");
-		}
-
-		packageRoots.add(name.substring(0, dot));
-		return this;
+	protected JerseyModule() {
+		// non-public - module must be created via Builder
 	}
 
 	@Override
@@ -119,5 +82,57 @@ public class JerseyModule extends ConfigModule {
 	private MappedServlet createJerseyServlet(ConfigurationFactory configFactory, ResourceConfig config) {
 		return configFactory.config(JerseyServletFactory.class, configPrefix).initUrlPatternIfNotSet(urlPattern)
 				.createJerseyServlet(config);
+	}
+
+	public static class Builder {
+
+		private JerseyModule module;
+
+		private Builder() {
+			this.module = new JerseyModule();
+		}
+
+		public JerseyModule build() {
+			return module;
+		}
+
+		/**
+		 * @since 0.11
+		 * @param urlPattern
+		 *            a URL pattern for the Jersey servlet within Jetty app
+		 *            context.
+		 * @return self
+		 */
+		public Builder urlPattern(String urlPattern) {
+			module.urlPattern = urlPattern;
+			return this;
+		}
+
+		public Builder resource(Class<?> resourceType) {
+			module.resources.add(resourceType);
+			return this;
+		}
+
+		public Builder packageRoot(Package aPackage) {
+			module.packageRoots.add(aPackage.getName());
+			return this;
+		}
+
+		public Builder packageRoot(Class<?> classFromPackage) {
+			String name = classFromPackage.getName();
+			int dot = name.lastIndexOf('.');
+			if (dot <= 0) {
+				throw new IllegalArgumentException("Class is in default package - unsupported");
+			}
+
+			module.packageRoots.add(name.substring(0, dot));
+			return this;
+		}
+
+		public <T extends Application> Builder application(Class<T> application) {
+			module.application = application;
+			return this;
+		}
+
 	}
 }
