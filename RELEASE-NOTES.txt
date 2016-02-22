@@ -1,3 +1,7 @@
+0.12: 
+
+#10: Debug added resources
+
 0.11:
 
 #5 JerseyBinder: register feature instances

@@ -69,6 +69,9 @@ public class JerseyModule extends ConfigModule {
 		resources.forEach(r -> config.register(r));
 		features.forEach(f -> config.register(f));
 
+		// TODO: make this pluggable?
+		config.register(ResourceModelDebugger.class);
+
 		// register Guice Injector as a service in Jersey HK2, and
 		// GuiceBridgeFeature as a
 		GuiceBridgeFeature.register(config, injector);
