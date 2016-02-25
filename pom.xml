@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -19,8 +20,8 @@
 	</description>
 
 	<properties>
-		<bootique-version>0.12</bootique-version>
-		<bootique-jetty-version>0.11</bootique-jetty-version>
+		<bootique-version>0.13-SNAPSHOT</bootique-version>
+		<bootique-jetty-version>0.13-SNAPSHOT</bootique-jetty-version>
 		<jersey-version>2.21</jersey-version>
 		<hk2-version>2.4.0-b31</hk2-version>
 	</properties>
@@ -95,6 +96,16 @@
 				<version>${jersey-version}</version>
 				<!-- TODO: exclusions for tests -->
 			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.media</groupId>
+				<artifactId>jersey-media-multipart</artifactId>
+				<version>${jersey-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>1.7.13</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -120,6 +131,17 @@
 			<artifactId>jersey-test-framework-provider-inmemory</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-multipart</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 
 		<!-- Compile dependencies -->
 		<dependency>
