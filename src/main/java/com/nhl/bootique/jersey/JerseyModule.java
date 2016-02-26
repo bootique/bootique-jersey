@@ -68,6 +68,7 @@ public class JerseyModule extends ConfigModule {
 
 		// trigger extension points creation and provide default contributions
 		JerseyModule.contributeFeatures(binder);
+		JerseyModule.contributeDynamicFeatures(binder);
 	}
 
 	@Singleton
