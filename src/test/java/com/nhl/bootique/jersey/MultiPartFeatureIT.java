@@ -44,7 +44,7 @@ public class MultiPartFeatureIT {
 			b.modules(JettyModule.class).modules(createTestModule(), createJerseyModule());
 		});
 
-		app.startAndWait(50000, TimeUnit.SECONDS);
+		app.startAndWait(5000, TimeUnit.SECONDS);
 	}
 
 	@AfterClass
