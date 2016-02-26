@@ -1,3 +1,7 @@
+## 0.13:
+
+* #13 Upgrade to Bootique 0.14
+
 ## 0.12: 
 
 * #10: Debug added resources

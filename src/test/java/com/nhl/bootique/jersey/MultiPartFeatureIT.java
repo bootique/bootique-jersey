@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.eclipse.jetty.server.Server;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -28,23 +29,23 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.inject.Module;
-import com.nhl.bootique.jersey.unit.TestJettyApp;
 import com.nhl.bootique.jetty.JettyModule;
+import com.nhl.bootique.test.BQDaemonTestRuntime;
 
 // see https://github.com/nhl/bootique-jersey/issues/11
 public class MultiPartFeatureIT {
 
-	private static TestJettyApp app;
+	private static BQDaemonTestRuntime app;
 
 	private Client multiPartClient;
 
 	@BeforeClass
 	public static void startJetty() throws InterruptedException, ExecutionException, TimeoutException {
-		app = new TestJettyApp(b -> {
+		app = new BQDaemonTestRuntime(b -> {
 			b.modules(JettyModule.class).modules(createTestModule(), createJerseyModule());
-		});
+		} , r -> r.getInstance(Server.class).isStarted());
 
-		app.startAndWait(5000, TimeUnit.SECONDS);
+		app.start(5, TimeUnit.SECONDS, "--server");
 	}
 
 	@AfterClass
@@ -78,10 +79,10 @@ public class MultiPartFeatureIT {
 
 		Response r = multiPartClient.target("http://127.0.0.1:8080/").request(MediaType.APPLICATION_JSON)
 				.post(Entity.entity(multipart, multipart.getMediaType()));
-		
+
 		assertEquals(Status.OK.getStatusCode(), r.getStatus());
 		assertEquals("{\"message\":\"I am a part\"}", r.readEntity(String.class));
-		
+
 		r.close();
 	}
 
