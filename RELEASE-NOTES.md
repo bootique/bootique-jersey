@@ -1,6 +1,7 @@
 ## 0.12: 
 
 * #10: Debug added resources
+* #12: API for binding DynamicFeature's
 
 ## 0.11:
 

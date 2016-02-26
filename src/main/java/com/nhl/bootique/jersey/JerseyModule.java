@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Feature;
 
@@ -38,6 +39,16 @@ public class JerseyModule extends ConfigModule {
 	}
 
 	/**
+	 * @param binder
+	 *            DI binder passed to the Module that invokes this method.
+	 * @since 0.12
+	 * @return returns a {@link Multibinder} for JAX-RS DynamicFeatures.
+	 */
+	public static Multibinder<DynamicFeature> contributeDynamicFeatures(Binder binder) {
+		return Multibinder.newSetBinder(binder, DynamicFeature.class);
+	}
+
+	/**
 	 * Creates a builder of {@link JerseyModule}.
 	 * 
 	 * @since 0.11
@@ -61,13 +72,15 @@ public class JerseyModule extends ConfigModule {
 
 	@Singleton
 	@Provides
-	private ResourceConfig createResourceConfig(Injector injector, Set<Feature> features) {
+	private ResourceConfig createResourceConfig(Injector injector, Set<Feature> features,
+			Set<DynamicFeature> dynamicFeatures) {
 		ResourceConfig config = application != null ? ResourceConfig.forApplicationClass(application)
 				: new ResourceConfig();
 
 		packageRoots.forEach(p -> config.packages(true, p));
 		resources.forEach(r -> config.register(r));
 		features.forEach(f -> config.register(f));
+		dynamicFeatures.forEach(df -> config.register(df));
 
 		// TODO: make this pluggable?
 		config.register(ResourceModelDebugger.class);
@@ -122,6 +135,7 @@ public class JerseyModule extends ConfigModule {
 		}
 
 		public Builder packageRoot(Class<?> classFromPackage) {
+			// TODO: test with inner classes
 			String name = classFromPackage.getName();
 			int dot = name.lastIndexOf('.');
 			if (dot <= 0) {
