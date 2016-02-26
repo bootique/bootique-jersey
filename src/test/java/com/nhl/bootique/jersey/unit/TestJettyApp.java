@@ -28,23 +28,18 @@ public class TestJettyApp {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestJettyApp.class);
 
-	private Consumer<Bootique> configuratior;
+	private Consumer<Bootique> configurator;
 	private ExecutorService executor;
 	private InMemoryPrintStream stdout;
 	private InMemoryPrintStream stderr;
 
 	private BQRuntime runtime;
 
-	public TestJettyApp(Consumer<Bootique> configuratior) {
-		this.configuratior = configuratior;
+	public TestJettyApp(Consumer<Bootique> configurator) {
+		this.configurator = configurator;
 		this.stdout = new InMemoryPrintStream(System.out);
 		this.stderr = new InMemoryPrintStream(System.err);
 		this.executor = Executors.newCachedThreadPool();
-	}
-
-	public void start() {
-		this.runtime = init("--server");
-		this.executor.submit(() -> run());
 	}
 
 	public void startAndWait(long timeout, TimeUnit unit)
@@ -73,6 +68,11 @@ public class TestJettyApp {
 		LOGGER.info("Server started successfully...");
 	}
 
+	protected void start() {
+		this.runtime = init("--server");
+		this.executor.submit(() -> run());
+	}
+
 	public void stop() throws InterruptedException {
 		executor.shutdownNow();
 		executor.awaitTermination(3, TimeUnit.SECONDS);
@@ -80,7 +80,7 @@ public class TestJettyApp {
 
 	protected BQRuntime init(String... args) {
 		Bootique bootique = Bootique.app(args).bootLogger(createBootLogger());
-		configuratior.accept(bootique);
+		configurator.accept(bootique);
 		return bootique.createRuntime();
 	}
 
