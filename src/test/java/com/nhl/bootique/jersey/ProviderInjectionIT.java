@@ -101,13 +101,13 @@ public class ProviderInjectionIT {
 	}
 
 	public static class TestResponse {
-		
+
 		private String string;
 
 		public TestResponse(String string) {
 			this.string = string;
 		}
-		
+
 		@Override
 		public String toString() {
 			return string;
@@ -143,18 +143,18 @@ public class ProviderInjectionIT {
 
 		@Override
 		public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-			System.out.println("Writable for " + type.getName());
 			return type.equals(TestResponse.class);
 		}
 
 		@Override
-		public long getSize(TestResponse t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+		public long getSize(TestResponse t, Class<?> type, Type genericType, Annotation[] annotations,
+				MediaType mediaType) {
 			return -1;
 		}
 
 		@Override
-		public void writeTo(TestResponse t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-				MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+		public void writeTo(TestResponse t, Class<?> type, Type genericType, Annotation[] annotations,
+				MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 						throws IOException, WebApplicationException {
 
 			String s = String.format("[%s]_%s", t, service.getNext());
