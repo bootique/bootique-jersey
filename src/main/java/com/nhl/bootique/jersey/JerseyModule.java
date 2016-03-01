@@ -57,10 +57,6 @@ public class JerseyModule extends ConfigModule {
 		return new Builder();
 	}
 
-	protected JerseyModule() {
-		// non-public - module must be created via Builder
-	}
-
 	@Override
 	public void configure(Binder binder) {
 

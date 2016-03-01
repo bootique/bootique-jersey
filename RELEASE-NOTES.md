@@ -1,6 +1,7 @@
 ## 0.13:
 
 * #13 Upgrade to Bootique 0.14
+* #14 Allow empty JerseyModule
 
 ## 0.12: 
 
