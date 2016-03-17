@@ -1,6 +1,7 @@
 ## 0.14:
 
 * #15 Upgrade to bq-jetty 0.13 and bq 0.15
+* #16 Assign predictable name to Jersey servlet - "jersey"
 
 ## 0.13:
 

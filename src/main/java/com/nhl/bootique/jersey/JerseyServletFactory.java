@@ -77,7 +77,6 @@ public class JerseyServletFactory {
 	public MappedServlet createJerseyServlet(ResourceConfig resourceConfig) {
 		Servlet servlet = new ServletContainer(resourceConfig);
 		Set<String> urlPatterns = Collections.singleton(Objects.requireNonNull(urlPattern));
-
-		return new MappedServlet(servlet, urlPatterns);
+		return new MappedServlet(servlet, urlPatterns, "jersey");
 	}
 }
