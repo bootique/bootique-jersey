@@ -1,3 +1,7 @@
+## 0.14:
+
+* #15 Upgrade to bq-jetty 0.13 and bq 0.15
+
 ## 0.13:
 
 * #13 Upgrade to Bootique 0.14
