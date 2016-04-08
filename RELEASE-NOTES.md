@@ -2,7 +2,7 @@
 
 * #15 Upgrade to bq-jetty 0.13 and bq 0.15
 * #16 Assign predictable name to Jersey servlet - "jersey"
-
+ 
 ## 0.13:
 
 * #13 Upgrade to Bootique 0.14
