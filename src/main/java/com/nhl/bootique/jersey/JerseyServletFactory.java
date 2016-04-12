@@ -8,8 +8,6 @@ import javax.servlet.Servlet;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.nhl.bootique.jetty.MappedServlet;
 
@@ -19,20 +17,8 @@ import com.nhl.bootique.jetty.MappedServlet;
  * @since 0.10
  */
 public class JerseyServletFactory {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(JerseyServletFactory.class);
 
 	protected String urlPattern;
-
-	/**
-	 * @deprecated since 0.11 in favor of {@link #setUrlPattern(String)}.
-	 * @param servletPath
-	 *            a URL: pattern for the Jersey servlet. Default is "/*".
-	 */
-	public void setServletPath(String servletPath) {
-		LOGGER.warn("Using deprecated 'servletPath' property; use 'urlPattern' instead."); 
-		setUrlPattern(urlPattern);
-	}
 
 	/**
 	 * @since 0.11
@@ -41,19 +27,6 @@ public class JerseyServletFactory {
 	 */
 	public void setUrlPattern(String urlPattern) {
 		this.urlPattern = urlPattern;
-	}
-
-	/**
-	 * Conditionally initializes servlet path if it is null.
-	 * 
-	 * @param servletPath
-	 *            a servlet path for the Jersey servlet to use if it was not
-	 *            already initialized.
-	 * @return self.
-	 * @deprecated since 0.11 in favor of {@link #initUrlPatternIfNotSet(String)}.
-	 */
-	public JerseyServletFactory initServletPathIfNotSet(String servletPath) {
-		return initUrlPatternIfNotSet(servletPath);
 	}
 
 	/**
