@@ -60,7 +60,7 @@ public class JerseyModule extends ConfigModule {
 	@Override
 	public void configure(Binder binder) {
 
-		JettyModule.contributeServlets(binder).addBinding().to(Key.get(MappedServlet.class, JerseyServlet.class));
+		JettyModule.contributeMappedServlets(binder).addBinding().to(Key.get(MappedServlet.class, JerseyServlet.class));
 
 		// trigger extension points creation and provide default contributions
 		JerseyModule.contributeFeatures(binder);
