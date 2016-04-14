@@ -49,9 +49,33 @@ public class JerseyModule extends ConfigModule {
 	}
 
 	/**
+	 * @param binder
+	 *            DI binder passed to the Module that invokes this method.
+	 * @since 0.15
+	 * @return returns a {@link Multibinder} for explicitly registered JAX-RS
+	 *         resource types.
+	 */
+	public static Multibinder<Object> contributeResources(Binder binder) {
+		return Multibinder.newSetBinder(binder, Key.get(Object.class, JerseyResource.class));
+	}
+
+	/**
+	 * @param binder
+	 *            DI binder passed to the Module that invokes this method.
+	 * @since 0.15
+	 * @return returns a {@link Multibinder} for packages that contain JAX-RS
+	 *         resource classes.
+	 */
+	public static Multibinder<Package> contributePackages(Binder binder) {
+		return Multibinder.newSetBinder(binder, Package.class);
+	}
+
+	/**
 	 * Creates a builder of {@link JerseyModule}.
 	 * 
 	 * @since 0.11
+	 * @deprecated since 0.15 use {@link #contributePackages(Binder)} and
+	 *             {@link #contributeResources(Binder)}.
 	 */
 	public static Builder builder() {
 		return new Builder();
@@ -65,17 +89,25 @@ public class JerseyModule extends ConfigModule {
 		// trigger extension points creation and provide default contributions
 		JerseyModule.contributeFeatures(binder);
 		JerseyModule.contributeDynamicFeatures(binder);
+		JerseyModule.contributePackages(binder);
+		JerseyModule.contributeResources(binder);
 	}
 
 	@Singleton
 	@Provides
 	private ResourceConfig createResourceConfig(Injector injector, Set<Feature> features,
-			Set<DynamicFeature> dynamicFeatures) {
+			Set<DynamicFeature> dynamicFeatures, @JerseyResource Set<Object> resources, Set<Package> packages) {
+
 		ResourceConfig config = application != null ? ResourceConfig.forApplicationClass(application)
 				: new ResourceConfig();
 
-		packageRoots.forEach(p -> config.packages(true, p));
+		// loaded deprecated configs provided via the builder
+		this.packageRoots.forEach(p -> config.packages(true, p));
+		this.resources.forEach(r -> config.register(r));
+		
+		packages.forEach(p -> config.packages(true, p.getName()));
 		resources.forEach(r -> config.register(r));
+
 		features.forEach(f -> config.register(f));
 		dynamicFeatures.forEach(df -> config.register(df));
 
@@ -97,6 +129,10 @@ public class JerseyModule extends ConfigModule {
 				.createJerseyServlet(config);
 	}
 
+	/**
+	 * @deprecated since 0.15 use {@link #contributePackages(Binder)} and
+	 *             {@link #contributeResources(Binder)}.
+	 */
 	public static class Builder {
 
 		private JerseyModule module;

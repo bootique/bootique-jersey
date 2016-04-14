@@ -22,13 +22,11 @@ public abstract class BQJerseyTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		this.injector = Guice.createInjector(createJerseyModule().build(), createTestModule());
+		this.injector = Guice.createInjector(new JerseyModule(), createTestModule());
 		return injector.getInstance(ResourceConfig.class);
 	}
 
-	protected JerseyModule.Builder createJerseyModule() {
-		return JerseyModule.builder();
-	}
+	
 
 	/**
 	 * Returns an empty module. Intends to be overridden.

@@ -41,9 +41,11 @@ public class ResourceInjectionIT {
 	public static void startJetty() throws InterruptedException, ExecutionException, TimeoutException {
 
 		Consumer<Bootique> configurator = b -> {
-			b.module(JettyModule.class);
-			b.module(JerseyModule.builder().resource(InjectedResource.class).build());
-			b.module(binder -> binder.bind(InjectedService.class).in(Singleton.class));
+			b.modules(JettyModule.class, JerseyModule.class);
+			b.module(binder -> {
+				binder.bind(InjectedService.class).in(Singleton.class);
+				JerseyModule.contributeResources(binder).addBinding().to(InjectedResource.class);
+			});
 		};
 
 		APP = new BQDaemonTestRuntime(configurator, r -> r.getInstance(Server.class).isStarted());

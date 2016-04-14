@@ -42,7 +42,7 @@ public class MultiPartFeatureIT {
 	@BeforeClass
 	public static void startJetty() throws InterruptedException, ExecutionException, TimeoutException {
 		app = new BQDaemonTestRuntime(b -> {
-			b.modules(JettyModule.class).modules(createTestModule(), createJerseyModule());
+			b.modules(JettyModule.class, JerseyModule.class).modules(createTestModule());
 		} , r -> r.getInstance(Server.class).isStarted());
 
 		app.start(5, TimeUnit.SECONDS, "--server");
@@ -56,11 +56,8 @@ public class MultiPartFeatureIT {
 	protected static Module createTestModule() {
 		return (b) -> {
 			JerseyModule.contributeFeatures(b).addBinding().to(MultiPartFeature.class);
+			JerseyModule.contributeResources(b).addBinding().to(Resource.class);
 		};
-	}
-
-	protected static Module createJerseyModule() {
-		return JerseyModule.builder().resource(Resource.class).build();
 	}
 
 	@Before

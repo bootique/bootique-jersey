@@ -7,6 +7,6 @@ public class JerseyModuleProvider implements BQModuleProvider {
 
 	@Override
 	public Module module() {
-		return JerseyModule.builder().build();
+		return new JerseyModule();
 	}
 }

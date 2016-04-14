@@ -51,11 +51,11 @@ public class ProviderInjectionIT {
 	public static void startJetty() throws InterruptedException, ExecutionException, TimeoutException {
 
 		Consumer<Bootique> configurator = b -> {
-			b.module(JettyModule.class);
-			b.module(JerseyModule.builder().resource(Resource.class).build());
+			b.modules(JettyModule.class, JerseyModule.class);
 			b.module(binder -> {
 				binder.bind(InjectedService.class).in(Singleton.class);
 				JerseyModule.contributeFeatures(binder).addBinding().to(StringWriterFeature.class);
+				JerseyModule.contributeResources(binder).addBinding().to(Resource.class);
 			});
 		};
 

@@ -2,6 +2,7 @@
 
 * #17 Upgrade to bootique-jetty 0.14
 * #18 Remove API's deprecated since 0.11
+* #19 JerseyModule - switch to "contribute" methods for config instead of "builder".
 
 ## 0.14:
 
