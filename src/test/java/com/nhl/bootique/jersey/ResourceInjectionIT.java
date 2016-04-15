@@ -3,7 +3,6 @@ package com.nhl.bootique.jersey;
 import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -18,22 +17,22 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.jetty.server.Server;
 import org.glassfish.jersey.client.ClientConfig;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.nhl.bootique.Bootique;
 import com.nhl.bootique.jetty.JettyModule;
-import com.nhl.bootique.test.BQDaemonTestRuntime;
+import com.nhl.bootique.jetty.test.junit.JettyTestFactory;
 
 public class ResourceInjectionIT {
 
-	private static BQDaemonTestRuntime APP;
+	@ClassRule
+	public static JettyTestFactory JETTY_FACTORY = new JettyTestFactory();
 
 	private Client client;
 
@@ -48,13 +47,7 @@ public class ResourceInjectionIT {
 			});
 		};
 
-		APP = new BQDaemonTestRuntime(configurator, r -> r.getInstance(Server.class).isStarted());
-		APP.start(5, TimeUnit.SECONDS, "--server");
-	}
-
-	@AfterClass
-	public static void stopJetty() throws InterruptedException {
-		APP.stop();
+		JETTY_FACTORY.newRuntime().configurator(configurator).startServer();
 	}
 
 	@Before

@@ -20,7 +20,7 @@
 	</description>
 
 	<properties>
-		<bootique-version>0.15</bootique-version>
+		<bootique-version>0.16-SNAPSHOT</bootique-version>
 		<bootique-jetty-version>0.14-SNAPSHOT</bootique-jetty-version>
 		<jersey-version>2.21</jersey-version>
 		<hk2-version>2.4.0-b31</hk2-version>
@@ -47,6 +47,11 @@
 			<dependency>
 				<groupId>com.nhl.bootique.jetty</groupId>
 				<artifactId>bootique-jetty</artifactId>
+				<version>${bootique-jetty-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.nhl.bootique.jetty</groupId>
+				<artifactId>bootique-jetty-test</artifactId>
 				<version>${bootique-jetty-version}</version>
 			</dependency>
 			<dependency>
@@ -156,7 +161,11 @@
 			<artifactId>bootique-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>com.nhl.bootique.jetty</groupId>
+			<artifactId>bootique-jetty-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Compile dependencies -->
 		<dependency>

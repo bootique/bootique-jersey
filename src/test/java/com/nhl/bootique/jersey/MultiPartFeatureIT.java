@@ -3,7 +3,6 @@ package com.nhl.bootique.jersey;
 import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.Consumes;
@@ -17,40 +16,32 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.jetty.server.Server;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.google.inject.Module;
-import com.nhl.bootique.jetty.JettyModule;
-import com.nhl.bootique.test.BQDaemonTestRuntime;
+import com.nhl.bootique.jetty.test.junit.JettyTestFactory;
 
 // see https://github.com/nhl/bootique-jersey/issues/11
 public class MultiPartFeatureIT {
 
-	private static BQDaemonTestRuntime app;
+	@ClassRule
+	public static JettyTestFactory JETTY_FACTORY = new JettyTestFactory();
 
 	private Client multiPartClient;
 
 	@BeforeClass
 	public static void startJetty() throws InterruptedException, ExecutionException, TimeoutException {
-		app = new BQDaemonTestRuntime(b -> {
-			b.modules(JettyModule.class, JerseyModule.class).modules(createTestModule());
-		} , r -> r.getInstance(Server.class).isStarted());
-
-		app.start(5, TimeUnit.SECONDS, "--server");
-	}
-
-	@AfterClass
-	public static void stopJetty() throws InterruptedException {
-		app.stop();
+		JETTY_FACTORY.newRuntime().configurator(b -> {
+			b.modules(JerseyModule.class).modules(createTestModule());
+		}).startServer();
 	}
 
 	protected static Module createTestModule() {
