@@ -1,3 +1,7 @@
+## 0.16
+
+* #21 Upgrade to Bootique 0.17 
+
 ## 0.15:
 
 * #17 Upgrade to bootique-jetty 0.14
