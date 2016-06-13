@@ -19,8 +19,8 @@
 	</description>
 
 	<properties>
-		<bootique-version>0.17-SNAPSHOT</bootique-version>
-		<bootique-jetty-version>0.14</bootique-jetty-version>
+		<bootique-version>0.17</bootique-version>
+		<bootique-jetty-version>0.15</bootique-jetty-version>
 		<jersey-version>2.21</jersey-version>
 		<hk2-version>2.4.0-b31</hk2-version>
 	</properties>
