@@ -1,7 +1,10 @@
+## 0.17
+
+* #22 Upgrade to Bootique 0.18 / Bootique Jetty 0.16
+
 ## 0.16
 
 * #21 Upgrade to Bootique 0.17 
-* #22 Upgrade to Bootique 0.18 / Bootique Jetty 0.16
 
 ## 0.15:
 
