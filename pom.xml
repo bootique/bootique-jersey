@@ -10,7 +10,7 @@
 
 	<groupId>com.nhl.bootique.jersey</groupId>
 	<artifactId>bootique-jersey</artifactId>
-	<version>0.17</version>
+	<version>0.18-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Jersey JAX-RS Provider Integration Bundle for Bootique</name>
@@ -28,7 +28,7 @@
 	<scm>
 		<developerConnection>scm:git:ssh://git@github.com/nhl/bootique-jersey</developerConnection>
 		<url>https://github.com/nhl/bootique-jersey</url>
-		<tag>bootique-jersey-0.17</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<dependencyManagement>
