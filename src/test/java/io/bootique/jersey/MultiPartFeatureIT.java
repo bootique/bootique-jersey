@@ -1,9 +1,16 @@
-package com.nhl.bootique.jersey;
+package io.bootique.jersey;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
+import com.google.inject.Module;
+import io.bootique.jetty.test.junit.JettyTestFactory;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -15,21 +22,12 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
-import com.google.inject.Module;
-import com.nhl.bootique.jetty.test.junit.JettyTestFactory;
-
-// see https://github.com/nhl/bootique-jersey/issues/11
+// see https://github.com/bootique/bootique-jersey/issues/11
 public class MultiPartFeatureIT {
 
 	@ClassRule

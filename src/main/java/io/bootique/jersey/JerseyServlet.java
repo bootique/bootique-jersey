@@ -1,4 +1,4 @@
-package com.nhl.bootique.jersey;
+package io.bootique.jersey;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 import com.google.inject.BindingAnnotation;
 
 /**
- * A binding annotation for explicitly registered Jersey resources.
+ * @since 0.10
  */
 @Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @BindingAnnotation
-public @interface JerseyResource {
+public @interface JerseyServlet {
 
 }

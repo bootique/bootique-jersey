@@ -1,4 +1,4 @@
-package com.nhl.bootique.jersey;
+package io.bootique.jersey;
 
 import javax.ws.rs.core.Configuration;
 

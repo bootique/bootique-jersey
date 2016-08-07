@@ -1,7 +1,7 @@
-package com.nhl.bootique.jersey;
+package io.bootique.jersey;
 
 import com.google.inject.Module;
-import com.nhl.bootique.BQModuleProvider;
+import io.bootique.BQModuleProvider;
 
 public class JerseyModuleProvider implements BQModuleProvider {
 

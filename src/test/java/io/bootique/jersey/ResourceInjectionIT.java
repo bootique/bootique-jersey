@@ -1,11 +1,15 @@
-package com.nhl.bootique.jersey;
+package io.bootique.jersey;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import io.bootique.Bootique;
+import io.bootique.jetty.JettyModule;
+import io.bootique.jetty.test.junit.JettyTestFactory;
+import org.glassfish.jersey.client.ClientConfig;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -16,18 +20,12 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
-import org.glassfish.jersey.client.ClientConfig;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.nhl.bootique.Bootique;
-import com.nhl.bootique.jetty.JettyModule;
-import com.nhl.bootique.jetty.test.junit.JettyTestFactory;
+import static org.junit.Assert.assertEquals;
 
 public class ResourceInjectionIT {
 

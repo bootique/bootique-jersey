@@ -1,20 +1,19 @@
-package com.nhl.bootique.jersey;
+package io.bootique.jersey;
+
+import com.google.inject.Injector;
+import org.glassfish.hk2.api.InjectionResolver;
+import org.glassfish.hk2.api.TypeLiteral;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.inject.Singleton;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
-import org.glassfish.hk2.api.InjectionResolver;
-import org.glassfish.hk2.api.TypeLiteral;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.server.ResourceConfig;
-
-import com.google.inject.Injector;
-
 public class GuiceBridgeFeature implements Feature {
 
-	private static final String INJECTOR_PROPERTY = "com.nhl.bootique.jersey.injector";
+	private static final String INJECTOR_PROPERTY = "io.bootique.jersey.injector";
 
 	// TODO: can all of this happen inside this Feature "configure(..)" method?
 	static void register(ResourceConfig config, Injector injector) {

@@ -1,12 +1,11 @@
-package com.nhl.bootique.jersey;
+package io.bootique.jersey;
 
 import static org.junit.Assert.assertNotNull;
 
+import io.bootique.jersey.unit.BQJerseyTest;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.junit.Test;
-
-import com.nhl.bootique.jersey.unit.BQJerseyTest;
 
 public class JerseyModuleIT extends BQJerseyTest {
 

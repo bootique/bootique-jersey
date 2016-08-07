@@ -1,15 +1,13 @@
-package com.nhl.bootique.jersey;
+package io.bootique.jersey;
 
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.servlet.Servlet;
-
+import io.bootique.jetty.MappedServlet;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import com.nhl.bootique.jetty.MappedServlet;
+import javax.servlet.Servlet;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * A YAML-configurable factory of Jersey servlet.

@@ -1,14 +1,4 @@
-package com.nhl.bootique.jersey;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.ws.rs.container.DynamicFeature;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Feature;
-
-import org.glassfish.jersey.server.ResourceConfig;
+package io.bootique.jersey;
 
 import com.google.inject.Binder;
 import com.google.inject.Injector;
@@ -16,10 +6,18 @@ import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
-import com.nhl.bootique.ConfigModule;
-import com.nhl.bootique.config.ConfigurationFactory;
-import com.nhl.bootique.jetty.JettyModule;
-import com.nhl.bootique.jetty.MappedServlet;
+import io.bootique.ConfigModule;
+import io.bootique.config.ConfigurationFactory;
+import io.bootique.jetty.JettyModule;
+import io.bootique.jetty.MappedServlet;
+import org.glassfish.jersey.server.ResourceConfig;
+
+import javax.ws.rs.container.DynamicFeature;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Feature;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class JerseyModule extends ConfigModule {
 
@@ -84,7 +82,8 @@ public class JerseyModule extends ConfigModule {
 	@Override
 	public void configure(Binder binder) {
 
-		JettyModule.contributeMappedServlets(binder).addBinding().to(Key.get(MappedServlet.class, JerseyServlet.class));
+		JettyModule.contributeMappedServlets(binder)
+				.addBinding().to(Key.get(MappedServlet.class, JerseyServlet.class));
 
 		// trigger extension points creation and provide default contributions
 		JerseyModule.contributeFeatures(binder);

@@ -1,16 +1,15 @@
-package com.nhl.bootique.jersey;
+package io.bootique.jersey;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.util.function.Consumer;
-
+import io.bootique.jetty.test.junit.JettyTestFactory;
+import io.bootique.Bootique;
+import io.bootique.test.BQDaemonTestRuntime;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Rule;
 import org.junit.Test;
 
-import com.nhl.bootique.Bootique;
-import com.nhl.bootique.jetty.test.junit.JettyTestFactory;
-import com.nhl.bootique.test.BQDaemonTestRuntime;
+import java.util.function.Consumer;
+
+import static org.junit.Assert.assertNotNull;
 
 public class JerseyModuleEmptyIT {
 

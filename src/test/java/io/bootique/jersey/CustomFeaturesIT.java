@@ -1,16 +1,15 @@
-package com.nhl.bootique.jersey;
+package io.bootique.jersey;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import com.google.inject.Module;
+import io.bootique.config.ConfigurationFactory;
+import io.bootique.jersey.unit.BQJerseyTest;
+import org.junit.Test;
 
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
-import org.junit.Test;
-
-import com.google.inject.Module;
-import com.nhl.bootique.config.ConfigurationFactory;
-import com.nhl.bootique.jersey.unit.BQJerseyTest;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class CustomFeaturesIT extends BQJerseyTest {
 

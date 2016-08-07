@@ -1,8 +1,7 @@
-package com.nhl.bootique.jersey;
+package io.bootique.jersey;
 
+import io.bootique.test.junit.BQModuleProviderChecker;
 import org.junit.Test;
-
-import com.nhl.bootique.test.junit.BQModuleProviderChecker;
 
 public class JerseyModuleProviderIT {
 
