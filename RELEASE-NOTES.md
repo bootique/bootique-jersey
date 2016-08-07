@@ -1,3 +1,7 @@
+## 0.18
+
+* #23 Move to io.bootique namespace.
+
 ## 0.17
 
 * #22 Upgrade to Bootique 0.18 / Bootique Jetty 0.16

@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.nhl.bootique.parent</groupId>
+		<groupId>io.bootique.parent</groupId>
 		<artifactId>bootique-parent</artifactId>
-		<version>0.10</version>
+		<version>0.12</version>
 	</parent>
 
-	<groupId>com.nhl.bootique.jersey</groupId>
+	<groupId>io.bootique.jersey</groupId>
 	<artifactId>bootique-jersey</artifactId>
 	<version>0.18-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -19,37 +19,37 @@
 	</description>
 
 	<properties>
-		<bootique-version>0.18</bootique-version>
-		<bootique-jetty-version>0.16</bootique-jetty-version>
+		<bootique-version>0.19-SNAPSHOT</bootique-version>
+		<bootique-jetty-version>0.17-SNAPSHOT</bootique-jetty-version>
 		<jersey-version>2.21</jersey-version>
 		<hk2-version>2.4.0-b31</hk2-version>
 	</properties>
 
 	<scm>
-		<developerConnection>scm:git:ssh://git@github.com/nhl/bootique-jersey</developerConnection>
-		<url>https://github.com/nhl/bootique-jersey</url>
+		<developerConnection>scm:git:ssh://git@github.com/bootique/bootique-jersey</developerConnection>
+		<url>https://github.com/bootique/bootique-jersey</url>
 		<tag>HEAD</tag>
 	</scm>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.nhl.bootique</groupId>
+				<groupId>io.bootique</groupId>
 				<artifactId>bootique</artifactId>
 				<version>${bootique-version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.nhl.bootique</groupId>
+				<groupId>io.bootique</groupId>
 				<artifactId>bootique-test</artifactId>
 				<version>${bootique-version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.nhl.bootique.jetty</groupId>
+				<groupId>io.bootique.jetty</groupId>
 				<artifactId>bootique-jetty</artifactId>
 				<version>${bootique-jetty-version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.nhl.bootique.jetty</groupId>
+				<groupId>io.bootique.jetty</groupId>
 				<artifactId>bootique-jetty-test</artifactId>
 				<version>${bootique-jetty-version}</version>
 			</dependency>
@@ -156,24 +156,24 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.nhl.bootique</groupId>
+			<groupId>io.bootique</groupId>
 			<artifactId>bootique-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.nhl.bootique.jetty</groupId>
+			<groupId>io.bootique.jetty</groupId>
 			<artifactId>bootique-jetty-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
 		<!-- Compile dependencies -->
 		<dependency>
-			<groupId>com.nhl.bootique</groupId>
+			<groupId>io.bootique</groupId>
 			<artifactId>bootique</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.nhl.bootique.jetty</groupId>
+			<groupId>io.bootique.jetty</groupId>
 			<artifactId>bootique-jetty</artifactId>
 			<scope>compile</scope>
 		</dependency>
