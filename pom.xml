@@ -19,11 +19,25 @@
 	</description>
 
 	<properties>
-		<bootique-version>0.19-SNAPSHOT</bootique-version>
-		<bootique-jetty-version>0.17-SNAPSHOT</bootique-jetty-version>
+		<bootique-version>0.19</bootique-version>
+		<bootique-jetty-version>0.17</bootique-jetty-version>
 		<jersey-version>2.21</jersey-version>
 		<hk2-version>2.4.0-b31</hk2-version>
 	</properties>
+
+	<scm>
+        <developerConnection>scm:git:ssh://git@github.com/bootique/bootique-jersey</developerConnection>
+        <url>https://github.com/bootique/bootique-jersey</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-bootique-releases</id>
+            <name>bintray-bootique-releases</name>
+            <url>https://api.bintray.com/maven/bootique/releases/bootique-jersey/;publish=1</url>
+        </repository>
+    </distributionManagement>
 
 	<dependencyManagement>
 		<dependencies>
