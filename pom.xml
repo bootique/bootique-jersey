@@ -39,6 +39,16 @@
         </repository>
     </distributionManagement>
 
+	<pluginRepositories>
+		<pluginRepository>
+			<id>bintray-jcenter</id>
+			<releases>true</releases>
+			<snapshots>false</snapshots>
+			<url>https://jcenter.bintray.com/</url>
+		</pluginRepository>
+
+	</pluginRepositories>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
