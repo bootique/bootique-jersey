@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>io.bootique.modules.parent</groupId>
-		<artifactId>bootique-modules-parent</artifactId>
-		<version>0.2</version>
-	</parent>
+    <parent>
+        <groupId>io.bootique.modules.parent</groupId>
+        <artifactId>bootique-modules-parent</artifactId>
+        <version>0.2</version>
+    </parent>
 
-	<groupId>io.bootique.jersey</groupId>
-	<artifactId>bootique-jersey</artifactId>
-	<version>0.19-SNAPSHOT</version>
-	<packaging>jar</packaging>
+    <groupId>io.bootique.jersey</groupId>
+    <artifactId>bootique-jersey</artifactId>
+    <version>0.19-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-	<name>Jersey JAX-RS Provider Integration Bundle for Bootique</name>
-	<description>
-		Provides Jersey JAX-RS integration with Bootique.
-	</description>
+    <name>Jersey JAX-RS Provider Integration Bundle for Bootique</name>
+    <description>
+        Provides Jersey JAX-RS integration with Bootique.
+    </description>
 
-	<properties>
-		<bootique-version>0.20-SNAPSHOT</bootique-version>
-		<bootique-jetty-version>0.18-SNAPSHOT</bootique-jetty-version>
-		<jersey-version>2.21</jersey-version>
-		<hk2-version>2.4.0-b31</hk2-version>
-	</properties>
+    <properties>
+        <bootique-version>0.20-SNAPSHOT</bootique-version>
+        <bootique-jetty-version>0.18-SNAPSHOT</bootique-jetty-version>
+        <jersey-version>2.21</jersey-version>
+        <hk2-version>2.4.0-b31</hk2-version>
+    </properties>
 
-	<scm>
+    <scm>
         <developerConnection>scm:git:ssh://git@github.com/bootique/bootique-jersey</developerConnection>
         <url>https://github.com/bootique/bootique-jersey</url>
         <tag>HEAD</tag>
@@ -39,203 +40,207 @@
         </repository>
     </distributionManagement>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>bintray-jcenter</id>
-			<releases>true</releases>
-			<snapshots>false</snapshots>
-			<url>https://jcenter.bintray.com/</url>
-		</pluginRepository>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>bintray-jcenter</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>https://jcenter.bintray.com/</url>
+        </pluginRepository>
 
-	</pluginRepositories>
+    </pluginRepositories>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>io.bootique</groupId>
-				<artifactId>bootique</artifactId>
-				<version>${bootique-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.bootique</groupId>
-				<artifactId>bootique-test</artifactId>
-				<version>${bootique-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.bootique.jetty</groupId>
-				<artifactId>bootique-jetty</artifactId>
-				<version>${bootique-jetty-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.bootique.jetty</groupId>
-				<artifactId>bootique-jetty-test</artifactId>
-				<version>${bootique-jetty-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.glassfish.jersey.containers</groupId>
-				<artifactId>jersey-container-servlet</artifactId>
-				<version>${jersey-version}</version>
-				<exclusions>
-					<!-- Guice includes this one -->
-					<exclusion>
-						<artifactId>javax.inject</artifactId>
-						<groupId>org.glassfish.hk2.external</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.glassfish.hk2</groupId>
-				<artifactId>hk2-api</artifactId>
-				<version>${hk2-version}</version>
-				<exclusions>
-					<!-- Guice includes this one -->
-					<exclusion>
-						<groupId>org.glassfish.hk2.external</groupId>
-						<artifactId>aopalliance-repackaged</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.glassfish.hk2</groupId>
-				<artifactId>hk2-locator</artifactId>
-				<version>${hk2-version}</version>
-				<exclusions>
-					<!-- Guice includes this one -->
-					<exclusion>
-						<groupId>org.glassfish.hk2.external</groupId>
-						<artifactId>aopalliance-repackaged</artifactId>
-					</exclusion>
-					<exclusion>
-						<artifactId>javax.inject</artifactId>
-						<groupId>org.glassfish.hk2.external</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.glassfish.jersey.test-framework</groupId>
-				<artifactId>jersey-test-framework-core</artifactId>
-				<version>${jersey-version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>javax.servlet</groupId>
-						<artifactId>javax.servlet-api</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.glassfish.jersey.test-framework.providers</groupId>
-				<artifactId>jersey-test-framework-provider-inmemory</artifactId>
-				<version>${jersey-version}</version>
-				<!-- TODO: exclusions for tests -->
-			</dependency>
-			<dependency>
-				<groupId>org.glassfish.jersey.media</groupId>
-				<artifactId>jersey-media-multipart</artifactId>
-				<version>${jersey-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-simple</artifactId>
-				<version>1.7.13</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.bootique</groupId>
+                <artifactId>bootique</artifactId>
+                <version>${bootique-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.bootique</groupId>
+                <artifactId>bootique-test</artifactId>
+                <version>${bootique-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.bootique.jetty</groupId>
+                <artifactId>bootique-jetty</artifactId>
+                <version>${bootique-jetty-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.bootique.jetty</groupId>
+                <artifactId>bootique-jetty-test</artifactId>
+                <version>${bootique-jetty-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.containers</groupId>
+                <artifactId>jersey-container-servlet</artifactId>
+                <version>${jersey-version}</version>
+                <exclusions>
+                    <!-- Guice includes this one -->
+                    <exclusion>
+                        <artifactId>javax.inject</artifactId>
+                        <groupId>org.glassfish.hk2.external</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-api</artifactId>
+                <version>${hk2-version}</version>
+                <exclusions>
+                    <!-- Guice includes this one -->
+                    <exclusion>
+                        <groupId>org.glassfish.hk2.external</groupId>
+                        <artifactId>aopalliance-repackaged</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-locator</artifactId>
+                <version>${hk2-version}</version>
+                <exclusions>
+                    <!-- Guice includes this one -->
+                    <exclusion>
+                        <groupId>org.glassfish.hk2.external</groupId>
+                        <artifactId>aopalliance-repackaged</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>javax.inject</artifactId>
+                        <groupId>org.glassfish.hk2.external</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.test-framework</groupId>
+                <artifactId>jersey-test-framework-core</artifactId>
+                <version>${jersey-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>javax.servlet-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+                <artifactId>jersey-test-framework-provider-inmemory</artifactId>
+                <version>${jersey-version}</version>
+                <!-- TODO: exclusions for tests -->
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-multipart</artifactId>
+                <version>${jersey-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.13</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-	<dependencies>
-		<!-- Unit test dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.test-framework</groupId>
-			<artifactId>jersey-test-framework-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
-			<artifactId>jersey-test-framework-provider-inmemory</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-multipart</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.bootique</groupId>
-			<artifactId>bootique-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.bootique.jetty</groupId>
-			<artifactId>bootique-jetty-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependencies>
+        <!-- Unit test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.test-framework</groupId>
+            <artifactId>jersey-test-framework-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+            <artifactId>jersey-test-framework-provider-inmemory</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.bootique</groupId>
+            <artifactId>bootique-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.bootique.jetty</groupId>
+            <artifactId>bootique-jetty-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<!-- Compile dependencies -->
-		<dependency>
-			<groupId>io.bootique</groupId>
-			<artifactId>bootique</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.bootique.jetty</groupId>
-			<artifactId>bootique-jetty</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.containers</groupId>
-			<artifactId>jersey-container-servlet</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<!-- Including HK2 dependencies explicitly to exclude their repackaged 
-			libraries conflicting with Guice. Make sure HK2 version is bumped whenever 
-			we upgrade Jersey. -->
-		<dependency>
-			<groupId>org.glassfish.hk2</groupId>
-			<artifactId>hk2-api</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.hk2</groupId>
-			<artifactId>hk2-locator</artifactId>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
+        <!-- Compile dependencies -->
+        <dependency>
+            <groupId>io.bootique</groupId>
+            <artifactId>bootique</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.bootique.jetty</groupId>
+            <artifactId>bootique-jetty</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Including HK2 dependencies explicitly to exclude their repackaged
+            libraries conflicting with Guice. Make sure HK2 version is bumped whenever
+            we upgrade Jersey. -->
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-locator</artifactId>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
-	<!-- Optional profile used to sign artifacts -->
-	<profiles>
-		<profile>
-			<id>gpg</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+    <!-- Optional profile used to sign artifacts -->
+    <profiles>
+        <profile>
+            <id>gpg</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
