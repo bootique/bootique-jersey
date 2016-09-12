@@ -40,34 +40,6 @@
         </repository>
     </distributionManagement>
 
-    <repositories>
-        <repository>
-            <id>bintray-jcenter</id>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <url>https://jcenter.bintray.com/</url>
-        </repository>
-
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>bintray-jcenter</id>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <url>https://jcenter.bintray.com/</url>
-        </pluginRepository>
-
-    </pluginRepositories>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
