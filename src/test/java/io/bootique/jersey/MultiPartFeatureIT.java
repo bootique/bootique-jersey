@@ -37,9 +37,7 @@ public class MultiPartFeatureIT {
 
 	@BeforeClass
 	public static void startJetty() throws InterruptedException, ExecutionException, TimeoutException {
-		JETTY_FACTORY.newRuntime().configurator(b -> {
-			b.modules(JerseyModule.class).modules(createTestModule());
-		}).startServer();
+		JETTY_FACTORY.app().modules(JerseyModule.class).modules(createTestModule()).startServer();
 	}
 
 	protected static Module createTestModule() {
