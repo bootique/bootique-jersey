@@ -51,8 +51,7 @@ public class ProviderInjectionIT {
                     binder.bind(InjectedService.class).in(Singleton.class);
                     JerseyModule.contributeFeatures(binder).addBinding().to(StringWriterFeature.class);
                     JerseyModule.contributeResources(binder).addBinding().to(Resource.class);
-                })
-                .startServer();
+                }).start();
     }
 
     @Before

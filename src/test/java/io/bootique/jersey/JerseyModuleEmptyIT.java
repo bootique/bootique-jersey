@@ -15,7 +15,7 @@ public class JerseyModuleEmptyIT {
 
 	@Test
 	public void testLoadNoResources() {
-		BQDaemonTestRuntime daemon = jettyFactory.app().module(JerseyModule.class).startServer();
+		BQDaemonTestRuntime daemon = jettyFactory.app().module(JerseyModule.class).start();
 		assertNotNull(daemon.getRuntime().getInstance(ResourceConfig.class));
 	}
 }

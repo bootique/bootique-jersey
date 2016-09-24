@@ -40,8 +40,7 @@ public class ResourceInjectionIT {
                 .module(binder -> {
                     binder.bind(InjectedService.class).in(Singleton.class);
                     JerseyModule.contributeResources(binder).addBinding().to(InjectedResource.class);
-                })
-                .startServer();
+                }).start();
     }
 
     @Before
