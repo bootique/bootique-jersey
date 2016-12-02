@@ -13,7 +13,7 @@
     <version>0.20-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Jersey JAX-RS Provider Integration Bundle for Bootique</name>
+    <name>bootique-jersey: Jersey JAX-RS Provider Integration Bundle for Bootique</name>
     <description>
         Provides Jersey JAX-RS integration with Bootique.
     </description>
