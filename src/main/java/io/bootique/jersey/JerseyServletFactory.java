@@ -1,5 +1,7 @@
 package io.bootique.jersey;
 
+import io.bootique.annotation.BQConfig;
+import io.bootique.annotation.BQConfigProperty;
 import io.bootique.jetty.MappedServlet;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -14,6 +16,7 @@ import java.util.Set;
  * 
  * @since 0.10
  */
+@BQConfig("Configures the servlet that is an entry point to Jersey REST API engine.")
 public class JerseyServletFactory {
 
 	protected String urlPattern;
@@ -23,6 +26,7 @@ public class JerseyServletFactory {
 	 * @param urlPattern
 	 *            a URL: pattern for the Jersey servlet. Default is "/*".
 	 */
+	@BQConfigProperty
 	public void setUrlPattern(String urlPattern) {
 		this.urlPattern = urlPattern;
 	}

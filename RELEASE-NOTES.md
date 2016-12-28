@@ -1,3 +1,7 @@
+## 0.20
+
+* #25 Bootique 0.21 and annotated config help
+
 ## 0.19
 
 * #24 Upgrade to Bootique 0.20
