@@ -2,8 +2,8 @@ package io.bootique.jersey;
 
 import com.google.inject.Module;
 import io.bootique.BQModuleProvider;
-import io.bootique.jetty.server.ServerFactory;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Map;
 
@@ -19,7 +19,7 @@ public class JerseyModuleProvider implements BQModuleProvider {
      * @since 0.19
      */
     @Override
-    public Map<String, Class<?>> configs() {
+    public Map<String, Type> configs() {
         // TODO: config prefix is hardcoded. Refactor away from ConfigModule, and make provider
         // generate config prefix, reusing it in metadata...
         return Collections.singletonMap("jersey", JerseyServletFactory.class);
