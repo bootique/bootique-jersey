@@ -39,7 +39,7 @@ public class ResourceInjectionIT {
                 .modules(JettyModule.class, JerseyModule.class)
                 .module(binder -> {
                     binder.bind(InjectedService.class).in(Singleton.class);
-                    JerseyModule.contributeResources(binder).addBinding().to(InjectedResource.class);
+                    JerseyModule.extend(binder).addResource(InjectedResource.class);
                 }).start();
     }
 

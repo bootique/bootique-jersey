@@ -14,39 +14,40 @@ import static org.mockito.Mockito.mock;
 
 public class CustomDynamicFeaturesIT extends BQJerseyTest {
 
-	@Override
-	protected Module createTestModule() {
-		return (b) -> {
-			JerseyModule.contributeDynamicFeatures(b).addBinding().to(DynamicFeature1.class);
-			JerseyModule.contributeDynamicFeatures(b).addBinding().to(DynamicFeature2.class);
-			b.bind(ConfigurationFactory.class).toInstance(mock(ConfigurationFactory.class));
-		};
-	}
+    @Override
+    protected Module createTestModule() {
+        return (b) -> {
+            JerseyModule.extend(b)
+                    .addDynamicFeature(DynamicFeature1.class)
+                    .addDynamicFeature(DynamicFeature2.class);
+            b.bind(ConfigurationFactory.class).toInstance(mock(ConfigurationFactory.class));
+        };
+    }
 
-	@Test
-	public void testFeaturesLoaded() {
-		assertTrue(DynamicFeature1.LOADED);
-		assertTrue(DynamicFeature2.LOADED);
-	}
+    @Test
+    public void testFeaturesLoaded() {
+        assertTrue(DynamicFeature1.LOADED);
+        assertTrue(DynamicFeature2.LOADED);
+    }
 
-	static class DynamicFeature1 implements DynamicFeature {
+    static class DynamicFeature1 implements DynamicFeature {
 
-		static boolean LOADED = false;
+        static boolean LOADED = false;
 
-		@Override
-		public void configure(ResourceInfo resourceInfo, FeatureContext context) {
-			LOADED = true;
-		}
-	}
+        @Override
+        public void configure(ResourceInfo resourceInfo, FeatureContext context) {
+            LOADED = true;
+        }
+    }
 
-	static class DynamicFeature2 implements DynamicFeature {
+    static class DynamicFeature2 implements DynamicFeature {
 
-		static boolean LOADED = false;
+        static boolean LOADED = false;
 
-		@Override
-		public void configure(ResourceInfo resourceInfo, FeatureContext context) {
-			LOADED = true;
-		}
-	}
+        @Override
+        public void configure(ResourceInfo resourceInfo, FeatureContext context) {
+            LOADED = true;
+        }
+    }
 
 }

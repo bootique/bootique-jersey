@@ -23,10 +23,25 @@ public class JerseyModule extends ConfigModule {
     private static final String URL_PATTERN = "/*";
 
     /**
+     * Returns an instance of {@link JerseyModuleExtender} used by downstream modules to load custom extensions of
+     * services declared in the JerseyModule. Should be invoked from a downstream Module's "configure" method.
+     *
+     * @param binder DI binder passed to the Module that invokes this method.
+     * @return an instance of {@link JerseyModuleExtender} that can be used to load Jersey custom extensions.
+     * @since 0.21
+     */
+    public static JerseyModuleExtender extend(Binder binder) {
+        return new JerseyModuleExtender(binder);
+    }
+
+    /**
      * @param binder DI binder passed to the Module that invokes this method.
      * @return returns a {@link Multibinder} for JAX-RS Features.
      * @since 0.11
+     * @deprecated since 0.21 call {@link #extend(Binder)} and then call
+     * {@link JerseyModuleExtender#addFeature(Feature)}.
      */
+    @Deprecated
     public static Multibinder<Feature> contributeFeatures(Binder binder) {
         return Multibinder.newSetBinder(binder, Feature.class);
     }
@@ -35,7 +50,10 @@ public class JerseyModule extends ConfigModule {
      * @param binder DI binder passed to the Module that invokes this method.
      * @return returns a {@link Multibinder} for JAX-RS DynamicFeatures.
      * @since 0.12
+     * @deprecated since 0.21 call {@link #extend(Binder)} and then call
+     * {@link JerseyModuleExtender#addDynamicFeature(DynamicFeature)}.
      */
+    @Deprecated
     public static Multibinder<DynamicFeature> contributeDynamicFeatures(Binder binder) {
         return Multibinder.newSetBinder(binder, DynamicFeature.class);
     }
@@ -45,7 +63,10 @@ public class JerseyModule extends ConfigModule {
      * @return returns a {@link Multibinder} for explicitly registered JAX-RS
      * resource types.
      * @since 0.15
+     * @deprecated since 0.21 call {@link #extend(Binder)} and then call
+     * {@link JerseyModuleExtender#addResource(Class)} or similar method.
      */
+    @Deprecated
     public static Multibinder<Object> contributeResources(Binder binder) {
         return Multibinder.newSetBinder(binder, Key.get(Object.class, JerseyResource.class));
     }
@@ -55,7 +76,10 @@ public class JerseyModule extends ConfigModule {
      * @return returns a {@link Multibinder} for packages that contain JAX-RS
      * resource classes.
      * @since 0.15
+     * @deprecated since 0.21 call {@link #extend(Binder)} and then call
+     * {@link JerseyModuleExtender#addPackage(Package)} .
      */
+    @Deprecated
     public static Multibinder<Package> contributePackages(Binder binder) {
         return Multibinder.newSetBinder(binder, Package.class);
     }
@@ -66,11 +90,7 @@ public class JerseyModule extends ConfigModule {
         JettyModule.extend(binder).addMappedServlet(new TypeLiteral<MappedServlet<ServletContainer>>() {
         });
 
-        // trigger extension points creation and provide default contributions
-        JerseyModule.contributeFeatures(binder);
-        JerseyModule.contributeDynamicFeatures(binder);
-        JerseyModule.contributePackages(binder);
-        JerseyModule.contributeResources(binder);
+        JerseyModule.extend(binder).initAllExtensions();
     }
 
     @Singleton
@@ -89,8 +109,7 @@ public class JerseyModule extends ConfigModule {
         // TODO: make this pluggable?
         config.register(ResourceModelDebugger.class);
 
-        // register Guice Injector as a service in Jersey HK2, and
-        // GuiceBridgeFeature as a
+        // register Guice Injector as a service in Jersey HK2, and GuiceBridgeFeature as a
         GuiceBridgeFeature.register(config, injector);
 
         return config;

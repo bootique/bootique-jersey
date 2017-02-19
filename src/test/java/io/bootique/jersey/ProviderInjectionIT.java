@@ -49,8 +49,7 @@ public class ProviderInjectionIT {
                 .modules(JettyModule.class, JerseyModule.class)
                 .module(binder -> {
                     binder.bind(InjectedService.class).in(Singleton.class);
-                    JerseyModule.contributeFeatures(binder).addBinding().to(StringWriterFeature.class);
-                    JerseyModule.contributeResources(binder).addBinding().to(Resource.class);
+                    JerseyModule.extend(binder).addFeature(StringWriterFeature.class).addResource(Resource.class);
                 }).start();
     }
 

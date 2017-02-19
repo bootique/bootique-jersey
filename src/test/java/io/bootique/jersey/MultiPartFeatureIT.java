@@ -30,54 +30,51 @@ import static org.junit.Assert.assertEquals;
 // see https://github.com/bootique/bootique-jersey/issues/11
 public class MultiPartFeatureIT {
 
-	@ClassRule
-	public static JettyTestFactory JETTY_FACTORY = new JettyTestFactory();
+    @ClassRule
+    public static JettyTestFactory JETTY_FACTORY = new JettyTestFactory();
 
-	private Client multiPartClient;
+    private Client multiPartClient;
 
-	@BeforeClass
-	public static void startJetty() throws InterruptedException, ExecutionException, TimeoutException {
-		JETTY_FACTORY.app().modules(JerseyModule.class).modules(createTestModule()).start();
-	}
+    @BeforeClass
+    public static void startJetty() throws InterruptedException, ExecutionException, TimeoutException {
+        JETTY_FACTORY.app().modules(JerseyModule.class).modules(createTestModule()).start();
+    }
 
-	protected static Module createTestModule() {
-		return (b) -> {
-			JerseyModule.contributeFeatures(b).addBinding().to(MultiPartFeature.class);
-			JerseyModule.contributeResources(b).addBinding().to(Resource.class);
-		};
-	}
+    protected static Module createTestModule() {
+        return b -> JerseyModule.extend(b).addFeature(MultiPartFeature.class).addResource(Resource.class);
+    }
 
-	@Before
-	public void before() {
-		ClientConfig config = new ClientConfig();
-		config.register(MultiPartFeature.class);
-		this.multiPartClient = ClientBuilder.newClient(config);
-	}
+    @Before
+    public void before() {
+        ClientConfig config = new ClientConfig();
+        config.register(MultiPartFeature.class);
+        this.multiPartClient = ClientBuilder.newClient(config);
+    }
 
-	@Test
-	public void testResponse() {
+    @Test
+    public void testResponse() {
 
-		FormDataBodyPart part = new FormDataBodyPart("upload", "I am a part", MediaType.TEXT_PLAIN_TYPE);
-		FormDataMultiPart multipart = new FormDataMultiPart();
-		multipart.bodyPart(part);
+        FormDataBodyPart part = new FormDataBodyPart("upload", "I am a part", MediaType.TEXT_PLAIN_TYPE);
+        FormDataMultiPart multipart = new FormDataMultiPart();
+        multipart.bodyPart(part);
 
-		Response r = multiPartClient.target("http://127.0.0.1:8080/").request(MediaType.APPLICATION_JSON)
-				.post(Entity.entity(multipart, multipart.getMediaType()));
+        Response r = multiPartClient.target("http://127.0.0.1:8080/").request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(multipart, multipart.getMediaType()));
 
-		assertEquals(Status.OK.getStatusCode(), r.getStatus());
-		assertEquals("{\"message\":\"I am a part\"}", r.readEntity(String.class));
+        assertEquals(Status.OK.getStatusCode(), r.getStatus());
+        assertEquals("{\"message\":\"I am a part\"}", r.readEntity(String.class));
 
-		r.close();
-	}
+        r.close();
+    }
 
-	@Path("/")
-	public static class Resource {
+    @Path("/")
+    public static class Resource {
 
-		@POST
-		@Produces(MediaType.APPLICATION_JSON)
-		@Consumes(MediaType.MULTIPART_FORM_DATA)
-		public Response uploadMultiPart(@FormDataParam("upload") String upload) {
-			return Response.ok().entity("{\"message\":\"" + upload + "\"}").build();
-		}
-	}
+        @POST
+        @Produces(MediaType.APPLICATION_JSON)
+        @Consumes(MediaType.MULTIPART_FORM_DATA)
+        public Response uploadMultiPart(@FormDataParam("upload") String upload) {
+            return Response.ok().entity("{\"message\":\"" + upload + "\"}").build();
+        }
+    }
 }
