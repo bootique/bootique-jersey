@@ -5,12 +5,14 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.MappedServlet;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
 
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Feature;
@@ -61,8 +63,8 @@ public class JerseyModule extends ConfigModule {
     @Override
     public void configure(Binder binder) {
 
-        JettyModule.contributeMappedServlets(binder)
-                .addBinding().to(Key.get(MappedServlet.class, JerseyServlet.class));
+        JettyModule.extend(binder).addMappedServlet(new TypeLiteral<MappedServlet<ServletContainer>>() {
+        });
 
         // trigger extension points creation and provide default contributions
         JerseyModule.contributeFeatures(binder);
@@ -94,10 +96,9 @@ public class JerseyModule extends ConfigModule {
         return config;
     }
 
-    @JerseyServlet
     @Provides
     @Singleton
-    private MappedServlet createJerseyServlet(ConfigurationFactory configFactory, ResourceConfig config) {
+    private MappedServlet<ServletContainer> provideJerseyServlet(ConfigurationFactory configFactory, ResourceConfig config) {
         return configFactory
                 .config(JerseyServletFactory.class, configPrefix)
                 .initUrlPatternIfNotSet(URL_PATTERN)

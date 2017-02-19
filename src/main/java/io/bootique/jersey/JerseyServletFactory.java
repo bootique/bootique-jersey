@@ -6,7 +6,6 @@ import io.bootique.jetty.MappedServlet;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import javax.servlet.Servlet;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -49,9 +48,9 @@ public class JerseyServletFactory {
 		return this;
 	}
 
-	public MappedServlet createJerseyServlet(ResourceConfig resourceConfig) {
-		Servlet servlet = new ServletContainer(resourceConfig);
+	public MappedServlet<ServletContainer> createJerseyServlet(ResourceConfig resourceConfig) {
+		ServletContainer servlet = new ServletContainer(resourceConfig);
 		Set<String> urlPatterns = Collections.singleton(Objects.requireNonNull(urlPattern));
-		return new MappedServlet(servlet, urlPatterns, "jersey");
+		return new MappedServlet<>(servlet, urlPatterns, "jersey");
 	}
 }
