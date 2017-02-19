@@ -34,6 +34,11 @@ public class JerseyModuleExtender {
         return this;
     }
 
+    public JerseyModuleExtender addPackage(Class<?> anyClassInPackage) {
+        contributePackages().addBinding().toInstance(anyClassInPackage.getPackage());
+        return this;
+    }
+
     public JerseyModuleExtender addFeature(Feature feature) {
         contributeFeatures().addBinding().toInstance(feature);
         return this;
