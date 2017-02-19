@@ -1,3 +1,7 @@
+## 0.21
+
+* #26 Remove API deprecated since 0.15
+
 ## 0.20
 
 * #25 Bootique 0.21 and annotated config help

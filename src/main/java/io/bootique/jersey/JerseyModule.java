@@ -68,17 +68,6 @@ public class JerseyModule extends ConfigModule {
 		return Multibinder.newSetBinder(binder, Package.class);
 	}
 
-	/**
-	 * Creates a builder of {@link JerseyModule}.
-	 * 
-	 * @since 0.11
-	 * @deprecated since 0.15 use {@link #contributePackages(Binder)} and
-	 *             {@link #contributeResources(Binder)}.
-	 */
-	public static Builder builder() {
-		return new Builder();
-	}
-
 	@Override
 	public void configure(Binder binder) {
 
@@ -126,62 +115,5 @@ public class JerseyModule extends ConfigModule {
 	private MappedServlet createJerseyServlet(ConfigurationFactory configFactory, ResourceConfig config) {
 		return configFactory.config(JerseyServletFactory.class, configPrefix).initUrlPatternIfNotSet(urlPattern)
 				.createJerseyServlet(config);
-	}
-
-	/**
-	 * @deprecated since 0.15 use {@link #contributePackages(Binder)} and
-	 *             {@link #contributeResources(Binder)}.
-	 */
-	public static class Builder {
-
-		private JerseyModule module;
-
-		private Builder() {
-			this.module = new JerseyModule();
-		}
-
-		public JerseyModule build() {
-			return module;
-		}
-
-		/**
-		 * @since 0.11
-		 * @param urlPattern
-		 *            a URL pattern for the Jersey servlet within Jetty app
-		 *            context.
-		 * @return self
-		 */
-		public Builder urlPattern(String urlPattern) {
-			module.urlPattern = urlPattern;
-			return this;
-		}
-
-		public Builder resource(Class<?> resourceType) {
-			module.resources.add(resourceType);
-			return this;
-		}
-
-		public Builder packageRoot(Package aPackage) {
-			module.packageRoots.add(aPackage.getName());
-			return this;
-		}
-
-		public Builder packageRoot(Class<?> classFromPackage) {
-			// TODO: test with inner classes
-			String name = classFromPackage.getName();
-			int dot = name.lastIndexOf('.');
-			if (dot <= 0) {
-				throw new IllegalArgumentException("Class is in default package - unsupported");
-			}
-
-			module.packageRoots.add(name.substring(0, dot));
-			return this;
-		}
-
-		public <T extends Application> Builder application(Class<T> application) {
-			module.application = application;
-			return this;
-		}
-
 	}
 }
