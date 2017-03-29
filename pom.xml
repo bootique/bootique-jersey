@@ -21,6 +21,7 @@
 
     <modules>
         <module>bootique-jersey</module>
+        <module>bootique-jersey-jackson</module>
     </modules>
 
     <properties>

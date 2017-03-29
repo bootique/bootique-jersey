@@ -2,6 +2,7 @@
 
 * #26 Remove API deprecated since 0.15
 * #27 Upgrade to bootique 0.22 and bootique-jetty 0.20
+* #29 bootique-jersey-jackson: a submodule to handle JSON serialization
 
 ## 0.20
 
