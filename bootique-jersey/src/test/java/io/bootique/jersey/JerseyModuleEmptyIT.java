@@ -1,7 +1,7 @@
 package io.bootique.jersey;
 
+import io.bootique.BQRuntime;
 import io.bootique.jetty.test.junit.JettyTestFactory;
-import io.bootique.test.BQDaemonTestRuntime;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,7 +15,7 @@ public class JerseyModuleEmptyIT {
 
 	@Test
 	public void testLoadNoResources() {
-		BQDaemonTestRuntime daemon = jettyFactory.app().module(JerseyModule.class).start();
-		assertNotNull(daemon.getRuntime().getInstance(ResourceConfig.class));
+		BQRuntime daemon = jettyFactory.app().module(JerseyModule.class).start();
+		assertNotNull(daemon.getInstance(ResourceConfig.class));
 	}
 }

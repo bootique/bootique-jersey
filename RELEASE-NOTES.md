@@ -1,3 +1,7 @@
+## 0.22
+
+* #30 Upgrade to Bootique 0.23, Jetty 0.21
+
 ## 0.21
 
 * #26 Remove API deprecated since 0.15
