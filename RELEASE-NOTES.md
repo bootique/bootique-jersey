@@ -1,6 +1,7 @@
 ## 0.22
 
 * #30 Upgrade to Bootique 0.23, Jetty 0.21
+* #31 Support for contributing JAX RS application properties
 
 ## 0.21
 

@@ -25,11 +25,6 @@ public abstract class BQJerseyTest extends JerseyTest {
         return injector.getInstance(ResourceConfig.class);
     }
 
-    /**
-     * Returns an empty module. Intends to be overridden.
-     *
-     * @return an empty module.
-     */
     protected Module createTestModule() {
         return (b) -> {
             b.bind(ConfigurationFactory.class).toInstance(mock(ConfigurationFactory.class));

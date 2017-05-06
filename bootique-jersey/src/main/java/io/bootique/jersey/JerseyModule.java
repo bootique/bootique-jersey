@@ -16,6 +16,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Feature;
+import java.util.Map;
 import java.util.Set;
 
 public class JerseyModule extends ConfigModule {
@@ -95,8 +96,11 @@ public class JerseyModule extends ConfigModule {
 
     @Singleton
     @Provides
-    private ResourceConfig createResourceConfig(Injector injector, Set<Feature> features,
-                                                Set<DynamicFeature> dynamicFeatures, @JerseyResource Set<Object> resources, Set<Package> packages) {
+    private ResourceConfig createResourceConfig(Injector injector,
+                                                Set<Feature> features,
+                                                Set<DynamicFeature> dynamicFeatures,
+                                                @JerseyResource Set<Object> resources, Set<Package> packages,
+                                                @JerseyResource Map<String, Object> properties) {
 
         ResourceConfig config = new ResourceConfig();
 
@@ -105,6 +109,8 @@ public class JerseyModule extends ConfigModule {
 
         features.forEach(f -> config.register(f));
         dynamicFeatures.forEach(df -> config.register(df));
+
+        config.addProperties(properties);
 
         // TODO: make this pluggable?
         config.register(ResourceModelDebugger.class);
