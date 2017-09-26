@@ -4,3 +4,4 @@
 
 # bootique-jersey
 Provides Jersey JAX-RS integration with [Bootique](http://bootique.io).
+See usage example [bootique-rest-demo](https://github.com/bootique-examples/bootique-rest-demo).
