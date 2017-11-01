@@ -1,17 +1,47 @@
 package io.bootique.jersey;
 
-import static org.junit.Assert.assertNotNull;
-
-import io.bootique.jersey.unit.BQJerseyTest;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
+import io.bootique.BQRuntime;
+import io.bootique.jetty.MappedServlet;
+import io.bootique.jetty.test.junit.JettyTestFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.junit.Rule;
 import org.junit.Test;
 
-public class JerseyModuleIT extends BQJerseyTest {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-	@Test
-	public void testDefaultContents() {
-		assertNotNull(injector.getInstance(ResourceConfig.class));
-		assertNotNull(injector.getInstance(ServletContainer.class));
-	}
+public class JerseyModuleIT {
+
+    @Rule
+    public JettyTestFactory testFactory = new JettyTestFactory();
+
+    @Test
+    public void testDefaultContents() {
+        BQRuntime runtime = testFactory.app()
+                .autoLoadModules()
+                .createRuntime();
+
+
+        assertNotNull(runtime.getInstance(ResourceConfig.class));
+
+        TypeLiteral<MappedServlet<ServletContainer>> jerseyServletKey = new TypeLiteral<MappedServlet<ServletContainer>>() {
+        };
+
+        assertNotNull(runtime.getInstance(Key.get(jerseyServletKey)));
+    }
+
+    @Test
+    public void testProperties() {
+
+        BQRuntime runtime = testFactory.app()
+                .autoLoadModules()
+                .module(b -> JerseyModule.extend(b).setProperty("test.x", 67))
+                .createRuntime();
+
+        ResourceConfig config = runtime.getInstance(ResourceConfig.class);
+        assertEquals(67, config.getProperty("test.x"));
+    }
 }
