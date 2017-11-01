@@ -44,4 +44,10 @@ public class JerseyModuleIT {
         ResourceConfig config = runtime.getInstance(ResourceConfig.class);
         assertEquals(67, config.getProperty("test.x"));
     }
+
+    @Test
+    public void testNoResourcesModule() {
+        BQRuntime runtime = testFactory.app().module(JerseyModule.class).createRuntime();
+        assertNotNull(runtime.getInstance(ResourceConfig.class));
+    }
 }
