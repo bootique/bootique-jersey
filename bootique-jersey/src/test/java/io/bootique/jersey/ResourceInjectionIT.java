@@ -1,8 +1,7 @@
 package io.bootique.jersey;
 
 import com.google.inject.Inject;
-import io.bootique.jetty.JettyModule;
-import io.bootique.jetty.test.junit.JettyTestFactory;
+import io.bootique.test.junit.BQTestFactory;
 import org.glassfish.jersey.client.ClientConfig;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -18,8 +17,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
@@ -27,19 +24,18 @@ import static org.junit.Assert.assertEquals;
 public class ResourceInjectionIT {
 
     @ClassRule
-    public static JettyTestFactory JETTY_FACTORY = new JettyTestFactory();
+    public static BQTestFactory TEST_FACTORY = new BQTestFactory().autoLoadModules();
 
     private static InjectedService SERVICE;
 
     private Client client;
 
     @BeforeClass
-    public static void startJetty() throws InterruptedException, ExecutionException, TimeoutException {
+    public static void startJetty() {
 
         SERVICE = new InjectedService();
 
-        JETTY_FACTORY.app()
-                .modules(JettyModule.class, JerseyModule.class)
+        TEST_FACTORY.app("-s")
                 .module(binder -> {
                     binder.bind(InjectedService.class).toInstance(SERVICE);
                     JerseyModule.extend(binder)
@@ -49,7 +45,8 @@ public class ResourceInjectionIT {
 
                     binder.bind(UnInjectedResource.class).toProvider(() -> new UnInjectedResource(SERVICE));
 
-                }).start();
+                })
+                .run();
     }
 
     @Before

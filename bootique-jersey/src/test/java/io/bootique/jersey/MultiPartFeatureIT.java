@@ -1,7 +1,7 @@
 package io.bootique.jersey;
 
 import com.google.inject.Module;
-import io.bootique.jetty.test.junit.JettyTestFactory;
+import io.bootique.test.junit.BQTestFactory;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -22,8 +22,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -31,13 +29,13 @@ import static org.junit.Assert.assertEquals;
 public class MultiPartFeatureIT {
 
     @ClassRule
-    public static JettyTestFactory JETTY_FACTORY = new JettyTestFactory();
+    public static BQTestFactory TEST_FACTORY = new BQTestFactory().autoLoadModules();
 
     private Client multiPartClient;
 
     @BeforeClass
-    public static void startJetty() throws InterruptedException, ExecutionException, TimeoutException {
-        JETTY_FACTORY.app().modules(JerseyModule.class).modules(createTestModule()).start();
+    public static void startJetty() {
+        TEST_FACTORY.app("-s").modules(createTestModule()).run();
     }
 
     protected static Module createTestModule() {

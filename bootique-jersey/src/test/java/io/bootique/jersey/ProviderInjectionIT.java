@@ -2,8 +2,7 @@ package io.bootique.jersey;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import io.bootique.jetty.JettyModule;
-import io.bootique.jetty.test.junit.JettyTestFactory;
+import io.bootique.test.junit.BQTestFactory;
 import org.glassfish.jersey.client.ClientConfig;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -29,8 +28,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
@@ -38,19 +35,19 @@ import static org.junit.Assert.assertEquals;
 public class ProviderInjectionIT {
 
     @ClassRule
-    public static JettyTestFactory JETTY_FACTORY = new JettyTestFactory();
+    public static BQTestFactory TEST_FACTORY = new BQTestFactory().autoLoadModules();
 
     private Client client;
 
     @BeforeClass
-    public static void startJetty() throws InterruptedException, ExecutionException, TimeoutException {
+    public static void startJetty() {
 
-        JETTY_FACTORY.app()
-                .modules(JettyModule.class, JerseyModule.class)
-                .module(binder -> {
-                    binder.bind(InjectedService.class).in(Singleton.class);
-                    JerseyModule.extend(binder).addFeature(StringWriterFeature.class).addResource(Resource.class);
-                }).start();
+        TEST_FACTORY.app("-s")
+                .module(b -> {
+                    b.bind(InjectedService.class).in(Singleton.class);
+                    JerseyModule.extend(b).addFeature(StringWriterFeature.class).addResource(Resource.class);
+                })
+                .run();
     }
 
     @Before

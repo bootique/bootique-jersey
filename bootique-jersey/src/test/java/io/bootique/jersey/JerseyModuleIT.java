@@ -4,7 +4,7 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import io.bootique.BQRuntime;
 import io.bootique.jetty.MappedServlet;
-import io.bootique.jetty.test.junit.JettyTestFactory;
+import io.bootique.test.junit.BQTestFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.junit.Rule;
@@ -16,14 +16,11 @@ import static org.junit.Assert.assertNotNull;
 public class JerseyModuleIT {
 
     @Rule
-    public JettyTestFactory testFactory = new JettyTestFactory();
+    public BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
 
     @Test
     public void testDefaultContents() {
-        BQRuntime runtime = testFactory.app()
-                .autoLoadModules()
-                .createRuntime();
-
+        BQRuntime runtime = testFactory.app().createRuntime();
 
         assertNotNull(runtime.getInstance(ResourceConfig.class));
 

@@ -1,6 +1,6 @@
 package io.bootique.jersey;
 
-import io.bootique.jetty.test.junit.JettyTestFactory;
+import io.bootique.test.junit.BQTestFactory;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -11,40 +11,39 @@ import static org.junit.Assert.assertTrue;
 
 public class CustomFeaturesIT {
 
-	@Rule
-	public JettyTestFactory testFactory = new JettyTestFactory();
+    @Rule
+    public BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
 
-	@Test
-	public void testFeaturesLoaded() {
+    @Test
+    public void testFeaturesLoaded() {
 
-		testFactory.app().autoLoadModules()
-				.module(b -> JerseyModule.extend(b).addFeature(Feature1.class).addFeature(Feature2.class))
-				.start();
+        testFactory.app("-s")
+                .module(b -> JerseyModule.extend(b).addFeature(Feature1.class).addFeature(Feature2.class))
+                .run();
 
+        assertTrue(Feature1.LOADED);
+        assertTrue(Feature2.LOADED);
+    }
 
-		assertTrue(Feature1.LOADED);
-		assertTrue(Feature2.LOADED);
-	}
+    static class Feature1 implements Feature {
 
-	static class Feature1 implements Feature {
+        static boolean LOADED = false;
 
-		static boolean LOADED = false;
+        @Override
+        public boolean configure(FeatureContext c) {
+            LOADED = true;
+            return true;
+        }
+    }
 
-		@Override
-		public boolean configure(FeatureContext c) {
-			LOADED = true;
-			return true;
-		}
-	}
+    static class Feature2 implements Feature {
 
-	static class Feature2 implements Feature {
+        static boolean LOADED = false;
 
-		static boolean LOADED = false;
-
-		@Override
-		public boolean configure(FeatureContext c) {
-			LOADED = true;
-			return true;
-		}
-	}
+        @Override
+        public boolean configure(FeatureContext c) {
+            LOADED = true;
+            return true;
+        }
+    }
 }

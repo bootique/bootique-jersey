@@ -6,7 +6,7 @@ import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
-import io.bootique.jetty.test.junit.JettyTestFactory;
+import io.bootique.test.junit.BQTestFactory;
 import org.glassfish.jersey.client.ClientConfig;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -30,21 +30,21 @@ public class ResourceInjection_GenericsIT {
     private static final Client CLIENT = ClientBuilder.newClient(new ClientConfig());
 
     @Rule
-    public JettyTestFactory testFactory = new JettyTestFactory();
+    public BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
 
     @Test
     @Ignore
     public void testFieldInjected() {
 
-        testFactory.app()
-                .autoLoadModules()
+        testFactory.app("-s")
                 .module(binder -> {
                     binder.bind(new TypeLiteral<S1<String>>() {
                     }).toInstance(STRING_BOUND);
                     binder.bind(new TypeLiteral<S1<Integer>>() {
                     }).toInstance(INT_BOUND);
                     JerseyModule.extend(binder).addResource(FieldInjectedResource.class);
-                }).start();
+                })
+                .run();
 
         WebTarget target = CLIENT.target("http://127.0.0.1:8080/f");
 
@@ -55,18 +55,18 @@ public class ResourceInjection_GenericsIT {
     }
 
     @Test
-    public void testUninjected() {
+    public void testUnInjected() {
 
-        testFactory.app()
-                .autoLoadModules()
+        testFactory.app("-s")
                 .module(UninjectedModule.class)
                 .module(binder -> {
                     binder.bind(new TypeLiteral<S1<String>>() {
                     }).toInstance(STRING_BOUND);
                     binder.bind(new TypeLiteral<S1<Integer>>() {
                     }).toInstance(INT_BOUND);
-                    JerseyModule.extend(binder).addResource(UninjectedResource.class);
-                }).start();
+                    JerseyModule.extend(binder).addResource(UnInjectedResource.class);
+                })
+                .run();
 
         WebTarget target = CLIENT.target("http://127.0.0.1:8080/f");
 
@@ -94,12 +94,12 @@ public class ResourceInjection_GenericsIT {
 
     @Path("/f")
     @Produces(MediaType.TEXT_PLAIN)
-    public static class UninjectedResource {
+    public static class UnInjectedResource {
 
         private S1<Integer> intService;
         private S1<String> stringService;
 
-        public UninjectedResource(S1<Integer> intService, S1<String> stringService) {
+        public UnInjectedResource(S1<Integer> intService, S1<String> stringService) {
             this.intService = intService;
             this.stringService = stringService;
         }
@@ -117,8 +117,8 @@ public class ResourceInjection_GenericsIT {
 
         @Provides
         @Singleton
-        UninjectedResource provideUninjectedResource(S1<Integer> intService, S1<String> stringService) {
-            return new UninjectedResource(intService, stringService);
+        UnInjectedResource provideUninjectedResource(S1<Integer> intService, S1<String> stringService) {
+            return new UnInjectedResource(intService, stringService);
         }
     }
 
