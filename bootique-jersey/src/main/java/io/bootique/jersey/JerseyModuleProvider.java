@@ -2,10 +2,14 @@ package io.bootique.jersey;
 
 import com.google.inject.Module;
 import io.bootique.BQModuleProvider;
+import io.bootique.jetty.JettyModuleProvider;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Map;
+
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 
 public class JerseyModuleProvider implements BQModuleProvider {
 
@@ -22,6 +26,13 @@ public class JerseyModuleProvider implements BQModuleProvider {
     public Map<String, Type> configs() {
         // TODO: config prefix is hardcoded. Refactor away from ConfigModule, and make provider
         // generate config prefix, reusing it in metadata...
-        return Collections.singletonMap("jersey", JerseyServletFactory.class);
+        return singletonMap("jersey", JerseyServletFactory.class);
+    }
+
+    @Override
+    public Collection<BQModuleProvider> dependencies() {
+        return singletonList(
+                new JettyModuleProvider()
+        );
     }
 }
