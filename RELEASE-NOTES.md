@@ -1,3 +1,7 @@
+## 0.25
+
+* #35 Upgrade to bootique-modules-parent 0.8
+
 ## 0.22
 
 * #30 Upgrade to Bootique 0.23, Jetty 0.21
