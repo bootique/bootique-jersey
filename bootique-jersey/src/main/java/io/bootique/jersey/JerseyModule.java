@@ -2,11 +2,9 @@ package io.bootique.jersey;
 
 import com.google.inject.Binder;
 import com.google.inject.Injector;
-import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
-import com.google.inject.multibindings.Multibinder;
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.jetty.JettyModule;
@@ -33,56 +31,6 @@ public class JerseyModule extends ConfigModule {
      */
     public static JerseyModuleExtender extend(Binder binder) {
         return new JerseyModuleExtender(binder);
-    }
-
-    /**
-     * @param binder DI binder passed to the Module that invokes this method.
-     * @return returns a {@link Multibinder} for JAX-RS Features.
-     * @since 0.11
-     * @deprecated since 0.21 call {@link #extend(Binder)} and then call
-     * {@link JerseyModuleExtender#addFeature(Feature)}.
-     */
-    @Deprecated
-    public static Multibinder<Feature> contributeFeatures(Binder binder) {
-        return Multibinder.newSetBinder(binder, Feature.class);
-    }
-
-    /**
-     * @param binder DI binder passed to the Module that invokes this method.
-     * @return returns a {@link Multibinder} for JAX-RS DynamicFeatures.
-     * @since 0.12
-     * @deprecated since 0.21 call {@link #extend(Binder)} and then call
-     * {@link JerseyModuleExtender#addDynamicFeature(DynamicFeature)}.
-     */
-    @Deprecated
-    public static Multibinder<DynamicFeature> contributeDynamicFeatures(Binder binder) {
-        return Multibinder.newSetBinder(binder, DynamicFeature.class);
-    }
-
-    /**
-     * @param binder DI binder passed to the Module that invokes this method.
-     * @return returns a {@link Multibinder} for explicitly registered JAX-RS
-     * resource types.
-     * @since 0.15
-     * @deprecated since 0.21 call {@link #extend(Binder)} and then call
-     * {@link JerseyModuleExtender#addResource(Class)} or similar method.
-     */
-    @Deprecated
-    public static Multibinder<Object> contributeResources(Binder binder) {
-        return Multibinder.newSetBinder(binder, Key.get(Object.class, JerseyResource.class));
-    }
-
-    /**
-     * @param binder DI binder passed to the Module that invokes this method.
-     * @return returns a {@link Multibinder} for packages that contain JAX-RS
-     * resource classes.
-     * @since 0.15
-     * @deprecated since 0.21 call {@link #extend(Binder)} and then call
-     * {@link JerseyModuleExtender#addPackage(Package)} .
-     */
-    @Deprecated
-    public static Multibinder<Package> contributePackages(Binder binder) {
-        return Multibinder.newSetBinder(binder, Package.class);
     }
 
     @Override
