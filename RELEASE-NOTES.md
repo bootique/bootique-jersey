@@ -1,7 +1,7 @@
 ## 0.26
 
 * #36 Cleaning up APIs deprecated since <= 0.25 
-* #37 Update Jackson to 2.9.0
+* #37 Update Jackson to 2.9.5
 
 ## 0.25
 
