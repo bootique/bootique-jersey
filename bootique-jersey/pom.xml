@@ -54,11 +54,6 @@
             <artifactId>bootique-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.bootique.jetty</groupId>
-            <artifactId>bootique-jetty-test</artifactId>
-            <scope>test</scope>
-        </dependency>
 
         <!-- Compile dependencies -->
         <dependency>
