@@ -2,6 +2,7 @@
 
 * #36 Cleaning up APIs deprecated since <= 0.25 
 * #37 Update Jackson to 2.9.5
+* #38 Upgrade Jersey to 2.25.1
 
 ## 0.25
 
