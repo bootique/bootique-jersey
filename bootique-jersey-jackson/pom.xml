@@ -17,8 +17,7 @@
     </description>
 
     <properties>
-        <jackson-jaxrs-version>2.9.5</jackson-jaxrs-version>
-        <jackson-annotations-version>2.9.0</jackson-annotations-version>
+        <jackson-version>2.9.5</jackson-version>
     </properties>
 
     <dependencyManagement>
@@ -55,17 +54,17 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.jaxrs</groupId>
                 <artifactId>jackson-jaxrs-base</artifactId>
-                <version>${jackson-jaxrs-version}</version>
+                <version>${jackson-version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.jaxrs</groupId>
                 <artifactId>jackson-jaxrs-json-provider</artifactId>
-                <version>${jackson-jaxrs-version}</version>
+                <version>${jackson-version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>${jackson-annotations-version}</version>
+                <version>${jackson-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
