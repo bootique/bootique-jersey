@@ -17,8 +17,8 @@
     </description>
 
     <properties>
-        <jackson-jaxrs-version>2.6.4</jackson-jaxrs-version>
-        <jackson-annotations-version>2.6.0</jackson-annotations-version>
+        <jackson-jaxrs-version>2.9.5</jackson-jaxrs-version>
+        <jackson-annotations-version>2.9.0</jackson-annotations-version>
     </properties>
 
     <dependencyManagement>
