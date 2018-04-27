@@ -2,21 +2,21 @@ language: java
 
 jobs:
   include:
-#    - stage: build
-#      if: branch != master OR type IN (pull_request)
-#      jdk: oraclejdk9
-#      script:
-#        - mvn clean verify
+    - stage: build
+      if: branch != master OR type IN (pull_request)
+      jdk: oraclejdk9
+      script:
+        - mvn clean verify
     - stage: build
       if: branch != master OR type IN (pull_request)
       jdk: oraclejdk8
       script:
         - mvn clean verify
-#    - stage: build
-#      if: branch = master AND type IN (push)
-#      jdk: oraclejdk9
-#      script:
-#        - mvn clean verify
+    - stage: build
+      if: branch = master AND type IN (push)
+      jdk: oraclejdk9
+      script:
+        - mvn clean verify
     - stage: build
       if: branch = master AND type IN (push) AND repo = bootique/bootique-jersey
       jdk: oraclejdk8
