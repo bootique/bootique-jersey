@@ -5,6 +5,7 @@
 * #37 Update Jackson to 2.9.5
 * #38 Upgrade Jersey to 2.25.1
 * #40 JDK9 Compatibility
+* #41 Java 10 issue
 
 ## 0.25
 

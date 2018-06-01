@@ -56,6 +56,18 @@
             <artifactId>bootique-jetty</artifactId>
             <scope>compile</scope>
         </dependency>
+        <!-- java 10 and onwards requires this dependency -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <!-- java 10 and onwards requires this dependency -->
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet</artifactId>
