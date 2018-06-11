@@ -21,10 +21,6 @@ package io.bootique.jersey;
 
 import java.lang.reflect.Member;
 
-import javax.inject.Singleton;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Context;
-
 import com.google.inject.ConfigurationException;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -38,13 +34,12 @@ import com.google.inject.internal.Annotations;
 import com.google.inject.internal.Errors;
 import com.google.inject.internal.ErrorsException;
 
-@Singleton
 public class GuiceInjectInjector implements InjectionResolver<Inject>  {
 
 	private Injector injector;
 
-	public GuiceInjectInjector(@Context Configuration configuration) {
-		this.injector = GuiceBridgeFeature.getInjector(configuration);
+	public GuiceInjectInjector(Injector injector) {
+		this.injector = injector;
 	}
 
 	@Override
@@ -78,5 +73,6 @@ public class GuiceInjectInjector implements InjectionResolver<Inject>  {
 
 		throw new IllegalStateException("Can't process injection point: " + injectee.getRequiredType());
 	}
+
 
 }

@@ -19,20 +19,19 @@
 
 package io.bootique.jersey;
 
-import com.google.inject.Binder;
-import com.google.inject.Injector;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
+import com.google.inject.*;
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.MappedServlet;
+import org.glassfish.hk2.api.InjectionResolver;
+import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Feature;
+import javax.ws.rs.core.GenericType;
 import java.util.Map;
 import java.util.Set;
 
@@ -70,6 +69,16 @@ public class JerseyModule extends ConfigModule {
                                                 @JerseyResource Map<String, Object> properties) {
 
         ResourceConfig config = new ResourceConfig();
+        config.register(new AbstractBinder() {
+            @Override
+            protected void configure() {
+                GuiceInjectInjector guiceInjector = new GuiceInjectInjector(injector);
+
+                bind(guiceInjector)
+                        .to(new GenericType<InjectionResolver<Inject>>(){})
+                        .in(javax.inject.Singleton.class);
+            }
+        });
 
         packages.forEach(p -> config.packages(true, p.getName()));
         resources.forEach(r -> config.register(r));
@@ -81,9 +90,6 @@ public class JerseyModule extends ConfigModule {
 
         // TODO: make this pluggable?
         config.register(ResourceModelDebugger.class);
-
-        // register Guice Injector as a service in Jersey HK2, and GuiceBridgeFeature as a
-        GuiceBridgeFeature.register(config, injector);
 
         return config;
     }
