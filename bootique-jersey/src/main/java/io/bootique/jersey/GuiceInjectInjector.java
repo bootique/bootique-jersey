@@ -55,24 +55,18 @@ public class GuiceInjectInjector implements InjectionResolver<Inject>  {
 	@Override
 	public Object resolve(Injectee injectee, ServiceHandle<?> serviceHandle) {
 
-		if (injectee.getRequiredType() instanceof Class) {
-
-			TypeLiteral<?> typeLiteral = TypeLiteral.get(injectee.getRequiredType());
-			Errors errors = new Errors(injectee.getParent());
-			Key<?> key;
-			try {
-				key = Annotations.getKey(typeLiteral, (Member) injectee.getParent(),
-						injectee.getParent().getDeclaredAnnotations(), errors);
-			} catch (ErrorsException e) {
-				errors.merge(e.getErrors());
-				throw new ConfigurationException(errors.getMessages());
-			}
-
-			return injector.getInstance(key);
+		TypeLiteral<?> typeLiteral = TypeLiteral.get(injectee.getRequiredType());
+		Errors errors = new Errors(injectee.getParent());
+		Key<?> key;
+		try {
+			key = Annotations.getKey(typeLiteral, (Member) injectee.getParent(),
+					injectee.getParent().getDeclaredAnnotations(), errors);
+		} catch (ErrorsException e) {
+			errors.merge(e.getErrors());
+			throw new ConfigurationException(errors.getMessages());
 		}
 
-		throw new IllegalStateException("Can't process injection point: " + injectee.getRequiredType());
+		return injector.getInstance(key);
 	}
-
 
 }
