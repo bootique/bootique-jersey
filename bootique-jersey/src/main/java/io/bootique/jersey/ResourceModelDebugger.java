@@ -21,9 +21,7 @@ public class ResourceModelDebugger implements ModelProcessor {
 	public ResourceModel processResourceModel(ResourceModel resourceModel, Configuration configuration) {
 
 		if (LOGGER.isDebugEnabled()) {
-			resourceModel.getRootResources().forEach(r -> {
-				debugResource(r);
-			});
+			resourceModel.getRootResources().forEach(r -> debugResource(r));
 		}
 
 		return resourceModel;

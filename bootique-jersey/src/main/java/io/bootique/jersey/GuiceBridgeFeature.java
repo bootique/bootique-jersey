@@ -1,15 +1,15 @@
 package io.bootique.jersey;
 
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.glassfish.hk2.api.InjectionResolver;
-import org.glassfish.hk2.api.TypeLiteral;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import javax.inject.Singleton;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
+import javax.ws.rs.core.GenericType;
 
 public class GuiceBridgeFeature implements Feature {
 
@@ -42,12 +42,14 @@ public class GuiceBridgeFeature implements Feature {
 
 		// This feature can inject HK2 ServiceLocator in constructor, and then
 		// we can bridge it both ways with Guice
-
 		context.register(new AbstractBinder() {
 			@Override
 			protected void configure() {
-				bind(GuiceInjectInjector.class).to(new TypeLiteral<InjectionResolver<com.google.inject.Inject>>() {
-				}).in(Singleton.class);
+				bind(GuiceInjectInjector.class)
+						.to(GuiceInjectInjector.class)
+						.to(new GenericType<InjectionResolver<Inject>>() {
+						})
+						.in(javax.inject.Singleton.class);
 			}
 		});
 
