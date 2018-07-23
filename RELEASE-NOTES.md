@@ -1,5 +1,6 @@
 ## 0.26
 
+* #33 Can't inject dependencies with generics to Jersey resources
 * #34 StackOverflowError in Jersey 2.21
 * #36 Cleaning up APIs deprecated since <= 0.25 
 * #37 Update Jackson to 2.9.5
