@@ -4,6 +4,7 @@
 * #36 Cleaning up APIs deprecated since <= 0.25 
 * #37 Update Jackson to 2.9.5
 * #38 Upgrade Jersey to 2.25.1
+* #39 Upgrade to JAX-RS 2.1 / Jersey 2.27
 * #40 JDK9 Compatibility
 * #41 Java 10 issue
 
