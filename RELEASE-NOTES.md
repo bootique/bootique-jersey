@@ -1,4 +1,4 @@
-## 0.26
+## 1.0.RC1
 
 * #33 Can't inject dependencies with generics to Jersey resources
 * #34 StackOverflowError in Jersey 2.21
