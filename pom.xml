@@ -128,6 +128,12 @@
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-multipart</artifactId>
                 <version>${jersey.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>javax.inject</artifactId>
+                        <groupId>org.glassfish.hk2.external</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
