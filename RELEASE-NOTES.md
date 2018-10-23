@@ -8,6 +8,7 @@
 * #39 Upgrade to JAX-RS 2.1 / Jersey 2.27
 * #40 JDK9 Compatibility
 * #41 Java 10 issue
+* #45 Jersey still includes "javax.inject" dependency
 
 ## 0.25
 
