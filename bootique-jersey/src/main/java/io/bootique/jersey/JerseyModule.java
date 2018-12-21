@@ -19,7 +19,12 @@
 
 package io.bootique.jersey;
 
-import com.google.inject.*;
+import com.google.inject.Binder;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.jetty.JettyModule;
@@ -81,10 +86,10 @@ public class JerseyModule extends ConfigModule {
         });
 
         packages.forEach(p -> config.packages(true, p.getName()));
-        resources.forEach(r -> config.register(r));
 
-        features.forEach(f -> config.register(f));
-        dynamicFeatures.forEach(df -> config.register(df));
+        resources.forEach(config::register);
+        features.forEach(config::register);
+        dynamicFeatures.forEach(config::register);
 
         config.addProperties(properties);
 

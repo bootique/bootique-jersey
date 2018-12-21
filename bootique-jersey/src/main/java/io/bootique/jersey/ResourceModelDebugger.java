@@ -40,7 +40,7 @@ public class ResourceModelDebugger implements ModelProcessor {
 	public ResourceModel processResourceModel(ResourceModel resourceModel, Configuration configuration) {
 
 		if (LOGGER.isDebugEnabled()) {
-			resourceModel.getRootResources().forEach(r -> debugResource(r));
+			resourceModel.getRootResources().forEach(this::debugResource);
 		}
 
 		return resourceModel;
@@ -48,7 +48,7 @@ public class ResourceModelDebugger implements ModelProcessor {
 
 	private void debugResource(Resource resource) {
 		LOGGER.debug("Resource: " + resource.getPath());
-		resource.getChildResources().forEach(r -> debugResource(r));
+		resource.getChildResources().forEach(this::debugResource);
 	}
 
 	@Override
