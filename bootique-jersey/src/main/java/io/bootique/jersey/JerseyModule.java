@@ -102,8 +102,7 @@ public class JerseyModule extends ConfigModule {
     @Provides
     @Singleton
     private MappedServlet<ServletContainer> provideJerseyServlet(ConfigurationFactory configFactory, ResourceConfig config) {
-        return configFactory
-                .config(JerseyServletFactory.class, configPrefix)
+        return config(JerseyServletFactory.class, configFactory)
                 .initUrlPatternIfNotSet(URL_PATTERN)
                 .createJerseyServlet(config);
     }
