@@ -19,8 +19,8 @@
 
 package io.bootique.jersey;
 
-import com.google.inject.Module;
 import io.bootique.BQModuleProvider;
+import io.bootique.di.BQModule;
 import io.bootique.jetty.JettyModuleProvider;
 
 import java.lang.reflect.Type;
@@ -33,7 +33,7 @@ import static java.util.Collections.singletonMap;
 public class JerseyModuleProvider implements BQModuleProvider {
 
     @Override
-    public Module module() {
+    public BQModule module() {
         return new JerseyModule();
     }
 

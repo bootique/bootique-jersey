@@ -19,9 +19,9 @@
 
 package io.bootique.jersey;
 
-import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
 import io.bootique.BQRuntime;
+import io.bootique.di.Key;
+import io.bootique.di.TypeLiteral;
 import io.bootique.jetty.MappedServlet;
 import io.bootique.test.junit.BQTestFactory;
 import org.glassfish.jersey.server.ResourceConfig;

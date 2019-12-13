@@ -19,24 +19,22 @@
 
 package io.bootique.jersey;
 
-import com.google.inject.Binder;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
+import io.bootique.di.Binder;
+import io.bootique.di.Injector;
+import io.bootique.di.Provides;
+import io.bootique.di.TypeLiteral;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.MappedServlet;
-import org.glassfish.hk2.api.InjectionResolver;
+import org.glassfish.hk2.api.JustInTimeInjectionResolver;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
+import javax.inject.Singleton;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.GenericType;
 import java.util.Map;
 import java.util.Set;
 
@@ -70,18 +68,20 @@ public class JerseyModule extends ConfigModule {
     private ResourceConfig createResourceConfig(Injector injector,
                                                 Set<Feature> features,
                                                 Set<DynamicFeature> dynamicFeatures,
-                                                @JerseyResource Set<Object> resources, Set<Package> packages,
+                                                @JerseyResource Set<Object> resources,
+                                                Set<Package> packages,
                                                 @JerseyResource Map<String, Object> properties) {
 
         ResourceConfig config = new ResourceConfig();
+        // configure bridge between BQ DI and Jersey HK2
         config.register(new AbstractBinder() {
             @Override
             protected void configure() {
-                GuiceInjectInjector guiceInjector = new GuiceInjectInjector(injector);
-
-                bind(guiceInjector)
-                        .to(new GenericType<InjectionResolver<Inject>>(){})
-                        .in(javax.inject.Singleton.class);
+                bind(injector).to(Injector.class)
+                        .in(Singleton.class);
+                bind(BqInjectorBridge.class)
+                        .to(JustInTimeInjectionResolver.class)
+                        .in(Singleton.class);
             }
         });
 

@@ -19,8 +19,6 @@
 
 package io.bootique.jersey;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import io.bootique.test.junit.BQTestFactory;
 import org.glassfish.jersey.client.ClientConfig;
 import org.junit.Before;
@@ -28,6 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -63,7 +62,7 @@ public class ProviderInjectionIT {
 
         TEST_FACTORY.app("-s")
                 .module(b -> {
-                    b.bind(InjectedService.class).in(Singleton.class);
+                    b.bind(InjectedService.class).inSingletonScope();
                     JerseyModule.extend(b).addFeature(StringWriterFeature.class).addResource(Resource.class);
                 })
                 .run();

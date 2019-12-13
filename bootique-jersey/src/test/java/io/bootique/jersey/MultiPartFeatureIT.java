@@ -19,7 +19,7 @@
 
 package io.bootique.jersey;
 
-import com.google.inject.Module;
+import io.bootique.di.BQModule;
 import io.bootique.test.junit.BQTestFactory;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -57,7 +57,7 @@ public class MultiPartFeatureIT {
         TEST_FACTORY.app("-s").modules(createTestModule()).run();
     }
 
-    protected static Module createTestModule() {
+    protected static BQModule createTestModule() {
         return b -> JerseyModule.extend(b).addFeature(MultiPartFeature.class).addResource(Resource.class);
     }
 

@@ -19,17 +19,19 @@
 
 package io.bootique.jersey;
 
-import com.google.inject.Binder;
-import com.google.inject.Inject;
-import com.google.inject.Module;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
+import io.bootique.di.Binder;
+import io.bootique.di.Key;
+import io.bootique.di.BQModule;
+import io.bootique.di.Provides;
+import io.bootique.di.TypeLiteral;
 import io.bootique.test.junit.BQTestFactory;
 import org.glassfish.jersey.client.ClientConfig;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -59,10 +61,8 @@ public class ResourceInjection_GenericsIT {
 
         testFactory.app("-s")
                 .module(binder -> {
-                    binder.bind(new TypeLiteral<S1<String>>() {
-                    }).toInstance(STRING_BOUND);
-                    binder.bind(new TypeLiteral<S1<Integer>>() {
-                    }).toInstance(INT_BOUND);
+                    binder.bind(Key.get(new TypeLiteral<S1<String>>() {})).toInstance(STRING_BOUND);
+                    binder.bind(Key.get(new TypeLiteral<S1<Integer>>() {})).toInstance(INT_BOUND);
                     JerseyModule.extend(binder).addResource(FieldInjectedResource.class);
                 })
                 .run();
@@ -76,12 +76,12 @@ public class ResourceInjection_GenericsIT {
     }
 
     @Test
+    @Ignore("Wildcards are not supported by Jersey DI container.")
     public void testInjectedWildcard() {
 
         testFactory.app("-s")
                 .module(binder -> {
-                    binder.bind(new TypeLiteral<S1<?>>() {
-                    }).toInstance(STRING_BOUND);
+                    binder.bind(Key.get(new TypeLiteral<S1<?>>() {})).toInstance(STRING_BOUND);
                     JerseyModule.extend(binder).addResource(InjectedResourceWildcard.class);
                 })
                 .run();
@@ -95,12 +95,12 @@ public class ResourceInjection_GenericsIT {
     }
 
     @Test
+    @Ignore("Wildcards are not supported by Jersey DI container.")
     public void testInjectedExtendedWildcard() {
 
         testFactory.app("-s")
                 .module(binder -> {
-                    binder.bind(new TypeLiteral<S1<? extends Object>>() {
-                    }).toInstance(STRING_BOUND);
+                    binder.bind(Key.get(new TypeLiteral<S1<? extends Object>>() {})).toInstance(STRING_BOUND);
                     JerseyModule.extend(binder).addResource(InjectedResourceExtendedWildcard.class);
                 })
                 .run();
@@ -139,10 +139,8 @@ public class ResourceInjection_GenericsIT {
         testFactory.app("-s")
                 .module(UninjectedModule.class)
                 .module(binder -> {
-                    binder.bind(new TypeLiteral<S1<String>>() {
-                    }).toInstance(STRING_BOUND);
-                    binder.bind(new TypeLiteral<S1<Integer>>() {
-                    }).toInstance(INT_BOUND);
+                    binder.bind(Key.get(new TypeLiteral<S1<String>>() {})).toInstance(STRING_BOUND);
+                    binder.bind(Key.get(new TypeLiteral<S1<Integer>>() {})).toInstance(INT_BOUND);
                     JerseyModule.extend(binder).addResource(UnInjectedResource.class);
                 })
                 .run();
@@ -161,8 +159,7 @@ public class ResourceInjection_GenericsIT {
         testFactory.app("-s")
                 .module(UninjectedResourceWildcardModule.class)
                 .module(binder -> {
-                    binder.bind(new TypeLiteral<S1<?>>() {
-                    }).toInstance(STRING_BOUND);
+                    binder.bind(Key.get(new TypeLiteral<S1<?>>() {})).toInstance(STRING_BOUND);
                     JerseyModule.extend(binder).addResource(UnInjectedResourceWildcard.class);
                 })
                 .run();
@@ -181,8 +178,7 @@ public class ResourceInjection_GenericsIT {
         testFactory.app("-s")
                 .module(UninjectedResourceWildcardModule.class)
                 .module(binder -> {
-                    binder.bind(new TypeLiteral<S1<?>>() {
-                    }).toInstance(STRING_BOUND);
+                    binder.bind(Key.get(new TypeLiteral<S1<?>>() {})).toInstance(STRING_BOUND);
                     JerseyModule.extend(binder).addResource(UnInjectedResourceExtendedWildcard.class);
                 })
                 .run();
@@ -335,7 +331,7 @@ public class ResourceInjection_GenericsIT {
         }
     }
 
-    public static class UninjectedModule implements Module {
+    public static class UninjectedModule implements BQModule {
         @Override
         public void configure(Binder binder) {
         }
@@ -347,7 +343,7 @@ public class ResourceInjection_GenericsIT {
         }
     }
 
-    public static class UninjectedResourceWildcardModule implements Module {
+    public static class UninjectedResourceWildcardModule implements BQModule {
         @Override
         public void configure(Binder binder) {
         }
@@ -366,7 +362,7 @@ public class ResourceInjection_GenericsIT {
 
     }
 
-    public static class UninjectedResourceArrayModule implements Module {
+    public static class UninjectedResourceArrayModule implements BQModule {
         @Override
         public void configure(Binder binder) {
         }

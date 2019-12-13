@@ -19,7 +19,6 @@
 
 package io.bootique.jersey;
 
-import com.google.inject.Inject;
 import io.bootique.test.junit.BQTestFactory;
 import org.glassfish.jersey.client.ClientConfig;
 import org.junit.Before;
@@ -27,6 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -62,7 +62,7 @@ public class ResourceInjectionIT {
                             .addResource(ConstructorInjectedResource.class)
                             .addResource(UnInjectedResource.class);
 
-                    binder.bind(UnInjectedResource.class).toProvider(() -> new UnInjectedResource(SERVICE));
+                    binder.bind(UnInjectedResource.class).toProviderInstance(() -> new UnInjectedResource(SERVICE));
 
                 })
                 .run();

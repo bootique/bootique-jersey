@@ -19,11 +19,11 @@
 
 package io.bootique.jersey;
 
-import com.google.inject.Binder;
-import com.google.inject.Key;
-import com.google.inject.multibindings.MapBinder;
-import com.google.inject.multibindings.Multibinder;
 import io.bootique.ModuleExtender;
+import io.bootique.di.Binder;
+import io.bootique.di.Key;
+import io.bootique.di.MapBuilder;
+import io.bootique.di.SetBuilder;
 
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Feature;
@@ -31,11 +31,11 @@ import java.util.Map;
 
 public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
 
-    private Multibinder<Feature> features;
-    private Multibinder<DynamicFeature> dynamicFeatures;
-    private Multibinder<Object> resources;
-    private Multibinder<Package> packages;
-    private MapBinder<String, Object> properties;
+    private SetBuilder<Feature> features;
+    private SetBuilder<DynamicFeature> dynamicFeatures;
+    private SetBuilder<Object> resources;
+    private SetBuilder<Package> packages;
+    private MapBuilder<String, Object> properties;
 
     JerseyModuleExtender(Binder binder) {
         super(binder);
@@ -52,43 +52,43 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
     public JerseyModuleExtender addPackage(Package aPackage) {
-        contributePackages().addBinding().toInstance(aPackage);
+        contributePackages().add(aPackage);
         return this;
     }
 
     public JerseyModuleExtender addPackage(Class<?> anyClassInPackage) {
-        contributePackages().addBinding().toInstance(anyClassInPackage.getPackage());
+        contributePackages().add(anyClassInPackage.getPackage());
         return this;
     }
 
     public JerseyModuleExtender addFeature(Feature feature) {
-        contributeFeatures().addBinding().toInstance(feature);
+        contributeFeatures().add(feature);
         return this;
     }
 
     public <T extends Feature> JerseyModuleExtender addFeature(Class<T> featureType) {
-        contributeFeatures().addBinding().to(featureType);
+        contributeFeatures().add(featureType);
         return this;
     }
 
     public JerseyModuleExtender addDynamicFeature(DynamicFeature feature) {
-        contributeDynamicFeatures().addBinding().toInstance(feature);
+        contributeDynamicFeatures().add(feature);
         return this;
     }
 
     public <T extends DynamicFeature> JerseyModuleExtender addDynamicFeature(Class<T> featureType) {
-        contributeDynamicFeatures().addBinding().to(featureType);
+        contributeDynamicFeatures().add(featureType);
         return this;
     }
 
 
     public JerseyModuleExtender addResource(Object resource) {
-        contributeResources().addBinding().toInstance(resource);
+        contributeResources().add(resource);
         return this;
     }
 
     public JerseyModuleExtender addResource(Class<?> resource) {
-        contributeResources().addBinding().to(resource);
+        contributeResources().add(resource);
         return this;
     }
 
@@ -102,7 +102,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
      * @since 0.22
      */
     public JerseyModuleExtender setProperty(String name, Object value) {
-        contributeProperties().addBinding(name).toInstance(value);
+        contributeProperties().put(name, value);
         return this;
     }
 
@@ -119,7 +119,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         return this;
     }
 
-    protected MapBinder<String, Object> contributeProperties() {
+    protected MapBuilder<String, Object> contributeProperties() {
         if (properties == null) {
             // should we use a more properly named annotation
             properties = newMap(String.class, Object.class, JerseyResource.class);
@@ -127,28 +127,28 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         return properties;
     }
 
-    protected Multibinder<Feature> contributeFeatures() {
+    protected SetBuilder<Feature> contributeFeatures() {
         if (features == null) {
             features = newSet(Feature.class);
         }
         return features;
     }
 
-    protected Multibinder<DynamicFeature> contributeDynamicFeatures() {
+    protected SetBuilder<DynamicFeature> contributeDynamicFeatures() {
         if (dynamicFeatures == null) {
             dynamicFeatures = newSet(DynamicFeature.class);
         }
         return dynamicFeatures;
     }
 
-    protected Multibinder<Object> contributeResources() {
+    protected SetBuilder<Object> contributeResources() {
         if (resources == null) {
             resources = newSet(Key.get(Object.class, JerseyResource.class));
         }
         return resources;
     }
 
-    protected Multibinder<Package> contributePackages() {
+    protected SetBuilder<Package> contributePackages() {
         if (packages == null) {
             packages = newSet(Package.class);
         }

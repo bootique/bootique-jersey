@@ -24,14 +24,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.google.inject.BindingAnnotation;
+import javax.inject.Qualifier;
 
 /**
  * A binding annotation for explicitly registered Jersey resources.
  */
 @Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-@BindingAnnotation
+@Qualifier
 public @interface JerseyResource {
 
 }
