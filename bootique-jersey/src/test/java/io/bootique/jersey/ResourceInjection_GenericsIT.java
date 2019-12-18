@@ -19,6 +19,7 @@
 
 package io.bootique.jersey;
 
+import io.bootique.di.BQInject;
 import io.bootique.di.Binder;
 import io.bootique.di.Key;
 import io.bootique.di.BQModule;
@@ -26,7 +27,6 @@ import io.bootique.di.Provides;
 import io.bootique.di.TypeLiteral;
 import io.bootique.test.junit.BQTestFactory;
 import org.glassfish.jersey.client.ClientConfig;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -76,7 +76,6 @@ public class ResourceInjection_GenericsIT {
     }
 
     @Test
-    @Ignore("Wildcards are not supported by Jersey DI container.")
     public void testInjectedWildcard() {
 
         testFactory.app("-s")
@@ -95,7 +94,6 @@ public class ResourceInjection_GenericsIT {
     }
 
     @Test
-    @Ignore("Wildcards are not supported by Jersey DI container.")
     public void testInjectedExtendedWildcard() {
 
         testFactory.app("-s")
@@ -248,7 +246,7 @@ public class ResourceInjection_GenericsIT {
     @Path("/iw")
     @Produces(MediaType.TEXT_PLAIN)
     public static class InjectedResourceWildcard {
-        @Inject
+        @BQInject
         private S1<?> service;
 
         @GET
@@ -260,7 +258,7 @@ public class ResourceInjection_GenericsIT {
     @Path("/iw")
     @Produces(MediaType.TEXT_PLAIN)
     public static class InjectedResourceExtendedWildcard {
-        @Inject
+        @BQInject
         private S1<? extends Object> service;
 
         @GET

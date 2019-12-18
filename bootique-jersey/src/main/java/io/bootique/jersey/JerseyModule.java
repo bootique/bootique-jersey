@@ -21,12 +21,14 @@ package io.bootique.jersey;
 
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
+import io.bootique.di.BQInject;
 import io.bootique.di.Binder;
 import io.bootique.di.Injector;
 import io.bootique.di.Provides;
 import io.bootique.di.TypeLiteral;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.MappedServlet;
+import org.glassfish.hk2.api.InjectionResolver;
 import org.glassfish.hk2.api.JustInTimeInjectionResolver;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -35,6 +37,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import javax.inject.Singleton;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Feature;
+import javax.ws.rs.core.GenericType;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,6 +84,9 @@ public class JerseyModule extends ConfigModule {
                         .in(Singleton.class);
                 bind(BqInjectorBridge.class)
                         .to(JustInTimeInjectionResolver.class)
+                        .in(Singleton.class);
+                bind(BqInjectInjector.class)
+                        .to(new GenericType<InjectionResolver<BQInject>>(){})
                         .in(Singleton.class);
             }
         });
