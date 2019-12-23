@@ -60,9 +60,6 @@ public class BqInjectInjector implements InjectionResolver<BQInject>  {
                 ? Key.get(typeLiteral)
                 : Key.get(typeLiteral, bindingAnnotation);
 
-        if(!injector.hasProvider(key)) {
-            return null;
-        }
         return injector.getInstance(key);
     }
 
