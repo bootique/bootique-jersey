@@ -19,12 +19,11 @@
 
 package io.bootique.jersey;
 
+import javax.inject.Qualifier;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import javax.inject.Qualifier;
 
 /**
  * A binding annotation for explicitly registered Jersey resources.
@@ -32,6 +31,7 @@ import javax.inject.Qualifier;
 @Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
+// TODO: should this be called something like "JerseyComponent" ?
 public @interface JerseyResource {
 
 }

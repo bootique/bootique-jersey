@@ -68,12 +68,13 @@ public class JerseyModule extends ConfigModule {
 
     @Singleton
     @Provides
-    private ResourceConfig createResourceConfig(Injector injector,
-                                                Set<Feature> features,
-                                                Set<DynamicFeature> dynamicFeatures,
-                                                @JerseyResource Set<Object> resources,
-                                                Set<Package> packages,
-                                                @JerseyResource Map<String, Object> properties) {
+    private ResourceConfig createResourceConfig(
+            Injector injector,
+            Set<Feature> features,
+            Set<DynamicFeature> dynamicFeatures,
+            @JerseyResource Set<Object> resources,
+            @JerseyResource Set<Package> packages,
+            @JerseyResource Map<String, Object> properties) {
 
         ResourceConfig config = new ResourceConfig();
         // configure bridge between BQ DI and Jersey HK2
@@ -86,7 +87,8 @@ public class JerseyModule extends ConfigModule {
                         .to(JustInTimeInjectionResolver.class)
                         .in(Singleton.class);
                 bind(BqInjectInjector.class)
-                        .to(new GenericType<InjectionResolver<BQInject>>(){})
+                        .to(new GenericType<InjectionResolver<BQInject>>() {
+                        })
                         .in(Singleton.class);
             }
         });

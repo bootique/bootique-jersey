@@ -95,7 +95,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     /**
      * Sets Jersey container property. This allows setting ResourceConfig properties that can not be set via JAX RS features.
      *
-     * @param name property name
+     * @param name  property name
      * @param value property value
      * @return
      * @see org.glassfish.jersey.server.ServerProperties
@@ -150,7 +150,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
 
     protected SetBuilder<Package> contributePackages() {
         if (packages == null) {
-            packages = newSet(Package.class);
+            packages = newSet(Package.class, JerseyResource.class);
         }
         return packages;
     }
