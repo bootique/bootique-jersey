@@ -1,3 +1,8 @@
+## 2.0
+
+* Migrated from Guice to "bootique-di"
+* #47 Set<Package> bound in JerseyModule must be qualified with annotation
+
 ## 1.0.RC1
 
 * #33 Can't inject dependencies with generics to Jersey resources
