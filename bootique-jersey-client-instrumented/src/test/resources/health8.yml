@@ -1,0 +1,4 @@
+jerseyClientInstrumented:
+    timeRequestsThresholds:
+      warning: 0.01
+      critical: 0.05

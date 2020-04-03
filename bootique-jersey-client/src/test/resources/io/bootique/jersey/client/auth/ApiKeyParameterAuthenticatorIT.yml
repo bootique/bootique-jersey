@@ -1,0 +1,22 @@
+jerseyclient:
+  auth:
+    valid:
+      type: "apiKeyParameter"
+      key: "valid"
+    customValid:
+      type: "apiKeyParameter"
+      name: "custom_api_key"
+      key: "valid"
+    invalid:
+      type: "apiKeyParameter"
+      key: "invalid"
+  targets:
+    valid:
+      url: "http://127.0.0.1:8080/r1"
+      auth: "valid"
+    customValid:
+      url: "http://127.0.0.1:8080/r2"
+      auth: "customValid"
+    invalid:
+      url: "http://127.0.0.1:8080/r1"
+      auth: "invalid"
