@@ -22,6 +22,7 @@
 
 # bootique-jersey
 Provides [Jersey](https://jersey.java.net/) JAX-RS server and client integration with [Bootique](http://bootique.io).
+This provides the necessary API to create REST services and consume someone else's REST services.
 
 ## Jersey Server
 
