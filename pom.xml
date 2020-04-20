@@ -45,9 +45,16 @@
 
     <properties>
         <bootique.version>${project.version}</bootique.version>
-        <hk2.version>2.5.0-b61</hk2.version>
-        <!-- Must be coordinated with Jersey version. managing manually due to SLF4J version conflict -->
-        <grizzly.http.client.version>1.9</grizzly.http.client.version>
+
+        <!-- TODO: this version must come from modules-parent -->
+        <activation.version>1.2.2</activation.version>
+        <!-- TODO: this version must come from modules-parent -->
+        <jersey.version>2.30.1</jersey.version>
+        <!-- Everything below must be coordinated with Jersey version -->
+        <hk2.version>2.6.1</hk2.version>
+        <jaxrs.version>2.1.6</jaxrs.version>
+        <!-- Managing manually due to SLF4J version conflict  -->
+        <grizzly.http.client.version>1.16</grizzly.http.client.version>
     </properties>
 
     <scm>
@@ -100,10 +107,14 @@
                 <artifactId>jersey-common</artifactId>
                 <version>${jersey.version}</version>
                 <exclusions>
-                    <!-- Guice includes this one -->
+                    <!-- Bootique includes this one -->
                     <exclusion>
                         <groupId>org.glassfish.hk2.external</groupId>
                         <artifactId>javax.inject</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.sun.activation</groupId>
+                        <artifactId>jakarta.activation</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -113,7 +124,7 @@
                 <artifactId>jersey-hk2</artifactId>
                 <version>${jersey.version}</version>
                 <exclusions>
-                    <!-- Guice includes the following dependencies, so excluding them here -->
+                    <!-- Bootique includes this one -->
                     <!-- Exclusion tags in Maven seem to be recursive, so the following
                     dependencies will be excluded from the underlying HK modules as well. -->
                     <exclusion>
@@ -192,8 +203,8 @@
                 <version>${jaxb.version}</version>
             </dependency>
             <dependency><!-- Transitive dependency of jersey -->
-                <groupId>javax.activation</groupId>
-                <artifactId>activation</artifactId>
+                <groupId>com.sun.activation</groupId>
+                <artifactId>jakarta.activation</artifactId>
                 <version>${activation.version}</version>
             </dependency>
 

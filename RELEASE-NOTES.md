@@ -3,6 +3,7 @@
 * Migrated from Guice to "bootique-di"
 * #47 Set<Package> bound in JerseyModule must be qualified with annotation
 * #48 Combine bootique-jersey with bootique-jersey-client in one project 
+* #49 Upgrade to Jersey 2.30.1
 
 ## 1.0.RC1
 
