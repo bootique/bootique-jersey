@@ -39,6 +39,7 @@
     <modules>
         <module>bootique-jersey</module>
         <module>bootique-jersey-jackson</module>
+        <module>bootique-jersey-beanvalidation</module>
         <module>bootique-jersey-client</module>
         <module>bootique-jersey-client-instrumented</module>
     </modules>
@@ -229,6 +230,11 @@
                         <artifactId>jackson-annotations</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.ext</groupId>
+                <artifactId>jersey-bean-validation</artifactId>
+                <version>${jersey.version}</version>
             </dependency>
             <!--HK2-->
             <dependency>
