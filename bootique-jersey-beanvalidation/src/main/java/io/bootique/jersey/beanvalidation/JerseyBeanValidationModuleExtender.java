@@ -18,20 +18,30 @@
  */
 package io.bootique.jersey.beanvalidation;
 
-import io.bootique.ConfigModule;
+import io.bootique.ModuleExtender;
 import io.bootique.di.Binder;
+import io.bootique.jersey.JerseyModule;
+import org.glassfish.jersey.server.ServerProperties;
 
 /**
  * @since 2.0
  */
-public class JerseyBeanValidationModule extends ConfigModule {
+public class JerseyBeanValidationModuleExtender extends ModuleExtender<JerseyBeanValidationModuleExtender> {
 
-    public static JerseyBeanValidationModuleExtender extend(Binder binder) {
-        return new JerseyBeanValidationModuleExtender(binder);
+    public JerseyBeanValidationModuleExtender(Binder binder) {
+        super(binder);
     }
 
     @Override
-    public void configure(Binder binder) {
-        extend(binder);
+    public JerseyBeanValidationModuleExtender initAllExtensions() {
+        return this;
     }
+
+    public JerseyBeanValidationModuleExtender sendErrorsInResponse() {
+        // TODO: should that be configured in YAML, so that the switch can happen between different environments
+        //  dynamically?
+        JerseyModule.extend(binder).setProperty(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+        return this;
+    }
+
 }
