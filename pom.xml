@@ -94,12 +94,12 @@
                 <artifactId>jersey-container-servlet</artifactId>
                 <version>${jersey.version}</version>
                 <exclusions>
-                    <!-- Guice includes this one -->
                     <!-- Exclusion tags in Maven seem to be recursive, so the following
                    dependencies will be excluded from the underlying HK modules as well. -->
+                    <!-- Bootique includes this one -->
                     <exclusion>
                         <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>javax.inject</artifactId>
+                        <artifactId>jakarta.inject</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -111,7 +111,7 @@
                     <!-- Bootique includes this one -->
                     <exclusion>
                         <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>javax.inject</artifactId>
+                        <artifactId>jakarta.inject</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>com.sun.activation</groupId>
@@ -126,11 +126,9 @@
                 <version>${jersey.version}</version>
                 <exclusions>
                     <!-- Bootique includes this one -->
-                    <!-- Exclusion tags in Maven seem to be recursive, so the following
-                    dependencies will be excluded from the underlying HK modules as well. -->
                     <exclusion>
                         <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>javax.inject</artifactId>
+                        <artifactId>jakarta.inject</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>org.glassfish.hk2.external</groupId>
@@ -143,9 +141,10 @@
                 <artifactId>jersey-media-multipart</artifactId>
                 <version>${jersey.version}</version>
                 <exclusions>
+                    <!-- Bootique includes this one -->
                     <exclusion>
-                        <artifactId>javax.inject</artifactId>
                         <groupId>org.glassfish.hk2.external</groupId>
+                        <artifactId>jakarta.inject</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -154,9 +153,10 @@
                 <artifactId>jersey-client</artifactId>
                 <version>${jersey.version}</version>
                 <exclusions>
+                    <!-- Bootique includes this one -->
                     <exclusion>
-                        <artifactId>javax.inject</artifactId>
                         <groupId>org.glassfish.hk2.external</groupId>
+                        <artifactId>jakarta.inject</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -242,10 +242,10 @@
                 <artifactId>hk2-api</artifactId>
                 <version>${hk2.version}</version>
                 <exclusions>
-                    <!-- Guice includes this one -->
+                    <!-- Bootique includes this one -->
                     <exclusion>
                         <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>aopalliance-repackaged</artifactId>
+                        <artifactId>jakarta.inject</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -254,14 +254,10 @@
                 <artifactId>hk2-locator</artifactId>
                 <version>${hk2.version}</version>
                 <exclusions>
-                    <!-- Guice includes this one -->
+                    <!-- Bootique includes this one -->
                     <exclusion>
                         <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>aopalliance-repackaged</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>javax.inject</artifactId>
-                        <groupId>org.glassfish.hk2.external</groupId>
+                        <artifactId>jakarta.inject</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
