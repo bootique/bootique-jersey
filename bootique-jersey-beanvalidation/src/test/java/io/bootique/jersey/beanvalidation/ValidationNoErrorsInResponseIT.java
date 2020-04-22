@@ -59,7 +59,11 @@ public class ValidationNoErrorsInResponseIT {
 
         Response missing = baseTarget.path("notNull").request(MediaType.TEXT_PLAIN).get();
         assertEquals(400, missing.getStatus());
-        assertEquals("", missing.readEntity(String.class).trim());
+        assertEquals("HTTP ERROR 400 Bad Request\n" +
+                "URI: /notNull\n" +
+                "STATUS: 400\n" +
+                "MESSAGE: Bad Request\n" +
+                "SERVLET: jersey", missing.readEntity(String.class).trim());
     }
 
     @Path("/")
