@@ -41,9 +41,9 @@ import org.glassfish.hk2.utilities.AbstractActiveDescriptor;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 
 /**
- * This class is a bridge between Bootique DI container and Jersey's HK2.
+ * This class is allows HK2 to do a lookup and grab services from Bootique DI Injector.
  */
-public class BqInjectorBridge implements JustInTimeInjectionResolver {
+public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjectionResolver {
 
 	/*
 	 * In terms of HK2 this is a fallback resolver that is used when required service not found in a ServiceLocator.
@@ -53,12 +53,11 @@ public class BqInjectorBridge implements JustInTimeInjectionResolver {
 
 	private static final String GLASSFISH_PACKAGE = "org.glassfish";
 
-	private Injector injector;
-	private ServiceLocator locator;
+	private final ServiceLocator locator;
 
 	@Inject
 	public BqInjectorBridge(Injector injector, ServiceLocator locator) {
-		this.injector = injector;
+		super(injector);
 		this.locator = locator;
 	}
 
@@ -70,33 +69,26 @@ public class BqInjectorBridge implements JustInTimeInjectionResolver {
 			return false;
 		}
 
-		// get proper Bq DI key from failedInjectionPoint
-		TypeLiteral<?> typeLiteral = TypeLiteral.of(failedInjectionPoint.getRequiredType());
-		Annotation bindingAnnotation = failedInjectionPoint.getRequiredQualifiers().isEmpty()
-				? null
-				: failedInjectionPoint.getRequiredQualifiers().iterator().next();
-		Key<?> key = bindingAnnotation == null
-				? Key.get(typeLiteral)
-				: Key.get(typeLiteral, bindingAnnotation);
-
-		if(!injector.hasProvider(key) && !allowDynamicInjectionForKey(key)) {
+		Provider<?> provider = resolveBqProvider(failedInjectionPoint);
+		if(provider == null) {
 			return false;
 		}
 
 		// register custom descriptor in a HK2's ServiceLocator
 		ServiceLocatorUtilities.addOneDescriptor(locator, new BqBindingActiveDescriptor(
-				injector.getProvider(key),
+				provider,
 				failedInjectionPoint.getRequiredType(),
 				failedInjectionPoint.getRequiredQualifiers(),
-				typeLiteral.getRawType()
+				TypeLiteral.of(failedInjectionPoint.getRequiredType()).getRawType()
 		));
 		// notify that we have added a new descriptor
 		return true;
 	}
 
-	protected boolean allowDynamicInjectionForKey(Key<?> key) {
-		String packageName = key.getType().getRawType().getPackage().getName();
-		return !packageName.startsWith(GLASSFISH_PACKAGE);
+	@Override
+	protected boolean allowDynamicInjectionForKey(Injectee injectionPoint, Key<?> key) {
+		return injectionPoint.getParent() != null // parent's presence means that we are injecting value to parameter or field
+				&& !key.getType().getRawType().getPackage().getName().startsWith(GLASSFISH_PACKAGE);
 	}
 
 	/**

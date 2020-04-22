@@ -33,6 +33,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Configuration;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -41,6 +43,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.assertEquals;
 
 public class ResourceInjectionIT {
+
+    private static final String TEST_PROPERTY = "bq.test.label";
 
     @ClassRule
     public static BQTestFactory TEST_FACTORY = new BQTestFactory().autoLoadModules();
@@ -58,6 +62,10 @@ public class ResourceInjectionIT {
                 .module(binder -> {
                     binder.bind(InjectedService.class).toInstance(SERVICE);
                     JerseyModule.extend(binder)
+                            .addFeature(ctx -> {
+                                ctx.property(TEST_PROPERTY, "x");
+                                return false;
+                            })
                             .addResource(FieldInjectedResource.class)
                             .addResource(ConstructorInjectedResource.class)
                             .addResource(UnInjectedResource.class);
@@ -84,12 +92,12 @@ public class ResourceInjectionIT {
 
         Response r1 = target.request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());
-        assertEquals("f_1", r1.readEntity(String.class));
+        assertEquals("f_1_x", r1.readEntity(String.class));
         r1.close();
 
         Response r2 = target.request().get();
         assertEquals(Status.OK.getStatusCode(), r2.getStatus());
-        assertEquals("f_2", r2.readEntity(String.class));
+        assertEquals("f_2_x", r2.readEntity(String.class));
         r2.close();
     }
 
@@ -100,12 +108,12 @@ public class ResourceInjectionIT {
 
         Response r1 = target.request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());
-        assertEquals("c_1", r1.readEntity(String.class));
+        assertEquals("c_1_x", r1.readEntity(String.class));
         r1.close();
 
         Response r2 = target.request().get();
         assertEquals(Status.OK.getStatusCode(), r2.getStatus());
-        assertEquals("c_2", r2.readEntity(String.class));
+        assertEquals("c_2_x", r2.readEntity(String.class));
         r2.close();
     }
 
@@ -116,12 +124,12 @@ public class ResourceInjectionIT {
 
         Response r1 = target.request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());
-        assertEquals("u_1", r1.readEntity(String.class));
+        assertEquals("u_1_x", r1.readEntity(String.class));
         r1.close();
 
         Response r2 = target.request().get();
         assertEquals(Status.OK.getStatusCode(), r2.getStatus());
-        assertEquals("u_2", r2.readEntity(String.class));
+        assertEquals("u_2_x", r2.readEntity(String.class));
         r2.close();
     }
 
@@ -132,9 +140,12 @@ public class ResourceInjectionIT {
         @Inject
         private InjectedService service;
 
+        @Context
+        private Configuration config;
+
         @GET
         public String get() {
-            return "f_" + service.getNext();
+            return "f_" + service.getNext() + "_" + config.getProperty(TEST_PROPERTY);
         }
     }
 
@@ -144,6 +155,9 @@ public class ResourceInjectionIT {
 
         private InjectedService service;
 
+        @Context
+        private Configuration config;
+
         @Inject
         public ConstructorInjectedResource(InjectedService service) {
             this.service = service;
@@ -151,7 +165,7 @@ public class ResourceInjectionIT {
 
         @GET
         public String get() {
-            return "c_" + service.getNext();
+            return "c_" + service.getNext() + "_" + config.getProperty(TEST_PROPERTY);
         }
     }
 
@@ -161,13 +175,16 @@ public class ResourceInjectionIT {
 
         private InjectedService service;
 
+        @Context
+        private Configuration config;
+
         public UnInjectedResource(InjectedService service) {
             this.service = service;
         }
 
         @GET
         public String get() {
-            return "u_" + service.getNext();
+            return "u_" + service.getNext() + "_" + config.getProperty(TEST_PROPERTY);
         }
     }
 

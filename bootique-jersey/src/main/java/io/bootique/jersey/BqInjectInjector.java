@@ -19,25 +19,24 @@
 
 package io.bootique.jersey;
 
-import java.lang.annotation.Annotation;
-
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import io.bootique.di.BQInject;
 import io.bootique.di.Injector;
-import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
 import org.glassfish.hk2.api.Injectee;
 import org.glassfish.hk2.api.InjectionResolver;
 import org.glassfish.hk2.api.ServiceHandle;
 
-public class BqInjectInjector implements InjectionResolver<BQInject>  {
-
-    private Injector injector;
+/**
+ * This resolver provides support for the {@link BQInject} annotation inside Jersey runtime
+ */
+public class BqInjectInjector extends BaseBqHk2Bridge implements InjectionResolver<BQInject>  {
 
     @Inject
     public BqInjectInjector(Injector injector) {
-        this.injector = injector;
+        super(injector);
     }
 
     @Override
@@ -53,14 +52,10 @@ public class BqInjectInjector implements InjectionResolver<BQInject>  {
     @Override
     public Object resolve(Injectee injectee, ServiceHandle<?> serviceHandle) {
         TypeLiteral<?> typeLiteral = TypeLiteral.of(injectee.getRequiredType());
-        Annotation bindingAnnotation = injectee.getRequiredQualifiers().isEmpty()
-                ? null
-                : injectee.getRequiredQualifiers().iterator().next();
-        Key<?> key = bindingAnnotation == null
-                ? Key.get(typeLiteral)
-                : Key.get(typeLiteral, bindingAnnotation);
+        boolean isProvider = javax.inject.Provider.class.equals(typeLiteral.getRawType());
 
-        return injector.getInstance(key);
+        Provider<?> provider = resolveBqProvider(injectee);
+        return isProvider ? provider : provider.get();
     }
 
 }

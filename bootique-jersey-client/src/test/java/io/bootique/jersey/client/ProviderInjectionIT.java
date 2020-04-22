@@ -54,6 +54,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -176,7 +177,7 @@ public class ProviderInjectionIT {
                 throws IOException, WebApplicationException {
 
             String responseLine;
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(entityStream, "UTF-8"))) {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(entityStream, StandardCharsets.UTF_8))) {
                 responseLine = in.readLine();
             }
 
