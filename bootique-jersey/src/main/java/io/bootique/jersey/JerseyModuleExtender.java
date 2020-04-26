@@ -24,6 +24,7 @@ import io.bootique.di.Binder;
 import io.bootique.di.Key;
 import io.bootique.di.MapBuilder;
 import io.bootique.di.SetBuilder;
+import io.bootique.di.TypeLiteral;
 
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Feature;
@@ -35,6 +36,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     private SetBuilder<DynamicFeature> dynamicFeatures;
     private SetBuilder<Object> resources;
     private SetBuilder<Package> packages;
+    private SetBuilder<MappedResource> mappedResources;
     private MapBuilder<String, Object> resourcesByPath;
     private MapBuilder<String, Object> properties;
 
@@ -48,6 +50,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         contributePackages();
         contributeResources();
         contributeResourcesByPath();
+        contributeMappedResources();
         contributeProperties();
 
         return this;
@@ -109,6 +112,48 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
     /**
+     * Registers a "mapped" API resource. MappedResource paths override class-level {@link javax.ws.rs.Path} annotation
+     * value, allowing to remap resource to a different URL. This even allows to map the same resource multiple times
+     * under different paths.
+     *
+     * @param mappedResource an object that encapsulates resource object and one or more alternative path mappings.
+     * @return this extender
+     * @since 2.0
+     */
+    public <T> JerseyModuleExtender addMappedResource(MappedResource<T> mappedResource) {
+        contributeMappedResources().add(mappedResource);
+        return this;
+    }
+
+    /**
+     * Registers a "mapped" API resource. MappedResource paths override class-level {@link javax.ws.rs.Path} annotation
+     * value, allowing to remap resource to a different URL. This even allows to map the same resource multiple times
+     * under different paths.
+     *
+     * @param mappedResourceKey a DI key of a {@link MappedResource}
+     * @return this extender
+     * @since 2.0
+     */
+    public <T> JerseyModuleExtender addMappedResource(Key<MappedResource<T>> mappedResourceKey) {
+        contributeMappedResources().add(mappedResourceKey);
+        return this;
+    }
+
+    /**
+     * Registers a "mapped" API resource. MappedResource paths override class-level {@link javax.ws.rs.Path} annotation
+     * value, allowing to remap resource to a different URL. This even allows to map the same resource multiple times
+     * under different paths.
+     *
+     * @param mappedResourceType a signature of the {@link MappedResource}. The resource itself is located in DI.
+     * @return this extender
+     * @since 2.0
+     */
+    public <T> JerseyModuleExtender addMappedResource(TypeLiteral<MappedResource<T>> mappedResourceType) {
+        contributeMappedResources().add(Key.get(mappedResourceType));
+        return this;
+    }
+
+    /**
      * Sets Jersey container property. This allows setting ResourceConfig properties that can not be set via JAX RS features.
      *
      * @param name  property name
@@ -140,6 +185,14 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
             resourcesByPath = newMap(String.class, Object.class, JerseyModule.RESOURCES_BY_PATH_BINDING);
         }
         return resourcesByPath;
+    }
+
+
+    protected SetBuilder<MappedResource> contributeMappedResources() {
+        if (mappedResources == null) {
+            mappedResources = newSet(MappedResource.class);
+        }
+        return mappedResources;
     }
 
     protected MapBuilder<String, Object> contributeProperties() {

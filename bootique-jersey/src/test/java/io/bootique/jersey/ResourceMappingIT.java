@@ -21,6 +21,7 @@ package io.bootique.jersey;
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.di.Provides;
+import io.bootique.di.TypeLiteral;
 import io.bootique.test.junit.BQTestFactory;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -59,6 +60,9 @@ public class ResourceMappingIT {
                         .addResource(AsTypePathOverrideMultipliedResource.class, "as_type_explicit_path2")
 
                         .addResource(DIManagedPathOverrideResource.class, "di_managed_explicit_path")
+
+                        .addMappedResource(new TypeLiteral<MappedResource<MappedPathOverrideResource>>() {
+                        })
                 ).run();
     }
 
@@ -102,6 +106,17 @@ public class ResourceMappingIT {
     }
 
     @Test
+    public void testMapped_MultipleOverriddenPaths() {
+        Response r1 = target.path("mapped_explicit_path1").request().get();
+        assertEquals(200, r1.getStatus());
+        assertEquals("mapped path override resource: MAPPEDLABEL", r1.readEntity(String.class));
+
+        Response r2 = target.path("mapped_explicit_path2").request().get();
+        assertEquals(200, r2.getStatus());
+        assertEquals("mapped path override resource: MAPPEDLABEL", r2.readEntity(String.class));
+    }
+
+    @Test
     public void testAsType_OverriddenPath_AnnotationPathIgnored() {
         Response r1 = target.path("as_type_annotation_path").request().get();
         assertEquals(404, r1.getStatus());
@@ -111,6 +126,9 @@ public class ResourceMappingIT {
 
         Response r3 = target.path("di_managed_annotation_path").request().get();
         assertEquals(404, r3.getStatus());
+
+        Response r4 = target.path("mapped_annotation_path").request().get();
+        assertEquals(404, r4.getStatus());
     }
 
     @Path("as_instance")
@@ -175,6 +193,22 @@ public class ResourceMappingIT {
         }
     }
 
+    @Path("mapped_annotation_path")
+    public static class MappedPathOverrideResource {
+
+        private String label;
+
+        public MappedPathOverrideResource(String label) {
+            this.label = label;
+        }
+
+        @GET
+        @Produces(MediaType.TEXT_PLAIN)
+        public Response get(@Context UriInfo uriInfo) {
+            return Response.ok("mapped path override resource: " + label).build();
+        }
+    }
+
     public static class TestModule implements BQModule {
 
         @Override
@@ -186,6 +220,12 @@ public class ResourceMappingIT {
         @Singleton
         DIManagedPathOverrideResource provide() {
             return new DIManagedPathOverrideResource("DILABEL");
+        }
+
+        @Provides
+        @Singleton
+        MappedResource<MappedPathOverrideResource> provideMappedResource() {
+            return new MappedResource<>(new MappedPathOverrideResource("MAPPEDLABEL"), "mapped_explicit_path1", "mapped_explicit_path2");
         }
     }
 }

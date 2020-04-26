@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Defines custom resource mappings
@@ -41,20 +42,16 @@ public class ResourcePathCustomizer implements ModelProcessor {
         this.pathsByType = pathsByType;
     }
 
-    public static ResourcePathCustomizer create(Map<String, Object> resourcesByPath) {
-        if (resourcesByPath.isEmpty()) {
+    public static ResourcePathCustomizer create(Set<MappedResource> mappedResources, Map<String, Object> resourcesByPath) {
+        if (mappedResources.isEmpty() && resourcesByPath.isEmpty()) {
             throw new IllegalArgumentException("No resources to override");
         }
+        Map<Class<?>, List<String>> index = new HashMap<>();
 
-        return new ResourcePathCustomizer(indexByType(resourcesByPath));
-    }
-
-    private static Map<Class<?>, List<String>> indexByType(Map<String, Object> resourcesByPath) {
-        Map<Class<?>, List<String>> index = new HashMap<>((int) (resourcesByPath.size() / 0.75) + 1);
-
-        // support multiple paths for the same type
+        mappedResources.forEach(mr -> index.computeIfAbsent(mr.getResource().getClass(), c -> new ArrayList<>(2)).addAll(mr.getUrlPatterns()));
         resourcesByPath.forEach((p, o) -> index.computeIfAbsent(o.getClass(), c -> new ArrayList<>(2)).add(p));
-        return index;
+
+        return new ResourcePathCustomizer(index);
     }
 
     @Override

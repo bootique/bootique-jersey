@@ -77,6 +77,7 @@ public class JerseyModule extends ConfigModule {
             @JerseyResource Set<Object> resources,
             @JerseyResource Set<Package> packages,
             @Named(RESOURCES_BY_PATH_BINDING) Map<String, Object> resourcesByPath,
+            Set<MappedResource> mappedResources,
             @JerseyResource Map<String, Object> properties) {
 
         ResourceConfig config = new ResourceConfig();
@@ -100,9 +101,12 @@ public class JerseyModule extends ConfigModule {
 
         resources.forEach(config::register);
 
-        if (!resourcesByPath.isEmpty()) {
+        if (!mappedResources.isEmpty() || !resourcesByPath.isEmpty()) {
+            // first register under the @Path from annotation, then override it via ResourcePathCustomizer
+            mappedResources.forEach(mr -> config.register(mr.getResource()));
             resourcesByPath.values().forEach(config::register);
-            config.register(ResourcePathCustomizer.create(resourcesByPath));
+
+            config.register(ResourcePathCustomizer.create(mappedResources, resourcesByPath));
         }
 
         features.forEach(config::register);
