@@ -34,6 +34,7 @@ import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Feature;
@@ -43,6 +44,7 @@ import java.util.Set;
 
 public class JerseyModule extends ConfigModule {
 
+    static final String RESOURCES_BY_PATH_BINDING = "io.bootique.jersey.resourcesByPath";
     private static final String URL_PATTERN = "/*";
 
     /**
@@ -74,6 +76,7 @@ public class JerseyModule extends ConfigModule {
             Set<DynamicFeature> dynamicFeatures,
             @JerseyResource Set<Object> resources,
             @JerseyResource Set<Package> packages,
+            @Named(RESOURCES_BY_PATH_BINDING) Map<String, Object> resourcesByPath,
             @JerseyResource Map<String, Object> properties) {
 
         ResourceConfig config = new ResourceConfig();
@@ -96,6 +99,12 @@ public class JerseyModule extends ConfigModule {
         packages.forEach(p -> config.packages(true, p.getName()));
 
         resources.forEach(config::register);
+
+        if (!resourcesByPath.isEmpty()) {
+            resourcesByPath.values().forEach(config::register);
+            config.register(ResourcePathCustomizer.create(resourcesByPath));
+        }
+
         features.forEach(config::register);
         dynamicFeatures.forEach(config::register);
 

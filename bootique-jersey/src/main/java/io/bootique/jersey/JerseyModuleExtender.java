@@ -35,6 +35,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     private SetBuilder<DynamicFeature> dynamicFeatures;
     private SetBuilder<Object> resources;
     private SetBuilder<Package> packages;
+    private MapBuilder<String, Object> resourcesByPath;
     private MapBuilder<String, Object> properties;
 
     JerseyModuleExtender(Binder binder) {
@@ -46,6 +47,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         contributeFeatures();
         contributePackages();
         contributeResources();
+        contributeResourcesByPath();
         contributeProperties();
 
         return this;
@@ -81,7 +83,6 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         return this;
     }
 
-
     public JerseyModuleExtender addResource(Object resource) {
         contributeResources().add(resource);
         return this;
@@ -93,11 +94,26 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
     /**
+     * Registers an API resource type with a custom path. The path argument overrides class-level
+     * {@link javax.ws.rs.Path} annotation value, allowing to remap resource to a different URL. This even allows to
+     * map the same resource multiple times under different paths.
+     *
+     * @param resource type of the resource
+     * @param path     resource URL path that overrides {@link javax.ws.rs.Path} annotation on the resource class.
+     * @return this extender
+     * @since 2.0
+     */
+    public JerseyModuleExtender addResource(Class<?> resource, String path) {
+        contributeResourcesByPath().put(path, resource);
+        return this;
+    }
+
+    /**
      * Sets Jersey container property. This allows setting ResourceConfig properties that can not be set via JAX RS features.
      *
      * @param name  property name
      * @param value property value
-     * @return
+     * @return this extender
      * @see org.glassfish.jersey.server.ServerProperties
      * @since 0.22
      */
@@ -119,9 +135,16 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         return this;
     }
 
+    protected MapBuilder<String, Object> contributeResourcesByPath() {
+        if (resourcesByPath == null) {
+            resourcesByPath = newMap(String.class, Object.class, JerseyModule.RESOURCES_BY_PATH_BINDING);
+        }
+        return resourcesByPath;
+    }
+
     protected MapBuilder<String, Object> contributeProperties() {
         if (properties == null) {
-            // should we use a more properly named annotation
+            // TODO: switch to named bindings defined in JerseyModule?
             properties = newMap(String.class, Object.class, JerseyResource.class);
         }
         return properties;
@@ -143,6 +166,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
 
     protected SetBuilder<Object> contributeResources() {
         if (resources == null) {
+            // TODO: switch to named bindings defined in JerseyModule?
             resources = newSet(Key.get(Object.class, JerseyResource.class));
         }
         return resources;
@@ -150,6 +174,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
 
     protected SetBuilder<Package> contributePackages() {
         if (packages == null) {
+            // TODO: switch to named bindings defined in JerseyModule?
             packages = newSet(Package.class, JerseyResource.class);
         }
         return packages;
