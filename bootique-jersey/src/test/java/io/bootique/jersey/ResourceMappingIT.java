@@ -18,11 +18,15 @@
  */
 package io.bootique.jersey;
 
+import io.bootique.di.BQModule;
+import io.bootique.di.Binder;
+import io.bootique.di.Provides;
 import io.bootique.test.junit.BQTestFactory;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -44,6 +48,7 @@ public class ResourceMappingIT {
     @BeforeClass
     public static void startJetty() {
         testFactory.app("-s")
+                .module(new TestModule())
                 .module(b -> JerseyModule.extend(b)
                         .addResource(new AsInstanceResource("xxx"))
                         .addResource(AsTypeResource.class)
@@ -52,6 +57,8 @@ public class ResourceMappingIT {
                         // same resource, two different paths
                         .addResource(AsTypePathOverrideMultipliedResource.class, "as_type_explicit_path1")
                         .addResource(AsTypePathOverrideMultipliedResource.class, "as_type_explicit_path2")
+
+                        .addResource(DIManagedPathOverrideResource.class, "di_managed_explicit_path")
                 ).run();
     }
 
@@ -88,12 +95,22 @@ public class ResourceMappingIT {
     }
 
     @Test
+    public void testDIManaged_OverriddenPath() {
+        Response r = target.path("di_managed_explicit_path").request().get();
+        assertEquals(200, r.getStatus());
+        assertEquals("di managed path override resource: DILABEL", r.readEntity(String.class));
+    }
+
+    @Test
     public void testAsType_OverriddenPath_AnnotationPathIgnored() {
         Response r1 = target.path("as_type_annotation_path").request().get();
         assertEquals(404, r1.getStatus());
 
         Response r2 = target.path("as_type_annotation_path_multiply").request().get();
         assertEquals(404, r2.getStatus());
+
+        Response r3 = target.path("di_managed_annotation_path").request().get();
+        assertEquals(404, r3.getStatus());
     }
 
     @Path("as_instance")
@@ -139,6 +156,36 @@ public class ResourceMappingIT {
         @Produces(MediaType.TEXT_PLAIN)
         public Response get(@Context UriInfo uriInfo) {
             return Response.ok("as type path override resource multiplied: " + uriInfo.getPath()).build();
+        }
+    }
+
+    @Path("di_managed_annotation_path")
+    public static class DIManagedPathOverrideResource {
+
+        private String label;
+
+        public DIManagedPathOverrideResource(String label) {
+            this.label = label;
+        }
+
+        @GET
+        @Produces(MediaType.TEXT_PLAIN)
+        public Response get(@Context UriInfo uriInfo) {
+            return Response.ok("di managed path override resource: " + label).build();
+        }
+    }
+
+    public static class TestModule implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+
+        }
+
+        @Provides
+        @Singleton
+        DIManagedPathOverrideResource provide() {
+            return new DIManagedPathOverrideResource("DILABEL");
         }
     }
 }
