@@ -21,8 +21,6 @@ package io.bootique.jersey.jackson;
 
 import io.bootique.jersey.JerseyModule;
 import io.bootique.test.junit.BQTestFactory;
-import org.glassfish.jersey.client.ClientConfig;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -30,7 +28,6 @@ import org.junit.Test;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -43,7 +40,7 @@ public class BQJerseyJacksonIT {
     @ClassRule
     public static BQTestFactory TEST_FACTORY = new BQTestFactory().autoLoadModules();
 
-    private Client client;
+    private static WebTarget target = ClientBuilder.newClient().target("http://127.0.0.1:8080/");
 
     @BeforeClass
     public static void startJetty() {
@@ -53,16 +50,8 @@ public class BQJerseyJacksonIT {
                 .run();
     }
 
-    @Before
-    public void before() {
-        ClientConfig config = new ClientConfig();
-        this.client = ClientBuilder.newClient(config);
-    }
-
     @Test
     public void testJacksonSerialization() {
-        WebTarget target = client.target("http://127.0.0.1:8080/");
-
         Response r1 = target.request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("{\"p1\":\"s\",\"p2\":45}", r1.readEntity(String.class));

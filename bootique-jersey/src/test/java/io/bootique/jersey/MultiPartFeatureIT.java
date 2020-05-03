@@ -21,12 +21,10 @@ package io.bootique.jersey;
 
 import io.bootique.di.BQModule;
 import io.bootique.test.junit.BQTestFactory;
-import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -35,9 +33,9 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -50,7 +48,11 @@ public class MultiPartFeatureIT {
     @ClassRule
     public static BQTestFactory TEST_FACTORY = new BQTestFactory().autoLoadModules();
 
-    private Client multiPartClient;
+    private WebTarget multiPartTarget = ClientBuilder
+            .newBuilder()
+            .register(MultiPartFeature.class)
+            .build()
+            .target("http://127.0.0.1:8080/");
 
     @BeforeClass
     public static void startJetty() {
@@ -61,13 +63,6 @@ public class MultiPartFeatureIT {
         return b -> JerseyModule.extend(b).addFeature(MultiPartFeature.class).addResource(Resource.class);
     }
 
-    @Before
-    public void before() {
-        ClientConfig config = new ClientConfig();
-        config.register(MultiPartFeature.class);
-        this.multiPartClient = ClientBuilder.newClient(config);
-    }
-
     @Test
     public void testResponse() {
 
@@ -75,7 +70,8 @@ public class MultiPartFeatureIT {
         FormDataMultiPart multipart = new FormDataMultiPart();
         multipart.bodyPart(part);
 
-        Response r = multiPartClient.target("http://127.0.0.1:8080/").request(MediaType.APPLICATION_JSON)
+        Response r = multiPartTarget
+                .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(multipart, multipart.getMediaType()));
 
         assertEquals(Status.OK.getStatusCode(), r.getStatus());

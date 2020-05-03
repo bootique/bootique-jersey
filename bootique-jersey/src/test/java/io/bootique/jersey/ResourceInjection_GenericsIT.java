@@ -20,13 +20,12 @@
 package io.bootique.jersey;
 
 import io.bootique.di.BQInject;
+import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.di.Key;
-import io.bootique.di.BQModule;
 import io.bootique.di.Provides;
 import io.bootique.di.TypeLiteral;
 import io.bootique.test.junit.BQTestFactory;
-import org.glassfish.jersey.client.ClientConfig;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -35,12 +34,10 @@ import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -51,7 +48,8 @@ public class ResourceInjection_GenericsIT {
     private static final S1<Integer> INT_BOUND = new S1<>(4);
     private static final int[] INT_ARRAY_BOUND = {1, 2, 3};
     private static final String[] STRING_ARRAY_BOUND = {"a, b, c"};
-    private static final Client CLIENT = ClientBuilder.newClient(new ClientConfig());
+
+    private static final WebTarget target = ClientBuilder.newClient().target("http://127.0.0.1:8080");
 
     @Rule
     public BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
@@ -67,9 +65,7 @@ public class ResourceInjection_GenericsIT {
                 })
                 .run();
 
-        WebTarget target = CLIENT.target("http://127.0.0.1:8080/if");
-
-        Response r = target.request().get();
+        Response r = target.path("if").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
         assertEquals("if_4_sss", r.readEntity(String.class));
         r.close();
@@ -85,9 +81,8 @@ public class ResourceInjection_GenericsIT {
                 })
                 .run();
 
-        WebTarget target = CLIENT.target("http://127.0.0.1:8080/iw");
 
-        Response r = target.request().get();
+        Response r = target.path("iw").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
         assertEquals("iw_sss", r.readEntity(String.class));
         r.close();
@@ -103,9 +98,7 @@ public class ResourceInjection_GenericsIT {
                 })
                 .run();
 
-        WebTarget target = CLIENT.target("http://127.0.0.1:8080/iw");
-
-        Response r = target.request().get();
+        Response r = target.path("iw").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
         assertEquals("iw_sss", r.readEntity(String.class));
         r.close();
@@ -123,9 +116,7 @@ public class ResourceInjection_GenericsIT {
                 })
                 .run();
 
-        WebTarget target = CLIENT.target("http://127.0.0.1:8080/ia");
-
-        Response r = target.request().get();
+        Response r = target.path("ia").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
         assertEquals("ia_[a, b, c]_[1, 2, 3]", r.readEntity(String.class));
         r.close();
@@ -143,9 +134,7 @@ public class ResourceInjection_GenericsIT {
                 })
                 .run();
 
-        WebTarget target = CLIENT.target("http://127.0.0.1:8080/uf");
-
-        Response r = target.request().get();
+        Response r = target.path("uf").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
         assertEquals("uf_4_sss", r.readEntity(String.class));
         r.close();
@@ -162,9 +151,7 @@ public class ResourceInjection_GenericsIT {
                 })
                 .run();
 
-        WebTarget target = CLIENT.target("http://127.0.0.1:8080/uw");
-
-        Response r = target.request().get();
+        Response r = target.path("uw").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
         assertEquals("uw_sss", r.readEntity(String.class));
         r.close();
@@ -181,9 +168,7 @@ public class ResourceInjection_GenericsIT {
                 })
                 .run();
 
-        WebTarget target = CLIENT.target("http://127.0.0.1:8080/uw");
-
-        Response r = target.request().get();
+        Response r = target.path("uw").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
         assertEquals("uw_sss", r.readEntity(String.class));
         r.close();
@@ -201,9 +186,7 @@ public class ResourceInjection_GenericsIT {
                 })
                 .run();
 
-        WebTarget target = CLIENT.target("http://127.0.0.1:8080/ua");
-
-        Response r = target.request().get();
+        Response r = target.path("ua").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
         assertEquals("ua_[a, b, c]_[1, 2, 3]", r.readEntity(String.class));
         r.close();
