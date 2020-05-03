@@ -44,8 +44,7 @@ public void configure(Binder binder) {
 }
 ```
 
-Additionally include object-to-JSON serialization capabilities:
-
+Additionally automated annotation-driven object-to-JSON serialization capabilities:
 ```xml
 <dependency>
 	<groupId>io.bootique.jersey</groupId>
