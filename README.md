@@ -37,6 +37,13 @@ Add Jersey server capabilities to your Bootique app:
 </dependency>
 ```
 
+Add a package with API endpoints:
+```java
+public void configure(Binder binder) {
+    JerseyModule.extend(binder).addPackage(MyApi.class);
+}
+```
+
 Additionally include object-to-JSON serialization capabilities:
 
 ```xml
