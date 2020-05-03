@@ -31,9 +31,9 @@
     <artifactId>bootique-jersey-jackson</artifactId>
     <packaging>jar</packaging>
 
-    <name>bootique-jersey-jackson: Integration of jersey-media-json-jackson into Bootique stack.</name>
+    <name>bootique-jersey-jackson: adds JSON serialization to bootique-jersey</name>
     <description>
-        Provides integration of jersey-media-json-jackson into Bootique stack. Namely version conflict resolution.
+        Adds JSON serialization to bootique-jersey. Provides non-trival Jackson dependency conflicts resolution.
     </description>
 
     <dependencies>

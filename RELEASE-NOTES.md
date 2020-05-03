@@ -6,6 +6,7 @@
 * #49 Upgrade to Jersey 2.30.1
 * #50 Integrate 'jersey-bean-validation'
 * #51 Resources with dynamically defined paths
+* #52 Configurable JSON serialization
 
 ## 1.0.RC1
 

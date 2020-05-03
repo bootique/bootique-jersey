@@ -27,7 +27,32 @@ This provides the necessary API to create REST services and consume someone else
 ## Jersey Server
 
 Integrates JAX-RS server as a servlet in Bootique. See usage example
-[bootique-rest-demo](https://github.com/bootique-examples/bootique-rest-demo).
+[bootique-rest-demo](https://github.com/bootique-examples/bootique-rest-demo). A few quick tips"
+
+Add Jersey server capabilities to your Bootique app:
+```xml
+<dependency>
+	<groupId>io.bootique.jersey</groupId>
+	<artifactId>bootique-jersey</artifactId>
+</dependency>
+```
+
+Additionally include object-to-JSON serialization capabilities to your Bootique app:
+
+```xml
+<dependency>
+	<groupId>io.bootique.jersey</groupId>
+	<artifactId>bootique-jersey-jackson</artifactId>
+</dependency>
+```
+
+Exclude null properties from JSON responses:
+
+```java
+public void configure(Binder binder) {
+    JerseyJacksonModule.extend(binder).skipNullProperties();
+}
+```
 
 ## Jersey Client
 
