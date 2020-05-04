@@ -40,8 +40,9 @@ public class JerseyJacksonModuleExtender {
      */
     public JerseyJacksonModuleExtender skipNullProperties() {
         JerseyModule.extend(binder).addFeature(c -> {
-            // we must use a subclass of JacksonJaxbJsonProvider, as otherwise provider overriding doesn't happen
-            c.register(BQJacksonJaxbJsonProvider.create(JsonInclude.Include.NON_NULL));
+            // we must use a subclass of JacksonJaxbJsonProvider, as the class is used as a key in service registry
+            // also superclass's priority is "no priority" (-1), so use something else to override it.
+            c.register(BQJacksonJaxbJsonProvider.create(JsonInclude.Include.NON_NULL), 2);
             return true;
         });
 
