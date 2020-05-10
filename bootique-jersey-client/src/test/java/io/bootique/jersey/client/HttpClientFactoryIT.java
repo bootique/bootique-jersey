@@ -50,7 +50,7 @@ public class HttpClientFactoryIT {
     public static void beforeClass() {
         SERVER_FACTORY.app("--server")
                 .modules(JettyModule.class, JerseyModule.class)
-                .module(new LogbackModuleProvider())
+                .moduleProvider(new LogbackModuleProvider())
                 .module(b -> JerseyModule.extend(b).addResource(Resource.class))
                 .run();
     }
@@ -59,8 +59,8 @@ public class HttpClientFactoryIT {
     public void testNewClient() {
         HttpClientFactory factory =
                 clientFactory.app()
-                        .module(new JerseyClientModuleProvider())
-                        .module(new LogbackModuleProvider())
+                        .moduleProvider(new JerseyClientModuleProvider())
+                        .moduleProvider(new LogbackModuleProvider())
                         .createRuntime()
                         .getInstance(HttpClientFactory.class);
 
@@ -75,8 +75,8 @@ public class HttpClientFactoryIT {
     public void testNewClientAuth() {
         HttpClientFactory factory =
                 clientFactory.app()
-                        .module(new JerseyClientModuleProvider())
-                        .module(new LogbackModuleProvider())
+                        .moduleProvider(new JerseyClientModuleProvider())
+                        .moduleProvider(new LogbackModuleProvider())
                         .property("bq.jerseyclient.auth.auth1.type", "basic")
                         .property("bq.jerseyclient.auth.auth1.username", "u")
                         .property("bq.jerseyclient.auth.auth1.password", "p")

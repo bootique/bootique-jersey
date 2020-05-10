@@ -41,7 +41,7 @@ public class JerseyClientInstrumentedModuleProviderTest {
 
     @Test
     public void testModuleDeclaresDependencies() {
-        final BQRuntime bqRuntime = testFactory.app().module(new JerseyClientInstrumentedModuleProvider()).createRuntime();
+        final BQRuntime bqRuntime = testFactory.app().moduleProvider(new JerseyClientInstrumentedModuleProvider()).createRuntime();
         BQRuntimeChecker.testModulesLoaded(bqRuntime,
                 JerseyClientModule.class,
                 JerseyClientInstrumentedModule.class,

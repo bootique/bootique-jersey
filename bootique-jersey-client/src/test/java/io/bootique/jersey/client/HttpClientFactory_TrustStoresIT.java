@@ -51,7 +51,7 @@ public class HttpClientFactory_TrustStoresIT {
     public static void beforeClass() {
         SERVER_FACTORY.app("-s", "-c", "classpath:io/bootique/jersey/client/TrustStoresIT_server.yml")
                 .modules(JettyModule.class, JerseyModule.class)
-                .module(new LogbackModuleProvider())
+                .moduleProvider(new LogbackModuleProvider())
                 .module(b -> JerseyModule.extend(b).addResource(Resource.class))
                 .run();
     }
@@ -61,8 +61,8 @@ public class HttpClientFactory_TrustStoresIT {
 
         HttpClientFactory factory = clientFactory
                 .app("-c", "classpath:io/bootique/jersey/client/TrustStoresIT_client.yml")
-                .module(new JerseyClientModuleProvider())
-                .module(new LogbackModuleProvider())
+                .moduleProvider(new JerseyClientModuleProvider())
+                .moduleProvider(new LogbackModuleProvider())
                 .createRuntime()
                 .getInstance(HttpClientFactory.class);
 
@@ -91,8 +91,8 @@ public class HttpClientFactory_TrustStoresIT {
 
         HttpClientFactory factory = clientFactory
                 .app("-c", "classpath:io/bootique/jersey/client/TrustStoresIT_client.yml")
-                .module(new JerseyClientModuleProvider())
-                .module(new LogbackModuleProvider())
+                .moduleProvider(new JerseyClientModuleProvider())
+                .moduleProvider(new LogbackModuleProvider())
                 .createRuntime()
                 .getInstance(HttpClientFactory.class);
 

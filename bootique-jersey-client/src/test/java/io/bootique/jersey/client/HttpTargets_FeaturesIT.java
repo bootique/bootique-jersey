@@ -56,7 +56,7 @@ public class HttpTargets_FeaturesIT {
     public static void beforeClass() {
         SERVER_FACTORY.app("--server")
                 .modules(JettyModule.class, JerseyModule.class)
-                .module(new LogbackModuleProvider())
+                .moduleProvider(new LogbackModuleProvider())
                 .module(b -> JerseyModule.extend(b).addResource(Resource.class))
                 .run();
     }
@@ -65,8 +65,8 @@ public class HttpTargets_FeaturesIT {
     public void testFeatures() {
         HttpTargets targets =
                 clientFactory.app()
-                        .module(new JerseyClientModuleProvider())
-                        .module(new LogbackModuleProvider())
+                        .moduleProvider(new JerseyClientModuleProvider())
+                        .moduleProvider(new LogbackModuleProvider())
                         .property("bq.jerseyclient.targets.t.url", "http://127.0.0.1:8080/get")
                         .createRuntime()
                         .getInstance(HttpTargets.class);

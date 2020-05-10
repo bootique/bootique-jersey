@@ -53,7 +53,7 @@ public class HttpTargetsIT {
     public static void beforeClass() {
         SERVER_FACTORY.app("--server")
                 .modules(JettyModule.class, JerseyModule.class)
-                .module(new LogbackModuleProvider())
+                .moduleProvider(new LogbackModuleProvider())
                 .module(b -> JerseyModule.extend(b).addResource(Resource.class))
                 .run();
     }
@@ -62,8 +62,8 @@ public class HttpTargetsIT {
     public void testNewTarget() {
         HttpTargets targets =
                 clientFactory.app()
-                        .module(new JerseyClientModuleProvider())
-                        .module(new LogbackModuleProvider())
+                        .moduleProvider(new JerseyClientModuleProvider())
+                        .moduleProvider(new LogbackModuleProvider())
                         .property("bq.jerseyclient.targets.t1.url", "http://127.0.0.1:8080/get")
                         .createRuntime()
                         .getInstance(HttpTargets.class);
@@ -83,8 +83,8 @@ public class HttpTargetsIT {
     public void testNewTarget_Auth() {
         HttpTargets targets =
                 clientFactory.app()
-                        .module(new JerseyClientModuleProvider())
-                        .module(new LogbackModuleProvider())
+                        .moduleProvider(new JerseyClientModuleProvider())
+                        .moduleProvider(new LogbackModuleProvider())
                         .property("bq.jerseyclient.auth.a1.type", "basic")
                         .property("bq.jerseyclient.auth.a1.username", "u")
                         .property("bq.jerseyclient.auth.a1.password", "p")
@@ -197,8 +197,8 @@ public class HttpTargetsIT {
 
             BQTestFactory.Builder builder =
                     clientFactory.app()
-                            .module(new JerseyClientModuleProvider())
-                            .module(new LogbackModuleProvider())
+                            .moduleProvider(new JerseyClientModuleProvider())
+                            .moduleProvider(new LogbackModuleProvider())
                             .property("bq.jerseyclient.targets.t.url", "http://127.0.0.1:8080/302");
 
             if (clientRedirects != null) {
@@ -238,8 +238,8 @@ public class HttpTargetsIT {
 
             BQTestFactory.Builder builder =
                     clientFactory.app()
-                            .module(new JerseyClientModuleProvider())
-                            .module(new LogbackModuleProvider())
+                            .moduleProvider(new JerseyClientModuleProvider())
+                            .moduleProvider(new LogbackModuleProvider())
                             .property("bq.jerseyclient.targets.t.url", "http://127.0.0.1:8080/getbig");
 
             if (clientCompression != null) {

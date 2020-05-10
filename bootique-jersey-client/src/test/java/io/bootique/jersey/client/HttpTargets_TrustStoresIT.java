@@ -53,7 +53,7 @@ public class HttpTargets_TrustStoresIT {
     public static void beforeClass() {
         SERVER_FACTORY.app("-s", "-c", "classpath:io/bootique/jersey/client/TrustStoresIT_server.yml")
                 .modules(JettyModule.class, JerseyModule.class)
-                .module(new LogbackModuleProvider())
+                .moduleProvider(new LogbackModuleProvider())
                 .module(b -> JerseyModule.extend(b).addResource(Resource.class))
                 .run();
     }
@@ -63,8 +63,8 @@ public class HttpTargets_TrustStoresIT {
 
         HttpTargets targets =
                 clientFactory.app()
-                        .module(new JerseyClientModuleProvider())
-                        .module(new LogbackModuleProvider())
+                        .moduleProvider(new JerseyClientModuleProvider())
+                        .moduleProvider(new LogbackModuleProvider())
                         .property("bq.jerseyclient.trustStores.ts1.location", CLIENT_TRUST_STORE)
                         .property("bq.jerseyclient.targets.t.url", SERVICE_URL)
                         .property("bq.jerseyclient.targets.t.trustStore", "ts1")
@@ -80,8 +80,8 @@ public class HttpTargets_TrustStoresIT {
 
         HttpTargets targets =
                 clientFactory.app()
-                        .module(new JerseyClientModuleProvider())
-                        .module(new LogbackModuleProvider())
+                        .moduleProvider(new JerseyClientModuleProvider())
+                        .moduleProvider(new LogbackModuleProvider())
                         .property("bq.jerseyclient.trustStores.ts1.location", CLIENT_TRUST_STORE)
                         .property("bq.jerseyclient.targets.t.url", SERVICE_URL)
                         .property("bq.jerseyclient.targets.t.trustStore", "ts1")
@@ -96,8 +96,8 @@ public class HttpTargets_TrustStoresIT {
     public void testNamedTrustStore_InvalidRef() {
 
         clientFactory.app()
-                .module(new JerseyClientModuleProvider())
-                .module(new LogbackModuleProvider())
+                .moduleProvider(new JerseyClientModuleProvider())
+                .moduleProvider(new LogbackModuleProvider())
                 .property("bq.jerseyclient.targets.t.url", SERVICE_URL)
                 .property("bq.jerseyclient.targets.t.trustStore", "ts1")
                 .createRuntime()
