@@ -23,19 +23,19 @@ import io.bootique.BQRuntime;
 import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
 import io.bootique.jetty.MappedServlet;
-import io.bootique.test.junit.BQTestFactory;
+import io.bootique.junit5.BQTestFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class JerseyModuleIT {
 
-    @Rule
-    public BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
+    @RegisterExtension
+    final BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
 
     @Test
     public void testDefaultContents() {

@@ -19,34 +19,47 @@
 
 package io.bootique.jersey.jackson;
 
+import io.bootique.BQRuntime;
+import io.bootique.di.BQModule;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.Rule;
-import org.junit.Test;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.TestRuntumeBuilder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.junit.Assert.assertEquals;
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BQJerseyJackson_NullsIT {
 
-    private static WebTarget target = ClientBuilder.newClient().target("http://127.0.0.1:8080/");
-    @Rule
-    public BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
+    @RegisterExtension
+    final BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
+
+    protected WebTarget startServer(BQModule... modules) {
+        TestRuntumeBuilder builder = testFactory
+                .app("-s")
+                .module(JettyTester.moduleReplacingConnectors());
+
+        asList(modules).forEach(builder::module);
+
+        BQRuntime server = builder.createRuntime();
+        assertTrue(server.run().isSuccess());
+        return JettyTester.getTarget(server);
+    }
 
     @Test
     public void testPrintNulls() {
 
-        testFactory.app("-s")
-                .autoLoadModules()
-                .module(binder -> JerseyModule.extend(binder).addResource(JsonResource.class))
-                .run();
+        WebTarget target = startServer(b -> JerseyModule.extend(b).addResource(JsonResource.class));
 
         Response r = target.request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
@@ -56,11 +69,9 @@ public class BQJerseyJackson_NullsIT {
     @Test
     public void testIgnoreNulls() {
 
-        testFactory.app("-s")
-                .autoLoadModules()
-                .module(b -> JerseyModule.extend(b).addResource(JsonResource.class))
-                .module(b -> JerseyJacksonModule.extend(b).skipNullProperties())
-                .run();
+        WebTarget target = startServer(
+                b -> JerseyModule.extend(b).addResource(JsonResource.class),
+                b -> JerseyJacksonModule.extend(b).skipNullProperties());
 
         Response r = target.request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());

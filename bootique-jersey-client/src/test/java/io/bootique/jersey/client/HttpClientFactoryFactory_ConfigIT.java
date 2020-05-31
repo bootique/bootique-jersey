@@ -31,20 +31,20 @@ import io.bootique.jackson.JacksonService;
 import io.bootique.jersey.client.auth.AuthenticatorFactory;
 import io.bootique.jersey.client.auth.BasicAuthenticatorFactory;
 import io.bootique.log.DefaultBootLogger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HttpClientFactoryFactory_ConfigIT {
 
     private TypesFactory<PolymorphicConfiguration> typesFactory;
 
-    @Before
+    @BeforeEach
     public void before() {
         typesFactory = new TypesFactory<>(
                 getClass().getClassLoader(),

@@ -19,17 +19,18 @@
 
 package io.bootique.jersey;
 
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Context;
@@ -38,55 +39,47 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@BQTest
 public class ResourceInjectionIT {
 
     private static final String TEST_PROPERTY = "bq.test.label";
+    private static final InjectedService service = new InjectedService();
 
-    @ClassRule
-    public static BQTestFactory TEST_FACTORY = new BQTestFactory().autoLoadModules();
+    @BQApp
+    static final BQRuntime app = Bootique.app("-s")
+            .autoLoadModules()
+            .module(b -> b.bind(InjectedService.class).toInstance(service))
+            .module(b -> b.bind(UnInjectedResource.class).toProviderInstance(() -> new UnInjectedResource(service)))
+            .module(b -> JerseyModule.extend(b)
+                    .addFeature(ctx -> {
+                        ctx.property(TEST_PROPERTY, "x");
+                        return false;
+                    })
+                    .addResource(FieldInjectedResource.class)
+                    .addResource(ConstructorInjectedResource.class)
+                    .addResource(UnInjectedResource.class))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
-    private static InjectedService SERVICE;
-    private static final WebTarget target = ClientBuilder.newClient().target("http://127.0.0.1:8080");
 
-    @BeforeClass
-    public static void startJetty() {
+    private static final WebTarget client = JettyTester.getTarget(app);
 
-        SERVICE = new InjectedService();
-
-        TEST_FACTORY.app("-s")
-                .module(binder -> {
-                    binder.bind(InjectedService.class).toInstance(SERVICE);
-                    JerseyModule.extend(binder)
-                            .addFeature(ctx -> {
-                                ctx.property(TEST_PROPERTY, "x");
-                                return false;
-                            })
-                            .addResource(FieldInjectedResource.class)
-                            .addResource(ConstructorInjectedResource.class)
-                            .addResource(UnInjectedResource.class);
-
-                    binder.bind(UnInjectedResource.class).toProviderInstance(() -> new UnInjectedResource(SERVICE));
-
-                })
-                .run();
-    }
-
-    @Before
+    @BeforeEach
     public void before() {
-        SERVICE.reset();
+        service.reset();
     }
 
     @Test
     public void testFieldInjected() {
 
-        Response r1 = target.path("f").request().get();
+        Response r1 = client.path("f").request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("f_1_x", r1.readEntity(String.class));
         r1.close();
 
-        Response r2 = target.path("f").request().get();
+        Response r2 = client.path("f").request().get();
         assertEquals(Status.OK.getStatusCode(), r2.getStatus());
         assertEquals("f_2_x", r2.readEntity(String.class));
         r2.close();
@@ -95,12 +88,12 @@ public class ResourceInjectionIT {
     @Test
     public void testConstructorInjected() {
 
-        Response r1 = target.path("c").request().get();
+        Response r1 = client.path("c").request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("c_1_x", r1.readEntity(String.class));
         r1.close();
 
-        Response r2 = target.path("c").request().get();
+        Response r2 = client.path("c").request().get();
         assertEquals(Status.OK.getStatusCode(), r2.getStatus());
         assertEquals("c_2_x", r2.readEntity(String.class));
         r2.close();
@@ -109,12 +102,12 @@ public class ResourceInjectionIT {
     @Test
     public void testProviderForResource() {
 
-        Response r1 = target.path("u").request().get();
+        Response r1 = client.path("u").request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("u_1_x", r1.readEntity(String.class));
         r1.close();
 
-        Response r2 = target.path("u").request().get();
+        Response r2 = client.path("u").request().get();
         assertEquals(Status.OK.getStatusCode(), r2.getStatus());
         assertEquals("u_2_x", r2.readEntity(String.class));
         r2.close();

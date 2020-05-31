@@ -18,13 +18,16 @@
  */
 package io.bootique.jersey.client.auth;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jersey.client.HttpTargets;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestFactory;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -34,76 +37,64 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.junit.Assert.assertEquals;
-
+@BQTest
 public class ApiKeyParameterAuthenticatorIT {
 
-    @ClassRule
-    public static BQTestFactory testFactory = new BQTestFactory();
+    // TODO: using port 8080 on the server as it is configured for the client targets
 
-    @Rule
-    public BQTestFactory clientTestFactory = new BQTestFactory();
+    @BQApp
+    static final BQRuntime server = Bootique.app("-s")
+            .autoLoadModules()
+            .module((binder) -> JerseyModule.extend(binder).addResource(ProtectedApi.class))
+            .createRuntime();
 
-    @BeforeClass
-    public static void beforeClass() {
-        testFactory
-                .app("-s")
-                .autoLoadModules()
-                .module((binder) -> JerseyModule.extend(binder).addResource(ProtectedApi.class))
-                .run();
-    }
+    @RegisterExtension
+    final BQTestFactory clientTestFactory = new BQTestFactory();
 
-    private WebTarget clientTarget(String name) {
+    private WebTarget startClient(String targetName) {
         return clientTestFactory.app("-c", "classpath:io/bootique/jersey/client/auth/ApiKeyParameterAuthenticatorIT.yml")
                 .autoLoadModules()
                 .createRuntime()
                 .getInstance(HttpTargets.class)
-                .newTarget(name);
+                .newTarget(targetName);
     }
 
     @Test
     public void testValidAuth() {
-
-        Response response = clientTarget("valid")
+        Response response = startClient("valid")
                 .request()
                 .get();
 
-        assertEquals(200, response.getStatus());
-        assertEquals("VALID", response.readEntity(String.class));
+        JettyTester.assertOk(response).assertContent("VALID");
     }
 
     @Test
     public void testValidAuthWithParams() {
-
-        Response response = clientTarget("valid")
+        Response response = startClient("valid")
                 .queryParam("x", "y")
                 .request()
                 .get();
 
-        assertEquals(200, response.getStatus());
-        assertEquals("VALID;x=y", response.readEntity(String.class));
+        JettyTester.assertOk(response).assertContent("VALID;x=y");
     }
 
     @Test
     public void testInvalidAuth() {
-
-        Response response = clientTarget("invalid")
+        Response response = startClient("invalid")
                 .request()
                 .get();
 
-        assertEquals(401, response.getStatus());
-        assertEquals("INVALID: invalid", response.readEntity(String.class));
+        JettyTester.assertStatus(response, 401).assertContent("INVALID: invalid");
     }
 
     @Test
     public void testCustomParameter() {
 
-        Response response = clientTarget("customValid")
+        Response response = startClient("customValid")
                 .request()
                 .get();
 
-        assertEquals(200, response.getStatus());
-        assertEquals("VALID", response.readEntity(String.class));
+        JettyTester.assertOk(response).assertContent("VALID");
     }
 
     @Path("/")

@@ -20,35 +20,30 @@
 package io.bootique.jersey.client;
 
 import io.bootique.BQRuntime;
-import io.bootique.meta.config.ConfigListMetadata;
-import io.bootique.meta.config.ConfigMapMetadata;
-import io.bootique.meta.config.ConfigMetadataNode;
-import io.bootique.meta.config.ConfigMetadataVisitor;
-import io.bootique.meta.config.ConfigObjectMetadata;
-import io.bootique.meta.config.ConfigValueMetadata;
+import io.bootique.Bootique;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import io.bootique.meta.config.*;
 import io.bootique.meta.module.ModuleMetadata;
 import io.bootique.meta.module.ModulesMetadata;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@BQTest
 public class JerseyClientModuleProvider_MetadataIT {
 
-    @Rule
-    public BQTestFactory testFactory = new BQTestFactory();
+    @BQApp(skipRun = true)
+    static final BQRuntime app = Bootique.app().autoLoadModules().createRuntime();
 
     @Test
     public void testMetadata() {
 
-        BQRuntime runtime = testFactory.app().autoLoadModules().createRuntime();
-
-        ModulesMetadata modulesMetadata = runtime.getInstance(ModulesMetadata.class);
+        ModulesMetadata modulesMetadata = app.getInstance(ModulesMetadata.class);
         Optional<ModuleMetadata> jerseyClientOpt = modulesMetadata.getModules()
                 .stream()
                 .filter(m -> "JerseyClientModule".equals(m.getName()))

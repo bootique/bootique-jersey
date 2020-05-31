@@ -18,25 +18,24 @@
  */
 package io.bootique.jersey;
 
+import io.bootique.BQRuntime;
 import io.bootique.di.BQInject;
+import io.bootique.di.BQModule;
 import io.bootique.di.Injector;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.Rule;
-import org.junit.Test;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.TestRuntumeBuilder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 import java.io.InputStream;
@@ -45,76 +44,81 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-import static org.junit.Assert.assertEquals;
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MessageBodyReaderIT {
 
     private static final String TEST_PROPERTY = "bq.test.label";
-    private static final WebTarget target = ClientBuilder.newClient().target("http://127.0.0.1:8080/");
 
-    @Rule
-    public BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
+    @RegisterExtension
+    final BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
+
+    protected WebTarget startServer(BQModule... modules) {
+        TestRuntumeBuilder builder = testFactory
+                .app("-s")
+                .module(JettyTester.moduleReplacingConnectors());
+
+        asList(modules).forEach(builder::module);
+
+        BQRuntime server = builder.createRuntime();
+        assertTrue(server.run().isSuccess());
+        return JettyTester.getTarget(server);
+    }
 
     @Test
     public void testReaderWithContextInjection() {
-        testFactory.app("-s")
-                .module(b -> JerseyModule.extend(b)
-                        .addResource(Resource.class)
-                        .addFeature(fc -> {
-                            fc.property(TEST_PROPERTY, "x");
-                            fc.register(MessageReaderWithContextInjection.class);
-                            return false;
-                        }))
-                .run();
 
-        Response ok = target.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
-        assertEquals(200, ok.getStatus());
-        assertEquals("x_m", ok.readEntity(String.class));
+        WebTarget client = startServer(b -> JerseyModule.extend(b)
+                .addResource(Resource.class)
+                .addFeature(fc -> {
+                    fc.property(TEST_PROPERTY, "x");
+                    fc.register(MessageReaderWithContextInjection.class);
+                    return false;
+                }));
+
+        Response ok = client.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
+        JettyTester.assertOk(ok).assertContent("x_m");
     }
 
     @Test
     public void testReaderWithBqInjection() {
-        testFactory.app("-s")
-                .module(b -> JerseyModule.extend(b)
+        WebTarget client = startServer(
+                b -> JerseyModule.extend(b)
                         .addResource(Resource.class)
-                        .addResource(MessageReaderWithInjection.class))
-                .module(b -> b.bind(Service.class))
-                .run();
+                        .addResource(MessageReaderWithInjection.class),
+                b -> b.bind(Service.class));
 
-        Response ok = target.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
-        assertEquals(200, ok.getStatus());
-        assertEquals("s_m", ok.readEntity(String.class));
+        Response ok = client.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
+        JettyTester.assertOk(ok).assertContent("s_m");
     }
 
     @Test
     public void testReaderWithDynamicBqInjection() {
-        testFactory.app("-s")
-                .module(b -> JerseyModule.extend(b)
+        WebTarget client = startServer(
+                b -> JerseyModule.extend(b)
                         .addResource(Resource.class)
-                        .addResource(MessageReaderWithDynamicBeanInjection.class))
-                .run();
+                        .addResource(MessageReaderWithDynamicBeanInjection.class));
 
-        Response ok = target.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
-        assertEquals(200, ok.getStatus());
-        assertEquals("b_m", ok.readEntity(String.class));
+        Response ok = client.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
+        JettyTester.assertOk(ok).assertContent("b_m");
     }
 
     @Test
     public void testReaderWithAllInjections() {
-        testFactory.app("-s")
-                .module(b -> JerseyModule.extend(b)
+        WebTarget client = startServer(
+                b -> JerseyModule.extend(b)
                         .addResource(Resource.class)
                         .addFeature(fc -> {
                             fc.property(TEST_PROPERTY, "x");
                             fc.register(MessageReaderWithAllInjections.class);
                             return false;
-                        }))
-                .module(b -> b.bind(Service.class))
-                .run();
+                        }),
+                b -> b.bind(Service.class));
 
-        Response ok = target.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
-        assertEquals(200, ok.getStatus());
-        assertEquals("x_b_s_m_s", ok.readEntity(String.class));
+        Response ok = client.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
+        JettyTester.assertOk(ok).assertContent("x_b_s_m_s");
     }
 
     @Provider

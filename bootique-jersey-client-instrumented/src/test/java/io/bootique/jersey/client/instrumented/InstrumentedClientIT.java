@@ -22,15 +22,19 @@ package io.bootique.jersey.client.instrumented;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jersey.client.HttpClientFactory;
 import io.bootique.jetty.JettyModule;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import io.bootique.jetty.connector.PortFinder;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.jetty.server.ServerHolder;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -45,42 +49,43 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
+@BQTest
 public class InstrumentedClientIT {
 
-    @ClassRule
-    public static BQTestFactory SERVER_APP_FACTORY = new BQTestFactory();
+    @BQApp
+    static final BQRuntime server = Bootique.app("--server")
+            .modules(JettyModule.class, JerseyModule.class)
+            .module(binder -> JerseyModule.extend(binder).addResource(Resource.class))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
-    @Rule
-    public BQTestFactory clientFactory = new BQTestFactory();
-    private BQRuntime app;
+    static final String getUrl = JettyTester.getServerUrl(server) + "/get";
+    static final String get500Url = JettyTester.getServerUrl(server) + "/get500";
 
-    @BeforeClass
-    public static void beforeClass() {
-        SERVER_APP_FACTORY.app("--server")
-                .modules(JettyModule.class, JerseyModule.class)
-                .module(binder -> JerseyModule.extend(binder).addResource(Resource.class))
-                .run();
+    @RegisterExtension
+    final BQTestFactory testFactory = new BQTestFactory();
+    BQRuntime client;
+
+    private static String getUrlBadPort(String getUrl) {
+        ServerHolder serverHolder = server.getInstance(ServerHolder.class);
+        int goodPort = serverHolder.getConnector().getPort();
+        int badPort = PortFinder.findAvailablePort(serverHolder.getConnector().getHost());
+        return getUrl.replace(":" + goodPort, ":" + badPort);
     }
 
-    @Before
-    public void before() {
-        this.app = clientFactory
-                .app()
-                .autoLoadModules()
-                .createRuntime();
+    @BeforeEach
+    public void resetClient() {
+        // important to recreate the client app before every test as it starts with zero metrics counters
+        client = testFactory.app().autoLoadModules().createRuntime();
     }
 
     @Test
     public void testMetrics() {
-
         // fault filter to init metrics
-        app.getInstance(ClientTimingFilter.class);
-
-        MetricRegistry metricRegistry = app.getInstance(MetricRegistry.class);
-
+        client.getInstance(ClientTimingFilter.class);
+        MetricRegistry metricRegistry = client.getInstance(MetricRegistry.class);
         Set<String> expectedTimers = new HashSet<>(asList("bq.JerseyClient.Client.RequestTimer"));
         assertEquals(expectedTimers, metricRegistry.getTimers().keySet());
     }
@@ -88,62 +93,54 @@ public class InstrumentedClientIT {
     @Test
     public void testTimerInvoked() {
 
-        HttpClientFactory factory = app.getInstance(HttpClientFactory.class);
-
-        MetricRegistry metrics = app.getInstance(MetricRegistry.class);
+        HttpClientFactory factory = client.getInstance(HttpClientFactory.class);
+        MetricRegistry metrics = client.getInstance(MetricRegistry.class);
 
         Collection<Timer> timers = metrics.getTimers().values();
         assertEquals(1, timers.size());
         Timer timer = timers.iterator().next();
         assertEquals(0, timer.getCount());
 
-        factory.newClient().target("http://127.0.0.1:8080/get").request().get().close();
+        factory.newClient().target(getUrl).request().get().close();
         assertEquals(1, timer.getCount());
 
-        factory.newClient().target("http://127.0.0.1:8080/get").request().get().close();
+        factory.newClient().target(getUrl).request().get().close();
         assertEquals(2, timer.getCount());
     }
 
     @Test
     public void testTimer_ConnectionError() {
 
-        Client client = app.getInstance(HttpClientFactory.class).newClient();
-
-        MetricRegistry metrics = app.getInstance(MetricRegistry.class);
+        Client jaxrsClient = client.getInstance(HttpClientFactory.class).newClient();
+        MetricRegistry metrics = client.getInstance(MetricRegistry.class);
 
         Collection<Timer> timers = metrics.getTimers().values();
         assertEquals(1, timers.size());
         Timer timer = timers.iterator().next();
         assertEquals(0, timer.getCount());
 
-        // bad request: assuming nothing listens on port=8081
-        try {
-            client.target("http://127.0.0.1:8081/get").request().get().close();
-            fail("Exception expected");
-        } catch (ProcessingException e) {
-            // ignore...
-        }
-
+        // bad request
+        String badPortUrl = getUrlBadPort(getUrl);
+        assertThrows(ProcessingException.class, () -> jaxrsClient.target(badPortUrl).request().get().close());
         assertEquals(0, timer.getCount());
 
         // successful request
-        client.target("http://127.0.0.1:8080/get").request().get().close();
+        jaxrsClient.target(getUrl).request().get().close();
         assertEquals(1, timer.getCount());
     }
 
     @Test
     public void testTimer_ServerErrors() {
 
-        Client client = app.getInstance(HttpClientFactory.class).newClient();
-
-        MetricRegistry metrics = app.getInstance(MetricRegistry.class);
+        Client jaxrsClient = client.getInstance(HttpClientFactory.class).newClient();
+        MetricRegistry metrics = client.getInstance(MetricRegistry.class);
 
         Collection<Timer> timers = metrics.getTimers().values();
         assertEquals(1, timers.size());
         Timer timer = timers.iterator().next();
         assertEquals(0, timer.getCount());
 
-        client.target("http://127.0.0.1:8080/get500").request().get().close();
+        jaxrsClient.target(get500Url).request().get().close();
         assertEquals(1, timer.getCount());
     }
 
@@ -163,5 +160,4 @@ public class InstrumentedClientIT {
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 }

@@ -19,15 +19,18 @@
 
 package io.bootique.jersey.client;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.di.DIRuntimeException;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestFactory;
 import io.bootique.logback.LogbackModuleProvider;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -35,41 +38,41 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@BQTest
 public class HttpTargets_TrustStoresIT {
 
-    // hostname must be 'localhost'... '127.0.0.1' will cause SSL errors
-    private static final String SERVICE_URL = "https://localhost:14001/get";
     private static final String CLIENT_TRUST_STORE = "classpath:io/bootique/jersey/client/testkeystore_default_password";
 
-    @ClassRule
-    public static BQTestFactory SERVER_FACTORY = new BQTestFactory();
+    @BQApp
+    static final BQRuntime app = Bootique
+            .app("-s", "-c", "classpath:io/bootique/jersey/client/TrustStoresIT_server.yml")
+            .modules(JettyModule.class, JerseyModule.class)
+            .moduleProvider(new LogbackModuleProvider())
+            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .createRuntime();
 
-    @Rule
-    public BQTestFactory clientFactory = new BQTestFactory();
+    @RegisterExtension
+    final BQTestFactory clientFactory = new BQTestFactory();
 
-    @BeforeClass
-    public static void beforeClass() {
-        SERVER_FACTORY.app("-s", "-c", "classpath:io/bootique/jersey/client/TrustStoresIT_server.yml")
-                .modules(JettyModule.class, JerseyModule.class)
-                .moduleProvider(new LogbackModuleProvider())
-                .module(b -> JerseyModule.extend(b).addResource(Resource.class))
-                .run();
+    protected String serviceUrl() {
+        // TODO: replace 127.0.0.1 with "localhost" for certificates to work... Do it in YAML?
+        return JettyTester.getServerUrl(app) + "/get";
     }
 
     @Test
     public void testNamedTrustStore() {
 
-        HttpTargets targets =
-                clientFactory.app()
-                        .moduleProvider(new JerseyClientModuleProvider())
-                        .moduleProvider(new LogbackModuleProvider())
-                        .property("bq.jerseyclient.trustStores.ts1.location", CLIENT_TRUST_STORE)
-                        .property("bq.jerseyclient.targets.t.url", SERVICE_URL)
-                        .property("bq.jerseyclient.targets.t.trustStore", "ts1")
-                        .createRuntime()
-                        .getInstance(HttpTargets.class);
+        HttpTargets targets = clientFactory.app()
+                .moduleProvider(new JerseyClientModuleProvider())
+                .moduleProvider(new LogbackModuleProvider())
+                .property("bq.jerseyclient.trustStores.ts1.location", CLIENT_TRUST_STORE)
+                .property("bq.jerseyclient.targets.t.url", serviceUrl())
+                .property("bq.jerseyclient.targets.t.trustStore", "ts1")
+                .createRuntime()
+                .getInstance(HttpTargets.class);
 
         Response r = targets.newTarget("t").request().get();
         Resource.assertResponse(r);
@@ -78,30 +81,30 @@ public class HttpTargets_TrustStoresIT {
     @Test
     public void testNamedTrustStore_DerivedTarget() {
 
-        HttpTargets targets =
-                clientFactory.app()
-                        .moduleProvider(new JerseyClientModuleProvider())
-                        .moduleProvider(new LogbackModuleProvider())
-                        .property("bq.jerseyclient.trustStores.ts1.location", CLIENT_TRUST_STORE)
-                        .property("bq.jerseyclient.targets.t.url", SERVICE_URL)
-                        .property("bq.jerseyclient.targets.t.trustStore", "ts1")
-                        .createRuntime()
-                        .getInstance(HttpTargets.class);
+        HttpTargets targets = clientFactory.app()
+                .moduleProvider(new JerseyClientModuleProvider())
+                .moduleProvider(new LogbackModuleProvider())
+                .property("bq.jerseyclient.trustStores.ts1.location", CLIENT_TRUST_STORE)
+                .property("bq.jerseyclient.targets.t.url", serviceUrl())
+                .property("bq.jerseyclient.targets.t.trustStore", "ts1")
+                .createRuntime()
+                .getInstance(HttpTargets.class);
 
         Response r = targets.newTarget("t").path("2").request().get();
         Resource.assertResponse2(r);
     }
 
-    @Test(expected = DIRuntimeException.class)
+    @Test
     public void testNamedTrustStore_InvalidRef() {
 
-        clientFactory.app()
-                .moduleProvider(new JerseyClientModuleProvider())
-                .moduleProvider(new LogbackModuleProvider())
-                .property("bq.jerseyclient.targets.t.url", SERVICE_URL)
-                .property("bq.jerseyclient.targets.t.trustStore", "ts1")
-                .createRuntime()
-                .getInstance(HttpTargets.class);
+        assertThrows(DIRuntimeException.class, () ->
+                clientFactory.app()
+                        .moduleProvider(new JerseyClientModuleProvider())
+                        .moduleProvider(new LogbackModuleProvider())
+                        .property("bq.jerseyclient.targets.t.url", serviceUrl())
+                        .property("bq.jerseyclient.targets.t.trustStore", "ts1")
+                        .createRuntime()
+                        .getInstance(HttpTargets.class));
     }
 
     @Path("/")

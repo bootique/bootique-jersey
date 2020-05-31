@@ -16,6 +16,7 @@
 jetty:
   connectors:
     - type: https
-      port: 14001
+      host: localhost # important to fix the host name, as certificates are tied to it
+      port: any
       keyStore: 'classpath:io/bootique/jersey/client/testkeystore'
       keyStorePassword: 'supersecret'

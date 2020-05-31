@@ -20,15 +20,15 @@
 package io.bootique.jersey.client;
 
 import io.bootique.BQCoreModule;
-import io.bootique.di.Injector;
 import io.bootique.di.BQModule;
+import io.bootique.di.Injector;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
+import io.bootique.junit5.BQTestFactory;
 import io.bootique.logback.LogbackModule;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -46,14 +46,14 @@ import java.util.logging.Level;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public class HttpClientFactoryFactory_LoggingIT {
 
-    @Rule
-    public BQTestFactory serverFactory = new BQTestFactory();
+    @RegisterExtension
+    final BQTestFactory serverFactory = new BQTestFactory();
 
     private Injector mockInjector;
     private File logsDir;
@@ -77,7 +77,7 @@ public class HttpClientFactoryFactory_LoggingIT {
                 .run();
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         mockInjector = mock(Injector.class);
         logsDir = new File("target/logback");
@@ -107,7 +107,7 @@ public class HttpClientFactoryFactory_LoggingIT {
 
         File log = new File(logsDir, "debug.log");
         List<String> lines = Files.readAllLines(log.toPath());
-        assertEquals(lines.stream().collect(joining("\n")), 3, lines.size());
+        assertEquals(3, lines.size(), lines.stream().collect(joining("\n")));
         assertTrue(lines.get(1).contains("GET http://127.0.0.1:8080/get"));
     }
 

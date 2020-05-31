@@ -18,8 +18,8 @@
  */
 package io.bootique.jersey.jackson;
 
-import io.bootique.test.junit.BQModuleProviderChecker;
-import org.junit.Test;
+import io.bootique.junit5.BQModuleProviderChecker;
+import org.junit.jupiter.api.Test;
 
 public class JerseyJacksonModuleTest {
 

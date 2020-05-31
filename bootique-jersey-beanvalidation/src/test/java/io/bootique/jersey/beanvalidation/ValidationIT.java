@@ -18,129 +18,119 @@
  */
 package io.bootique.jersey.beanvalidation;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.test.junit.BQTestFactory;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
 import org.hibernate.validator.constraints.Range;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import javax.validation.Constraint;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.Payload;
-import javax.validation.Valid;
+import javax.validation.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.util.List;
+import java.util.function.Consumer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@BQTest
 public class ValidationIT {
 
-    @ClassRule
-    public static BQTestFactory testFactory = new BQTestFactory();
+    @BQApp
+    static final BQRuntime app = Bootique.app("-s")
+            .autoLoadModules()
+            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(b -> JerseyBeanValidationModule.extend(b).sendErrorsInResponse())
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
-    private static WebTarget baseTarget = ClientBuilder.newClient().target("http://127.0.0.1:8080/");
+    private static WebTarget target = JettyTester.getTarget(app);
 
-    @BeforeClass
-    public static void beforeAll() {
-        testFactory.app("-s")
-                .autoLoadModules()
-                .module(b -> JerseyModule.extend(b).addResource(Resource.class))
-                .module(b -> JerseyBeanValidationModule.extend(b).sendErrorsInResponse())
-                .run();
+    private static Consumer<String> assertTrimmed(String expected) {
+        return c -> {
+            assertNotNull(c);
+            assertEquals(expected, c.trim());
+        };
     }
 
     @Test
     public void testParamValidation_NotNull() {
-        Response ok = baseTarget.path("notNull").queryParam("q", "A").request(MediaType.TEXT_PLAIN).get();
-        assertEquals(200, ok.getStatus());
-        assertEquals("_A_", ok.readEntity(String.class));
+        Response ok = target.path("notNull").queryParam("q", "A").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertOk(ok).assertContent("_A_");
 
-        Response missing = baseTarget.path("notNull").request(MediaType.TEXT_PLAIN).get();
-        assertEquals(400, missing.getStatus());
-        assertEquals("'q' is required (path = Resource.getNotNull.arg0, invalidValue = null)", missing.readEntity(String.class).trim());
+        Response missing = target.path("notNull").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertStatus(missing, 400)
+                .assertContent(assertTrimmed("'q' is required (path = Resource.getNotNull.arg0, invalidValue = null)"));
     }
 
     @Test
     public void testParamValidation_Range() {
-        Response ok = baseTarget.path("range").queryParam("q", "3").request(MediaType.TEXT_PLAIN).get();
-        assertEquals(200, ok.getStatus());
-        assertEquals("_3_", ok.readEntity(String.class));
+        Response ok = target.path("range").queryParam("q", "3").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertOk(ok).assertContent("_3_");
 
-        Response outOfRange = baseTarget.path("range").queryParam("q", "2").request(MediaType.TEXT_PLAIN).get();
-        assertEquals(400, outOfRange.getStatus());
-        assertEquals("'q' is out of range (path = Resource.getRange.arg0, invalidValue = 2)", outOfRange.readEntity(String.class).trim());
+        Response outOfRange = target.path("range").queryParam("q", "2").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertStatus(outOfRange, 400)
+                .assertContent(assertTrimmed("'q' is out of range (path = Resource.getRange.arg0, invalidValue = 2)"));
 
-        Response missing = baseTarget.path("range").request(MediaType.TEXT_PLAIN).get();
-        assertEquals(200, missing.getStatus());
-        assertEquals("_null_", missing.readEntity(String.class));
+        Response missing = target.path("range").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertOk(missing).assertContent("_null_");
     }
 
     @Test
     public void testParamValidation_ListSize() {
-        Response ok = baseTarget.path("size")
+        Response ok = target.path("size")
                 .queryParam("q", "3")
                 .queryParam("q", "1")
                 .queryParam("q", "8")
                 .request(MediaType.TEXT_PLAIN).get();
-        assertEquals(200, ok.getStatus());
-        assertEquals("_[3, 1, 8]_", ok.readEntity(String.class));
+        JettyTester.assertOk(ok).assertContent("_[3, 1, 8]_");
 
-        Response listTooShort = baseTarget.path("size")
+        Response listTooShort = target.path("size")
                 .queryParam("q", "2")
                 .request(MediaType.TEXT_PLAIN).get();
-        assertEquals(400, listTooShort.getStatus());
-        assertEquals("'q' is the wrong size (path = Resource.getSize.arg0, invalidValue = [2])", listTooShort.readEntity(String.class).trim());
+        JettyTester.assertStatus(listTooShort, 400)
+                .assertContent(assertTrimmed("'q' is the wrong size (path = Resource.getSize.arg0, invalidValue = [2])"));
 
-        Response missing = baseTarget.path("size")
-                .request(MediaType.TEXT_PLAIN).get();
-        assertEquals(400, missing.getStatus());
-        assertEquals("'q' is the wrong size (path = Resource.getSize.arg0, invalidValue = [])", missing.readEntity(String.class).trim());
+        Response missing = target.path("size").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertStatus(missing, 400)
+                .assertContent(assertTrimmed("'q' is the wrong size (path = Resource.getSize.arg0, invalidValue = [])"));
     }
 
     @Test
     public void testParamValidation_Valid() {
-        Response ok = baseTarget.path("valid").queryParam("q", "a1").request(MediaType.TEXT_PLAIN).get();
-        assertEquals(200, ok.getStatus());
-        assertEquals("_{a1}_", ok.readEntity(String.class));
+        Response ok = target.path("valid").queryParam("q", "a1").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertOk(ok).assertContent("_{a1}_");
 
-        Response badChars = baseTarget.path("valid").queryParam("q", "a*").request(MediaType.TEXT_PLAIN).get();
-        assertEquals(400, badChars.getStatus());
-        assertEquals("Not an alphanumeric String (path = Resource.getValid.arg0.alphaNum, invalidValue = a*)", badChars.readEntity(String.class).trim());
+        Response badChars = target.path("valid").queryParam("q", "a*").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertStatus(badChars, 400)
+                .assertContent(assertTrimmed("Not an alphanumeric String (path = Resource.getValid.arg0.alphaNum, invalidValue = a*)"));
 
-        Response missing = baseTarget.path("valid").request(MediaType.TEXT_PLAIN).get();
-        assertEquals(200, missing.getStatus());
-        assertEquals("_null_", missing.readEntity(String.class));
+        Response missing = target.path("valid").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertOk(missing).assertContent("_null_");
     }
 
     @Test
     public void testParamValidation_Custom() {
-        Response ok = baseTarget.path("custom").queryParam("q", "a1").request(MediaType.TEXT_PLAIN).get();
-        assertEquals(200, ok.getStatus());
-        assertEquals("_a1_", ok.readEntity(String.class));
+        Response ok = target.path("custom").queryParam("q", "a1").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertOk(ok).assertContent("_a1_");
 
-        Response badChars = baseTarget.path("custom").queryParam("q", "b1").request(MediaType.TEXT_PLAIN).get();
-        assertEquals(400, badChars.getStatus());
-        assertEquals("'q' doesn't start with 'a' (path = Resource.getCustom.arg0, invalidValue = b1)", badChars.readEntity(String.class).trim());
+        Response badChars = target.path("custom").queryParam("q", "b1").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertStatus(badChars, 400)
+                .assertContent(assertTrimmed("'q' doesn't start with 'a' (path = Resource.getCustom.arg0, invalidValue = b1)"));
 
-        Response missing = baseTarget.path("custom").request(MediaType.TEXT_PLAIN).get();
-        assertEquals(200, missing.getStatus());
-        assertEquals("_null_", missing.readEntity(String.class));
+        Response missing = target.path("custom").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertOk(missing).assertContent("_null_");
     }
 
     @Target(ElementType.PARAMETER)

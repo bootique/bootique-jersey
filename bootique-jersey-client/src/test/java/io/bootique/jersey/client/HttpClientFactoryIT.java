@@ -19,14 +19,17 @@
 
 package io.bootique.jersey.client;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestFactory;
 import io.bootique.logback.LogbackModuleProvider;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -36,24 +39,21 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@BQTest
 public class HttpClientFactoryIT {
 
-    @ClassRule
-    public static BQTestFactory SERVER_FACTORY = new BQTestFactory();
+    @BQApp
+    static final BQRuntime server = Bootique.app("--server")
+            .modules(JettyModule.class, JerseyModule.class)
+            .moduleProvider(new LogbackModuleProvider())
+            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
-    @Rule
+    @RegisterExtension
     public BQTestFactory clientFactory = new BQTestFactory();
-
-    @BeforeClass
-    public static void beforeClass() {
-        SERVER_FACTORY.app("--server")
-                .modules(JettyModule.class, JerseyModule.class)
-                .moduleProvider(new LogbackModuleProvider())
-                .module(b -> JerseyModule.extend(b).addResource(Resource.class))
-                .run();
-    }
 
     @Test
     public void testNewClient() {
@@ -66,7 +66,7 @@ public class HttpClientFactoryIT {
 
         Client client = factory.newClient();
 
-        Response r1 = client.target("http://127.0.0.1:8080/get").request().get();
+        Response r1 = client.target(JettyTester.getServerUrl(server)).path("get").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("got", r1.readEntity(String.class));
     }
@@ -85,7 +85,7 @@ public class HttpClientFactoryIT {
 
         Client client = factory.newBuilder().auth("auth1").build();
 
-        Response r1 = client.target("http://127.0.0.1:8080/get_auth").request().get();
+        Response r1 = client.target(JettyTester.getServerUrl(server)).path("get_auth").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("got_Basic dTpw", r1.readEntity(String.class));
     }

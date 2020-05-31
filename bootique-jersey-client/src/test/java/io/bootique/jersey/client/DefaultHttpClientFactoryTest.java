@@ -20,8 +20,7 @@
 package io.bootique.jersey.client;
 
 import org.glassfish.jersey.client.ClientConfig;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestFilter;
@@ -29,25 +28,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class DefaultHttpClientFactoryTest {
 
-    private ClientConfig config;
-    private ClientRequestFilter mockAuth1;
-    private ClientRequestFilter mockAuth2;
-
-    @Before
-    public void before() {
-        config = new ClientConfig();
-        mockAuth1 = mock(ClientRequestFilter.class);
-        mockAuth2 = mock(ClientRequestFilter.class);
-    }
+    private ClientConfig config = new ClientConfig();
+    private ClientRequestFilter mockAuth1 = mock(ClientRequestFilter.class);
+    private ClientRequestFilter mockAuth2 = mock(ClientRequestFilter.class);
 
     @Test
     public void testNewClient() {
@@ -92,7 +80,7 @@ public class DefaultHttpClientFactoryTest {
         assertFalse(c.getConfiguration().isRegistered(mockAuth2));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testNewClient_Auth_BadAuth() {
 
         config.property("a", "b");
@@ -102,6 +90,6 @@ public class DefaultHttpClientFactoryTest {
         authFilters.put("two", mockAuth2);
 
         DefaultHttpClientFactory factory = new DefaultHttpClientFactory(config, authFilters, Collections.emptyMap());
-        factory.newBuilder().auth("three");
+        assertThrows(IllegalArgumentException.class, () -> factory.newBuilder().auth("three"));
     }
 }

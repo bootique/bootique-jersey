@@ -19,14 +19,17 @@
 
 package io.bootique.jersey.client;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestFactory;
 import io.bootique.logback.LogbackModuleProvider;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -34,26 +37,25 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@BQTest
 public class HttpClientFactory_TrustStoresIT {
 
-    // hostname must be 'localhost'... '127.0.0.1' will cause SSL errors
-    private static final String SERVICE_URL = "https://localhost:14001/get";
+    @BQApp
+    static final BQRuntime server = Bootique
+            .app("-s", "-c", "classpath:io/bootique/jersey/client/TrustStoresIT_server.yml")
+            .modules(JettyModule.class, JerseyModule.class)
+            .moduleProvider(new LogbackModuleProvider())
+            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .createRuntime();
 
-    @ClassRule
-    public static BQTestFactory SERVER_FACTORY = new BQTestFactory();
+    @RegisterExtension
+    final BQTestFactory clientFactory = new BQTestFactory();
 
-    @Rule
-    public BQTestFactory clientFactory = new BQTestFactory();
-
-    @BeforeClass
-    public static void beforeClass() {
-        SERVER_FACTORY.app("-s", "-c", "classpath:io/bootique/jersey/client/TrustStoresIT_server.yml")
-                .modules(JettyModule.class, JerseyModule.class)
-                .moduleProvider(new LogbackModuleProvider())
-                .module(b -> JerseyModule.extend(b).addResource(Resource.class))
-                .run();
+    private String serviceUrl() {
+        return JettyTester.getServerUrl(server) + "/get";
     }
 
     @Test
@@ -69,7 +71,7 @@ public class HttpClientFactory_TrustStoresIT {
         Response r1 = factory.newBuilder()
                 .trustStore("t1")
                 .build()
-                .target(SERVICE_URL)
+                .target(serviceUrl())
                 .request()
                 .get();
 
@@ -78,7 +80,7 @@ public class HttpClientFactory_TrustStoresIT {
         Response r2 = factory.newBuilder()
                 .trustStore("t2_default_password")
                 .build()
-                .target(SERVICE_URL)
+                .target(serviceUrl())
                 .request()
                 .get();
 
@@ -86,7 +88,7 @@ public class HttpClientFactory_TrustStoresIT {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testNamedTrustStore_Invalid() {
 
         HttpClientFactory factory = clientFactory
@@ -96,7 +98,7 @@ public class HttpClientFactory_TrustStoresIT {
                 .createRuntime()
                 .getInstance(HttpClientFactory.class);
 
-        factory.newBuilder().trustStore("no_such_name");
+        assertThrows(IllegalArgumentException.class, () -> factory.newBuilder().trustStore("no_such_name"));
     }
 
     @Path("/")

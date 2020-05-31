@@ -37,33 +37,6 @@
 
 
     <dependencies>
-        <!-- Unit test dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.bootique</groupId>
-            <artifactId>bootique-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Compile dependencies -->
         <dependency>
             <groupId>io.bootique</groupId>
@@ -87,9 +60,8 @@
             <artifactId>jakarta.activation</artifactId>
             <scope>compile</scope>
         </dependency>
-
-        <!-- Adding a few Jersey dependencies explicitly to exclude their repackaged libraries conflicting
-        with Guice.
+        <!-- Adding a few Jersey dependencies explicitly to exclude their repackaged libraries conflicting with Guice.
+        TODO: there's no more Guice around
         -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
@@ -105,6 +77,28 @@
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- Unit test dependencies -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.bootique.jetty</groupId>
+            <artifactId>bootique-jetty-junit5</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

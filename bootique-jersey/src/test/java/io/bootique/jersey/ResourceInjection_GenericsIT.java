@@ -19,28 +19,26 @@
 
 package io.bootique.jersey;
 
-import io.bootique.di.BQInject;
-import io.bootique.di.BQModule;
-import io.bootique.di.Binder;
-import io.bootique.di.Key;
-import io.bootique.di.Provides;
-import io.bootique.di.TypeLiteral;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.Rule;
-import org.junit.Test;
+import io.bootique.BQRuntime;
+import io.bootique.di.*;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.TestRuntumeBuilder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ResourceInjection_GenericsIT {
 
@@ -49,147 +47,136 @@ public class ResourceInjection_GenericsIT {
     private static final int[] INT_ARRAY_BOUND = {1, 2, 3};
     private static final String[] STRING_ARRAY_BOUND = {"a, b, c"};
 
-    private static final WebTarget target = ClientBuilder.newClient().target("http://127.0.0.1:8080");
+    @RegisterExtension
+    final BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
 
-    @Rule
-    public BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
+    protected WebTarget startServer(BQModule... modules) {
+        TestRuntumeBuilder builder = testFactory
+                .app("-s")
+                .module(JettyTester.moduleReplacingConnectors());
+
+        asList(modules).forEach(builder::module);
+
+        BQRuntime server = builder.createRuntime();
+        assertTrue(server.run().isSuccess());
+        return JettyTester.getTarget(server);
+    }
 
     @Test
     public void testFieldInjected() {
 
-        testFactory.app("-s")
-                .module(binder -> {
-                    binder.bind(Key.get(new TypeLiteral<S1<String>>() {})).toInstance(STRING_BOUND);
-                    binder.bind(Key.get(new TypeLiteral<S1<Integer>>() {})).toInstance(INT_BOUND);
-                    JerseyModule.extend(binder).addResource(FieldInjectedResource.class);
-                })
-                .run();
+        WebTarget client = startServer(b -> {
+            b.bind(Key.get(new TypeLiteral<S1<String>>() {
+            })).toInstance(STRING_BOUND);
+            b.bind(Key.get(new TypeLiteral<S1<Integer>>() {
+            })).toInstance(INT_BOUND);
+            JerseyModule.extend(b).addResource(FieldInjectedResource.class);
+        });
 
-        Response r = target.path("if").request().get();
-        assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
-        assertEquals("if_4_sss", r.readEntity(String.class));
-        r.close();
+        Response r = client.path("if").request().get();
+        JettyTester.assertOk(r).assertContent("if_4_sss");
     }
 
     @Test
     public void testInjectedWildcard() {
 
-        testFactory.app("-s")
-                .module(binder -> {
-                    binder.bind(Key.get(new TypeLiteral<S1<?>>() {})).toInstance(STRING_BOUND);
-                    JerseyModule.extend(binder).addResource(InjectedResourceWildcard.class);
-                })
-                .run();
+        WebTarget client = startServer(b -> {
+            b.bind(Key.get(new TypeLiteral<S1<?>>() {
+            })).toInstance(STRING_BOUND);
+            JerseyModule.extend(b).addResource(InjectedResourceWildcard.class);
+        });
 
-
-        Response r = target.path("iw").request().get();
-        assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
-        assertEquals("iw_sss", r.readEntity(String.class));
-        r.close();
+        Response r = client.path("iw").request().get();
+        JettyTester.assertOk(r).assertContent("iw_sss");
     }
 
     @Test
     public void testInjectedExtendedWildcard() {
 
-        testFactory.app("-s")
-                .module(binder -> {
-                    binder.bind(Key.get(new TypeLiteral<S1<? extends Object>>() {})).toInstance(STRING_BOUND);
-                    JerseyModule.extend(binder).addResource(InjectedResourceExtendedWildcard.class);
-                })
-                .run();
+        WebTarget client = startServer(b -> {
+            b.bind(Key.get(new TypeLiteral<S1<? extends Object>>() {
+            })).toInstance(STRING_BOUND);
+            JerseyModule.extend(b).addResource(InjectedResourceExtendedWildcard.class);
+        });
 
-        Response r = target.path("iw").request().get();
-        assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
-        assertEquals("iw_sss", r.readEntity(String.class));
-        r.close();
+        Response r = client.path("iw").request().get();
+        JettyTester.assertOk(r).assertContent("iw_sss");
     }
 
     @Test
     public void testInjectedArray() {
 
-        testFactory.app("-s")
-                .module(binder -> {
-                    binder.bind(String[].class).toInstance(STRING_ARRAY_BOUND);
-                    binder.bind(int[].class).toInstance(INT_ARRAY_BOUND);
+        WebTarget client = startServer(b -> {
+            b.bind(String[].class).toInstance(STRING_ARRAY_BOUND);
+            b.bind(int[].class).toInstance(INT_ARRAY_BOUND);
 
-                    JerseyModule.extend(binder).addResource(FieldInjectedResourceArray.class);
-                })
-                .run();
+            JerseyModule.extend(b).addResource(FieldInjectedResourceArray.class);
+        });
 
-        Response r = target.path("ia").request().get();
-        assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
-        assertEquals("ia_[a, b, c]_[1, 2, 3]", r.readEntity(String.class));
-        r.close();
+        Response r = client.path("ia").request().get();
+        JettyTester.assertOk(r).assertContent("ia_[a, b, c]_[1, 2, 3]");
     }
 
     @Test
     public void testUnInjected() {
 
-        testFactory.app("-s")
-                .module(UninjectedModule.class)
-                .module(binder -> {
-                    binder.bind(Key.get(new TypeLiteral<S1<String>>() {})).toInstance(STRING_BOUND);
-                    binder.bind(Key.get(new TypeLiteral<S1<Integer>>() {})).toInstance(INT_BOUND);
-                    JerseyModule.extend(binder).addResource(UnInjectedResource.class);
-                })
-                .run();
+        WebTarget client = startServer(
+                new UninjectedModule(),
+                b -> {
+                    b.bind(Key.get(new TypeLiteral<S1<String>>() {
+                    })).toInstance(STRING_BOUND);
+                    b.bind(Key.get(new TypeLiteral<S1<Integer>>() {
+                    })).toInstance(INT_BOUND);
+                    JerseyModule.extend(b).addResource(UnInjectedResource.class);
+                });
 
-        Response r = target.path("uf").request().get();
-        assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
-        assertEquals("uf_4_sss", r.readEntity(String.class));
-        r.close();
+        Response r = client.path("uf").request().get();
+        JettyTester.assertOk(r).assertContent("uf_4_sss");
     }
 
     @Test
     public void testUnInjectedWildcard() {
 
-        testFactory.app("-s")
-                .module(UninjectedResourceWildcardModule.class)
-                .module(binder -> {
-                    binder.bind(Key.get(new TypeLiteral<S1<?>>() {})).toInstance(STRING_BOUND);
-                    JerseyModule.extend(binder).addResource(UnInjectedResourceWildcard.class);
-                })
-                .run();
+        WebTarget client = startServer(
+                new UninjectedResourceWildcardModule(),
+                b -> {
+                    b.bind(Key.get(new TypeLiteral<S1<?>>() {
+                    })).toInstance(STRING_BOUND);
+                    JerseyModule.extend(b).addResource(UnInjectedResourceWildcard.class);
+                });
 
-        Response r = target.path("uw").request().get();
-        assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
-        assertEquals("uw_sss", r.readEntity(String.class));
-        r.close();
+        Response r = client.path("uw").request().get();
+        JettyTester.assertOk(r).assertContent("uw_sss");
     }
 
     @Test
     public void testUnInjectedExtendedWildcard() {
 
-        testFactory.app("-s")
-                .module(UninjectedResourceWildcardModule.class)
-                .module(binder -> {
-                    binder.bind(Key.get(new TypeLiteral<S1<?>>() {})).toInstance(STRING_BOUND);
-                    JerseyModule.extend(binder).addResource(UnInjectedResourceExtendedWildcard.class);
-                })
-                .run();
+        WebTarget client = startServer(
+                new UninjectedResourceWildcardModule(),
+                b -> {
+                    b.bind(Key.get(new TypeLiteral<S1<?>>() {
+                    })).toInstance(STRING_BOUND);
+                    JerseyModule.extend(b).addResource(UnInjectedResourceExtendedWildcard.class);
+                });
 
-        Response r = target.path("uw").request().get();
-        assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
-        assertEquals("uw_sss", r.readEntity(String.class));
-        r.close();
+        Response r = client.path("uw").request().get();
+        JettyTester.assertOk(r).assertContent("uw_sss");
     }
 
     @Test
     public void testUnInjectedArray() {
 
-        testFactory.app("-s")
-                .module(UninjectedResourceArrayModule.class)
-                .module(binder -> {
-                    binder.bind(String[].class).toInstance(STRING_ARRAY_BOUND);
-                    binder.bind(int[].class).toInstance(INT_ARRAY_BOUND);
-                    JerseyModule.extend(binder).addResource(FieldUnInjectedResourceArray.class);
-                })
-                .run();
+        WebTarget client = startServer(
+                new UninjectedResourceArrayModule(),
+                b -> {
+                    b.bind(String[].class).toInstance(STRING_ARRAY_BOUND);
+                    b.bind(int[].class).toInstance(INT_ARRAY_BOUND);
+                    JerseyModule.extend(b).addResource(FieldUnInjectedResourceArray.class);
+                });
 
-        Response r = target.path("ua").request().get();
-        assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
-        assertEquals("ua_[a, b, c]_[1, 2, 3]", r.readEntity(String.class));
-        r.close();
+        Response r = client.path("ua").request().get();
+        JettyTester.assertOk(r).assertContent("ua_[a, b, c]_[1, 2, 3]");
     }
 
     @Path("/if")

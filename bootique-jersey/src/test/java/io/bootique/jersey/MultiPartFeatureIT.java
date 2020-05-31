@@ -19,15 +19,16 @@
 
 package io.bootique.jersey;
 
-import io.bootique.di.BQModule;
-import io.bootique.test.junit.BQTestFactory;
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -40,28 +41,24 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // see https://github.com/bootique/bootique-jersey/issues/11
+@BQTest
 public class MultiPartFeatureIT {
 
-    @ClassRule
-    public static BQTestFactory TEST_FACTORY = new BQTestFactory().autoLoadModules();
+    @BQApp
+    static final BQRuntime app = Bootique.app("-s")
+            .autoLoadModules()
+            .module(b -> JerseyModule.extend(b).addFeature(MultiPartFeature.class).addResource(Resource.class))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
     private WebTarget multiPartTarget = ClientBuilder
             .newBuilder()
             .register(MultiPartFeature.class)
             .build()
-            .target("http://127.0.0.1:8080/");
-
-    @BeforeClass
-    public static void startJetty() {
-        TEST_FACTORY.app("-s").modules(createTestModule()).run();
-    }
-
-    protected static BQModule createTestModule() {
-        return b -> JerseyModule.extend(b).addFeature(MultiPartFeature.class).addResource(Resource.class);
-    }
+            .target(JettyTester.getServerUrl(app));
 
     @Test
     public void testResponse() {

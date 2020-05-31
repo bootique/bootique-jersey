@@ -21,18 +21,18 @@ package io.bootique.jersey.client.instrumented;
 
 import io.bootique.BQRuntime;
 import io.bootique.jersey.client.JerseyClientModule;
+import io.bootique.junit5.BQModuleProviderChecker;
+import io.bootique.junit5.BQRuntimeChecker;
+import io.bootique.junit5.BQTestFactory;
 import io.bootique.metrics.MetricsModule;
 import io.bootique.metrics.health.HealthCheckModule;
-import io.bootique.test.junit.BQModuleProviderChecker;
-import io.bootique.test.junit.BQRuntimeChecker;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class JerseyClientInstrumentedModuleProviderTest {
 
-    @Rule
-    public BQTestFactory testFactory = new BQTestFactory();
+    @RegisterExtension
+    final BQTestFactory testFactory = new BQTestFactory();
 
     @Test
     public void testAutoLoadable() {

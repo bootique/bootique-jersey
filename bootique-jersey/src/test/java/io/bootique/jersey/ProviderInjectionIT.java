@@ -19,23 +19,20 @@
 
 package io.bootique.jersey;
 
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
@@ -45,35 +42,30 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@BQTest
 public class ProviderInjectionIT {
 
-    @ClassRule
-    public static BQTestFactory TEST_FACTORY = new BQTestFactory().autoLoadModules();
-
-    private static final WebTarget target = ClientBuilder.newClient().target("http://127.0.0.1:8080/");
-
-    @BeforeClass
-    public static void startJetty() {
-
-        TEST_FACTORY.app("-s")
-                .module(b -> {
-                    b.bind(InjectedService.class).inSingletonScope();
-                    JerseyModule.extend(b).addFeature(StringWriterFeature.class).addResource(Resource.class);
-                })
-                .run();
-    }
+    @BQApp
+    static final BQRuntime app = Bootique.app("-s")
+            .autoLoadModules()
+            .module(b -> b.bind(InjectedService.class).inSingletonScope())
+            .module(b -> JerseyModule.extend(b).addFeature(StringWriterFeature.class).addResource(Resource.class))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
     @Test
     public void testResponse() {
 
-        Response r1 = target.request().get();
+        WebTarget client = JettyTester.getTarget(app);
+
+        Response r1 = client.request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("[bare_string]_1", r1.readEntity(String.class));
         r1.close();
 
-        Response r2 = target.request().get();
+        Response r2 = client.request().get();
         assertEquals(Status.OK.getStatusCode(), r2.getStatus());
         assertEquals("[bare_string]_2", r2.readEntity(String.class));
         r2.close();

@@ -19,17 +19,20 @@
 
 package io.bootique.jersey.client.instrumented.healthcheck;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jersey.client.instrumented.JerseyClientInstrumentedModule;
 import io.bootique.jetty.JettyModule;
+import io.bootique.jetty.connector.PortFinder;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
 import io.bootique.metrics.health.HealthCheckOutcome;
 import io.bootique.metrics.health.HealthCheckStatus;
-import io.bootique.test.junit.BQTestFactory;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -41,45 +44,40 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+@BQTest
 public class HttpHealthCheckIT {
 
-    @ClassRule
-    public static BQTestFactory SERVER_APP_FACTORY = new BQTestFactory();
-
-    @BeforeClass
-    public static void beforeClass() {
-
-        SERVER_APP_FACTORY.app("--server")
-                .modules(JettyModule.class, JerseyClientInstrumentedModule.class, JerseyModule.class)
-                .module(b -> JerseyModule.extend(b).addResource(Resource.class))
-                .run();
-    }
+    @BQApp
+    static final BQRuntime server = Bootique.app("--server")
+            .modules(JettyModule.class, JerseyClientInstrumentedModule.class, JerseyModule.class)
+            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
     private WebTarget target(String path) {
-        return ClientBuilder.newClient().target("http://127.0.0.1:8080/").path(path);
+        return JettyTester.getTarget(server).path(path);
     }
 
     @Test
     public void testSafeCheck_NoConnection() {
-        // access a port that is unlikely to be in use
-        WebTarget target = ClientBuilder.newClient().target("http://127.0.0.1:20053/");
+        // access a port that is not in use
+        int openPort = PortFinder.findAvailablePort("127.0.0.1");
+        WebTarget target = ClientBuilder.newClient().target("http://127.0.0.1:" + openPort);
         HealthCheckOutcome outcome = HttpHealthCheck.viaHEAD(target).safeCheck();
         assertEquals(HealthCheckStatus.CRITICAL, outcome.getStatus());
 
         // there may be some variation in the error message, but we need to the the connection error
-        assertTrue(outcome.getMessage(), outcome.getMessage().startsWith("Connection error: Connection refused"));
+        assertTrue(outcome.getMessage().startsWith("Connection error: Connection refused"), outcome.getMessage());
     }
 
     @Test
     public void testSafeCheck_ViaGet_TempRedirect() {
         WebTarget target = target("moved");
         HealthCheckOutcome outcome = HttpHealthCheck.viaGET(target).safeCheck();
-        assertEquals(outcome.toString(), HealthCheckStatus.OK, outcome.getStatus());
-        assertNull(outcome.toString(), outcome.getMessage());
+        assertEquals(HealthCheckStatus.OK, outcome.getStatus(), outcome.toString());
+        assertNull(outcome.getMessage(), outcome.toString());
     }
 
     @Test
@@ -88,11 +86,11 @@ public class HttpHealthCheckIT {
         // testing that while the initial target is setup to not follow redirects, health check still does.
 
         ClientConfig config = new ClientConfig().property(ClientProperties.FOLLOW_REDIRECTS, false);
-        WebTarget target  =  ClientBuilder.newClient(config).target("http://127.0.0.1:8080/moved");
+        WebTarget target = ClientBuilder.newClient(config).target(JettyTester.getServerUrl(server) + "/moved");
 
         HealthCheckOutcome outcome = HttpHealthCheck.viaGET(target).safeCheck();
-        assertEquals(outcome.toString(), HealthCheckStatus.OK, outcome.getStatus());
-        assertNull(outcome.toString(), outcome.getMessage());
+        assertEquals(HealthCheckStatus.OK, outcome.getStatus(), outcome.toString());
+        assertNull(outcome.getMessage(), outcome.toString());
     }
 
     @Test
@@ -115,7 +113,7 @@ public class HttpHealthCheckIT {
     public void testSafeCheck_ViaGet() {
         WebTarget target = target("get");
         HealthCheckOutcome outcome = HttpHealthCheck.viaGET(target).safeCheck();
-        assertEquals(outcome.toString(), HealthCheckStatus.OK, outcome.getStatus());
+        assertEquals(HealthCheckStatus.OK, outcome.getStatus(), outcome.toString());
     }
 
     @Test
@@ -125,7 +123,7 @@ public class HttpHealthCheckIT {
 
         WebTarget target = target("get");
         HealthCheckOutcome outcome = HttpHealthCheck.viaHEAD(target).safeCheck();
-        assertEquals(outcome.toString(), HealthCheckStatus.OK, outcome.getStatus());
+        assertEquals(HealthCheckStatus.OK, outcome.getStatus(), outcome.toString());
     }
 
     @Test
@@ -134,7 +132,7 @@ public class HttpHealthCheckIT {
         // Jersey server must provide an implicit behavior for a valid resource
         WebTarget target = target("get");
         HealthCheckOutcome outcome = HttpHealthCheck.viaOPTIONS(target).safeCheck();
-        assertEquals(outcome.toString(), HealthCheckStatus.OK, outcome.getStatus());
+        assertEquals(HealthCheckStatus.OK, outcome.getStatus(), outcome.toString());
     }
 
     @Path("/")
@@ -150,7 +148,7 @@ public class HttpHealthCheckIT {
         @GET
         @Path("moved")
         public Response getMoved() throws URISyntaxException {
-            return Response.status(Response.Status.MOVED_PERMANENTLY).location(new URI("http://127.0.0.1:8080/get")).build();
+            return Response.status(Response.Status.MOVED_PERMANENTLY).location(new URI(JettyTester.getServerUrl(server) + "/get")).build();
         }
 
         @GET

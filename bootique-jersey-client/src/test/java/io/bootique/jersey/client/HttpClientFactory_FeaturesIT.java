@@ -19,15 +19,14 @@
 
 package io.bootique.jersey.client;
 
-import io.bootique.di.BQModule;
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -36,42 +35,27 @@ import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.core.MediaType;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@BQTest
 public class HttpClientFactory_FeaturesIT {
 
-    @ClassRule
-    public static BQTestFactory SERVER_FACTORY = new BQTestFactory();
+    @BQApp
+    static final BQRuntime server = Bootique.app("--server")
+            .modules(JettyModule.class, JerseyModule.class)
+            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
-    @Rule
-    public BQTestFactory CLIENT_FACTORY = new BQTestFactory();
-
-    private HttpClientFactory clientFactory;
-
-    @BeforeClass
-    public static void beforeClass() {
-        SERVER_FACTORY.app("--server")
-                .modules(JettyModule.class, JerseyModule.class)
-                .module(b -> JerseyModule.extend(b).addResource(Resource.class))
-                .run();
-    }
-
-    @Before
-    public void before() {
-
-        BQModule features = binder -> JerseyClientModule
-                .extend(binder)
-                .addFeature(Feature1.class)
-                .addFeature(Feature2.class);
-
-        clientFactory = CLIENT_FACTORY
-                .app()
-                .module(JerseyClientModule.class)
-                .module(features)
-                .createRuntime()
-                .getInstance(HttpClientFactory.class);
-    }
+    @BQApp(skipRun = true)
+    static final BQRuntime client = Bootique.app()
+            .module(JerseyClientModule.class)
+            .module(binder -> JerseyClientModule
+                    .extend(binder)
+                    .addFeature(Feature1.class)
+                    .addFeature(Feature2.class))
+            .createRuntime();
 
     @Test
     public void testFeaturesLoaded() {
@@ -79,7 +63,10 @@ public class HttpClientFactory_FeaturesIT {
         assertFalse(Feature1.LOADED);
         assertFalse(Feature2.LOADED);
 
-        clientFactory.newClient().target("http://127.0.0.1:8080/").request().get().close();
+        client.getInstance(HttpClientFactory.class)
+                .newClient()
+                .target(JettyTester.getServerUrl(server))
+                .request().get().close();
 
         assertTrue(Feature1.LOADED);
         assertTrue(Feature2.LOADED);

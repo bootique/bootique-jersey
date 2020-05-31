@@ -18,52 +18,58 @@
  */
 package io.bootique.jersey.beanvalidation;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import org.junit.jupiter.api.Test;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.function.Consumer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@BQTest
 public class ValidationNoErrorsInResponseIT {
 
-    @ClassRule
-    public static BQTestFactory testFactory = new BQTestFactory();
+    @BQApp
+    static final BQRuntime app = Bootique.app("-s")
+            .autoLoadModules()
+            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
-    private static WebTarget baseTarget = ClientBuilder.newClient().target("http://127.0.0.1:8080/");
+    private static WebTarget target = JettyTester.getTarget(app);
 
-    @BeforeClass
-    public static void beforeAll() {
-        testFactory.app("-s")
-                .autoLoadModules()
-                .module(b -> JerseyModule.extend(b).addResource(Resource.class))
-                .run();
+    private static Consumer<String> assertTrimmed(String expected) {
+        return c -> {
+            assertNotNull(c);
+            assertEquals(expected, c.trim());
+        };
     }
 
     @Test
     public void testParamValidation_NotNull() {
-        Response ok = baseTarget.path("notNull").queryParam("q", "A").request(MediaType.TEXT_PLAIN).get();
-        assertEquals(200, ok.getStatus());
-        assertEquals("_A_", ok.readEntity(String.class));
+        Response ok = target.path("notNull").queryParam("q", "A").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertOk(ok).assertContent("_A_");
 
-        Response missing = baseTarget.path("notNull").request(MediaType.TEXT_PLAIN).get();
-        assertEquals(400, missing.getStatus());
-        assertEquals("HTTP ERROR 400 Bad Request\n" +
-                "URI: /notNull\n" +
-                "STATUS: 400\n" +
-                "MESSAGE: Bad Request\n" +
-                "SERVLET: jersey", missing.readEntity(String.class).trim());
+        Response missing = target.path("notNull").request(MediaType.TEXT_PLAIN).get();
+        JettyTester.assertStatus(missing, 400).assertContent(assertTrimmed(
+                "HTTP ERROR 400 Bad Request\n" +
+                        "URI: /notNull\n" +
+                        "STATUS: 400\n" +
+                        "MESSAGE: Bad Request\n" +
+                        "SERVLET: jersey"));
     }
 
     @Path("/")

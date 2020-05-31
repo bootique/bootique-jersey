@@ -18,13 +18,16 @@
  */
 package io.bootique.jersey.client.auth;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jersey.client.HttpTargets;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestFactory;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -34,24 +37,19 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.junit.Assert.assertEquals;
-
+@BQTest
 public class ApiKeyHeaderAuthenticatorIT {
 
-    @ClassRule
-    public static BQTestFactory testFactory = new BQTestFactory();
+    // TODO: using port 8080 on the server as it is configured for the client targets
 
-    @Rule
-    public BQTestFactory clientTestFactory = new BQTestFactory();
+    @BQApp
+    static final BQRuntime server = Bootique.app("-s")
+            .autoLoadModules()
+            .module((binder) -> JerseyModule.extend(binder).addResource(ProtectedApi.class))
+            .createRuntime();
 
-    @BeforeClass
-    public static void beforeClass() {
-        testFactory
-                .app("-s")
-                .autoLoadModules()
-                .module((binder) -> JerseyModule.extend(binder).addResource(ProtectedApi.class))
-                .run();
-    }
+    @RegisterExtension
+    final BQTestFactory clientTestFactory = new BQTestFactory();
 
     private WebTarget clientTarget(String name) {
         return clientTestFactory.app("-c", "classpath:io/bootique/jersey/client/auth/ApiKeyHeaderAuthenticatorIT.yml")
@@ -68,8 +66,7 @@ public class ApiKeyHeaderAuthenticatorIT {
                 .request()
                 .get();
 
-        assertEquals(200, response.getStatus());
-        assertEquals("VALID", response.readEntity(String.class));
+        JettyTester.assertOk(response).assertContent("VALID");
     }
 
     @Test
@@ -79,8 +76,7 @@ public class ApiKeyHeaderAuthenticatorIT {
                 .request()
                 .get();
 
-        assertEquals(401, response.getStatus());
-        assertEquals("INVALID: invalid", response.readEntity(String.class));
+        JettyTester.assertStatus(response, 401).assertContent("INVALID: invalid");
     }
 
     @Test
@@ -90,8 +86,7 @@ public class ApiKeyHeaderAuthenticatorIT {
                 .request()
                 .get();
 
-        assertEquals(200, response.getStatus());
-        assertEquals("VALID", response.readEntity(String.class));
+        JettyTester.assertOk(response).assertContent("VALID");
     }
 
     @Path("/")

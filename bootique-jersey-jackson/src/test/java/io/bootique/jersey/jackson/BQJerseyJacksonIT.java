@@ -19,36 +19,33 @@
 
 package io.bootique.jersey.jackson;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@BQTest
 public class BQJerseyJacksonIT {
 
-    @ClassRule
-    public static BQTestFactory TEST_FACTORY = new BQTestFactory().autoLoadModules();
+    @BQApp
+    static final BQRuntime app = Bootique.app("-s")
+            .autoLoadModules()
+            .module(binder -> JerseyModule.extend(binder).addResource(JsonResource.class))
+            .createRuntime();
 
-    private static WebTarget target = ClientBuilder.newClient().target("http://127.0.0.1:8080/");
-
-    @BeforeClass
-    public static void startJetty() {
-        TEST_FACTORY.app("-s")
-                .autoLoadModules()
-                .module(binder -> JerseyModule.extend(binder).addResource(JsonResource.class))
-                .run();
-    }
+    private static WebTarget target = JettyTester.getTarget(app);
 
     @Test
     public void testJacksonSerialization() {

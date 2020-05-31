@@ -20,31 +20,21 @@
 package io.bootique.jersey.client;
 
 import io.bootique.BQRuntime;
-import io.bootique.di.BQModule;
+import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
-import io.bootique.test.junit.BQDaemonTestFactory;
-import io.bootique.test.junit.BQTestFactory;
-import org.eclipse.jetty.server.Server;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
@@ -56,53 +46,35 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@BQTest
 public class ProviderInjectionIT {
 
-    @ClassRule
-    public static BQDaemonTestFactory SERVER_APP_FACTORY = new BQDaemonTestFactory();
-    private static BQRuntime SERVER_APP;
-    @Rule
-    public BQTestFactory CLIENT_FACTORY = new BQTestFactory();
-    private BQRuntime clientApp;
+    @BQApp
+    static final BQRuntime server = Bootique.app("--server")
+            .modules(JettyModule.class, JerseyModule.class)
+            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
-    @BeforeClass
-    public static void startJetty() {
-        BQModule jersey = (binder) -> JerseyModule.extend(binder).addResource(Resource.class);
-        Function<BQRuntime, Boolean> startupCheck = r -> r.getInstance(Server.class).isStarted();
-
-        SERVER_APP = SERVER_APP_FACTORY.app("--server")
-                .modules(JettyModule.class, JerseyModule.class)
-                .module(jersey)
-                .startupCheck(startupCheck)
-                .start();
-    }
-
-    @AfterClass
-    public static void stopJetty() {
-        SERVER_APP.shutdown();
-    }
-
-    @Before
-    public void before() {
-
-        BQModule module = binder -> {
-            JerseyClientModule.extend(binder).addFeature(TestResponseReaderFeature.class);
-            binder.bind(InjectedService.class);
-        };
-
-        this.clientApp = CLIENT_FACTORY.app().module(JerseyClientModule.class).module(module).createRuntime();
-    }
+    @BQApp(skipRun = true)
+    static final BQRuntime client = Bootique.app()
+            .module(JerseyClientModule.class)
+            .module(b -> {
+                JerseyClientModule.extend(b).addFeature(TestResponseReaderFeature.class);
+                b.bind(InjectedService.class);
+            })
+            .createRuntime();
 
     @Test
     public void testResponse() {
 
-        Client client = clientApp.getInstance(HttpClientFactory.class).newClient();
-
-        WebTarget target = client.target("http://127.0.0.1:8080/");
+        WebTarget target = client
+                .getInstance(HttpClientFactory.class)
+                .newClient()
+                .target(JettyTester.getServerUrl(server));
 
         Response r1 = target.request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());

@@ -19,14 +19,18 @@
 
 package io.bootique.jersey.client;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.TestRuntumeBuilder;
 import io.bootique.logback.LogbackModuleProvider;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -38,35 +42,31 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+@BQTest
 public class HttpTargetsIT {
 
-    @ClassRule
-    public static BQTestFactory SERVER_FACTORY = new BQTestFactory();
+    @BQApp
+    static final BQRuntime server = Bootique.app("--server")
+            .modules(JettyModule.class, JerseyModule.class)
+            .moduleProvider(new LogbackModuleProvider())
+            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
-    @Rule
+    @RegisterExtension
     public BQTestFactory clientFactory = new BQTestFactory();
-
-    @BeforeClass
-    public static void beforeClass() {
-        SERVER_FACTORY.app("--server")
-                .modules(JettyModule.class, JerseyModule.class)
-                .moduleProvider(new LogbackModuleProvider())
-                .module(b -> JerseyModule.extend(b).addResource(Resource.class))
-                .run();
-    }
 
     @Test
     public void testNewTarget() {
-        HttpTargets targets =
-                clientFactory.app()
-                        .moduleProvider(new JerseyClientModuleProvider())
-                        .moduleProvider(new LogbackModuleProvider())
-                        .property("bq.jerseyclient.targets.t1.url", "http://127.0.0.1:8080/get")
-                        .createRuntime()
-                        .getInstance(HttpTargets.class);
+        HttpTargets targets = clientFactory.app()
+                .moduleProvider(new JerseyClientModuleProvider())
+                .moduleProvider(new LogbackModuleProvider())
+                .property("bq.jerseyclient.targets.t1.url", JettyTester.getServerUrl(server) + "/get")
+                .createRuntime()
+                .getInstance(HttpTargets.class);
 
         WebTarget t1 = targets.newTarget("t1");
 
@@ -88,7 +88,7 @@ public class HttpTargetsIT {
                         .property("bq.jerseyclient.auth.a1.type", "basic")
                         .property("bq.jerseyclient.auth.a1.username", "u")
                         .property("bq.jerseyclient.auth.a1.password", "p")
-                        .property("bq.jerseyclient.targets.t1.url", "http://127.0.0.1:8080/get_auth")
+                        .property("bq.jerseyclient.targets.t1.url", JettyTester.getServerUrl(server) + "/get_auth")
                         .property("bq.jerseyclient.targets.t1.auth", "a1")
                         .createRuntime()
                         .getInstance(HttpTargets.class);
@@ -190,16 +190,15 @@ public class HttpTargetsIT {
         public void expectNoFollow() {
             Response r = createTarget().request().get();
             assertEquals(307, r.getStatus());
-            assertEquals("http://127.0.0.1:8080/get", r.getHeaderString("location"));
+            assertEquals(JettyTester.getServerUrl(server) + "/get", r.getHeaderString("location"));
         }
 
         private WebTarget createTarget() {
 
-            BQTestFactory.Builder builder =
-                    clientFactory.app()
-                            .moduleProvider(new JerseyClientModuleProvider())
-                            .moduleProvider(new LogbackModuleProvider())
-                            .property("bq.jerseyclient.targets.t.url", "http://127.0.0.1:8080/302");
+            TestRuntumeBuilder builder = clientFactory.app()
+                    .moduleProvider(new JerseyClientModuleProvider())
+                    .moduleProvider(new LogbackModuleProvider())
+                    .property("bq.jerseyclient.targets.t.url", JettyTester.getServerUrl(server) + "/302");
 
             if (clientRedirects != null) {
                 builder.property("bq.jerseyclient.followRedirects", clientRedirects.toString());
@@ -236,11 +235,10 @@ public class HttpTargetsIT {
 
         private WebTarget createTarget() {
 
-            BQTestFactory.Builder builder =
-                    clientFactory.app()
-                            .moduleProvider(new JerseyClientModuleProvider())
-                            .moduleProvider(new LogbackModuleProvider())
-                            .property("bq.jerseyclient.targets.t.url", "http://127.0.0.1:8080/getbig");
+            TestRuntumeBuilder builder = clientFactory.app()
+                    .moduleProvider(new JerseyClientModuleProvider())
+                    .moduleProvider(new LogbackModuleProvider())
+                    .property("bq.jerseyclient.targets.t.url", JettyTester.getServerUrl(server) + "/getbig");
 
             if (clientCompression != null) {
                 builder.property("bq.jerseyclient.compression", clientCompression.toString());

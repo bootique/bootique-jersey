@@ -19,14 +19,17 @@
 
 package io.bootique.jersey.client;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestFactory;
 import io.bootique.logback.LogbackModuleProvider;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -34,42 +37,32 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@BQTest
 public class HttpTargets_FeaturesIT {
 
+    @BQApp
+    static final BQRuntime server = Bootique.app("--server")
+            .modules(JettyModule.class, JerseyModule.class)
+            .moduleProvider(new LogbackModuleProvider())
+            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
-    @ClassRule
-    public static BQTestFactory SERVER_FACTORY = new BQTestFactory();
-
-    @Rule
-    public BQTestFactory clientFactory = new BQTestFactory();
-
-    @BeforeClass
-    public static void beforeClass() {
-        SERVER_FACTORY.app("--server")
-                .modules(JettyModule.class, JerseyModule.class)
-                .moduleProvider(new LogbackModuleProvider())
-                .module(b -> JerseyModule.extend(b).addResource(Resource.class))
-                .run();
-    }
+    @RegisterExtension
+    final BQTestFactory clientFactory = new BQTestFactory();
 
     @Test
     public void testFeatures() {
-        HttpTargets targets =
-                clientFactory.app()
-                        .moduleProvider(new JerseyClientModuleProvider())
-                        .moduleProvider(new LogbackModuleProvider())
-                        .property("bq.jerseyclient.targets.t.url", "http://127.0.0.1:8080/get")
-                        .createRuntime()
-                        .getInstance(HttpTargets.class);
+        HttpTargets targets = clientFactory.app()
+                .moduleProvider(new JerseyClientModuleProvider())
+                .moduleProvider(new LogbackModuleProvider())
+                .property("bq.jerseyclient.targets.t.url", JettyTester.getServerUrl(server) + "/get")
+                .createRuntime()
+                .getInstance(HttpTargets.class);
 
         // create two copies of the same endpoint, but with different feature sets...
         WebTarget t1 = targets.newTarget("t").register(Feature1.class);

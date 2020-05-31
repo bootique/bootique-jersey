@@ -18,117 +18,107 @@
  */
 package io.bootique.jersey;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.di.Provides;
 import io.bootique.di.TypeLiteral;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+@BQTest
 public class ResourceMappingIT {
 
-    private static final WebTarget target = ClientBuilder.newClient().target("http://127.0.0.1:8080/");
-    @ClassRule
-    public static BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
+    @BQApp
+    static final BQRuntime app = Bootique.app("-s")
+            .autoLoadModules()
+            .module(new TestModule())
+            .module(b -> JerseyModule.extend(b)
+                    .addResource(new AsInstanceResource("xxx"))
+                    .addResource(AsTypeResource.class)
+                    .addResource(AsTypePathOverrideResource.class, "as_type_explicit_path")
 
-    @BeforeClass
-    public static void startJetty() {
-        testFactory.app("-s")
-                .module(new TestModule())
-                .module(b -> JerseyModule.extend(b)
-                        .addResource(new AsInstanceResource("xxx"))
-                        .addResource(AsTypeResource.class)
-                        .addResource(AsTypePathOverrideResource.class, "as_type_explicit_path")
+                    // same resource, two different paths
+                    .addResource(AsTypePathOverrideMultipliedResource.class, "as_type_explicit_path1")
+                    .addResource(AsTypePathOverrideMultipliedResource.class, "as_type_explicit_path2")
 
-                        // same resource, two different paths
-                        .addResource(AsTypePathOverrideMultipliedResource.class, "as_type_explicit_path1")
-                        .addResource(AsTypePathOverrideMultipliedResource.class, "as_type_explicit_path2")
+                    .addResource(DIManagedPathOverrideResource.class, "di_managed_explicit_path")
 
-                        .addResource(DIManagedPathOverrideResource.class, "di_managed_explicit_path")
+                    .addMappedResource(new TypeLiteral<MappedResource<MappedPathOverrideResource>>() {
+                    }))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
-                        .addMappedResource(new TypeLiteral<MappedResource<MappedPathOverrideResource>>() {
-                        })
-                ).run();
-    }
+    private static final WebTarget client = JettyTester.getTarget(app);
 
     @Test
     public void testAsInstance() {
-        Response r = target.path("as_instance").request().get();
-        assertEquals(200, r.getStatus());
-        assertEquals("as instance resource - xxx", r.readEntity(String.class));
+        Response r = client.path("as_instance").request().get();
+        JettyTester.assertOk(r).assertContent("as instance resource - xxx");
     }
 
     @Test
     public void testAsType() {
-        Response r = target.path("as_type").request().get();
-        assertEquals(200, r.getStatus());
-        assertEquals("as type resource", r.readEntity(String.class));
+        Response r = client.path("as_type").request().get();
+        JettyTester.assertOk(r).assertContent("as type resource");
     }
 
     @Test
     public void testAsType_OverriddenPath() {
-        Response r = target.path("as_type_explicit_path").request().get();
-        assertEquals(200, r.getStatus());
-        assertEquals("as type path override resource: as_type_explicit_path", r.readEntity(String.class));
+        Response r = client.path("as_type_explicit_path").request().get();
+        JettyTester.assertOk(r).assertContent("as type path override resource: as_type_explicit_path");
     }
 
     @Test
     public void testAsType_MultipleOverriddenPaths() {
-        Response r1 = target.path("as_type_explicit_path1").request().get();
-        assertEquals(200, r1.getStatus());
-        assertEquals("as type path override resource multiplied: as_type_explicit_path1", r1.readEntity(String.class));
+        Response r1 = client.path("as_type_explicit_path1").request().get();
+        JettyTester.assertOk(r1).assertContent("as type path override resource multiplied: as_type_explicit_path1");
 
-        Response r2 = target.path("as_type_explicit_path2").request().get();
-        assertEquals(200, r2.getStatus());
-        assertEquals("as type path override resource multiplied: as_type_explicit_path2", r2.readEntity(String.class));
+        Response r2 = client.path("as_type_explicit_path2").request().get();
+        JettyTester.assertOk(r2).assertContent("as type path override resource multiplied: as_type_explicit_path2");
     }
 
     @Test
     public void testDIManaged_OverriddenPath() {
-        Response r = target.path("di_managed_explicit_path").request().get();
-        assertEquals(200, r.getStatus());
-        assertEquals("di managed path override resource: DILABEL", r.readEntity(String.class));
+        Response r = client.path("di_managed_explicit_path").request().get();
+        JettyTester.assertOk(r).assertContent("di managed path override resource: DILABEL");
     }
 
     @Test
     public void testMapped_MultipleOverriddenPaths() {
-        Response r1 = target.path("mapped_explicit_path1").request().get();
-        assertEquals(200, r1.getStatus());
-        assertEquals("mapped path override resource: MAPPEDLABEL", r1.readEntity(String.class));
+        Response r1 = client.path("mapped_explicit_path1").request().get();
+        JettyTester.assertOk(r1).assertContent("mapped path override resource: MAPPEDLABEL");
 
-        Response r2 = target.path("mapped_explicit_path2").request().get();
-        assertEquals(200, r2.getStatus());
-        assertEquals("mapped path override resource: MAPPEDLABEL", r2.readEntity(String.class));
+        Response r2 = client.path("mapped_explicit_path2").request().get();
+        JettyTester.assertOk(r2).assertContent("mapped path override resource: MAPPEDLABEL");
     }
 
     @Test
     public void testAsType_OverriddenPath_AnnotationPathIgnored() {
-        Response r1 = target.path("as_type_annotation_path").request().get();
-        assertEquals(404, r1.getStatus());
+        Response r1 = client.path("as_type_annotation_path").request().get();
+        JettyTester.assertNotFound(r1);
 
-        Response r2 = target.path("as_type_annotation_path_multiply").request().get();
-        assertEquals(404, r2.getStatus());
+        Response r2 = client.path("as_type_annotation_path_multiply").request().get();
+        JettyTester.assertNotFound(r2);
 
-        Response r3 = target.path("di_managed_annotation_path").request().get();
-        assertEquals(404, r3.getStatus());
+        Response r3 = client.path("di_managed_annotation_path").request().get();
+        JettyTester.assertNotFound(r3);
 
-        Response r4 = target.path("mapped_annotation_path").request().get();
-        assertEquals(404, r4.getStatus());
+        Response r4 = client.path("mapped_annotation_path").request().get();
+        JettyTester.assertNotFound(r4);
     }
 
     @Path("as_instance")

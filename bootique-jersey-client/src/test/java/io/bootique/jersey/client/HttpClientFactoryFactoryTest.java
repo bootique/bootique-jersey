@@ -19,27 +19,20 @@
 
 package io.bootique.jersey.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-
-import java.util.Collections;
-
-import javax.ws.rs.client.Client;
-
 import io.bootique.di.Injector;
 import org.glassfish.jersey.client.ClientProperties;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import javax.ws.rs.client.Client;
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 public class HttpClientFactoryFactoryTest {
 
-	private Injector mockInjector;
-
-	@Before
-	public void before() {
-		mockInjector = mock(Injector.class);
-	}
+	private Injector mockInjector = mock(Injector.class);
 
 	@Test
 	public void testCreateClientFactory() {

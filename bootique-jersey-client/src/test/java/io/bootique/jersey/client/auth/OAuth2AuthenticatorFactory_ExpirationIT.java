@@ -19,21 +19,18 @@
 
 package io.bootique.jersey.client.auth;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.di.Injector;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestFactory;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.WebTarget;
@@ -42,24 +39,20 @@ import javax.ws.rs.core.Response;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@BQTest
 public class OAuth2AuthenticatorFactory_ExpirationIT {
 
-    @ClassRule
-    public static BQTestFactory TEST_FACTORY = new BQTestFactory();
+    @BQApp
+    static final BQRuntime server = Bootique.app("-s")
+            .autoLoadModules()
+            .module((binder) -> JerseyModule.extend(binder).addResource(TokenApi.class))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
-    @Rule
+    @RegisterExtension
     public BQTestFactory clientFactory = new BQTestFactory();
-
-    @BeforeClass
-    public static void beforeClass() {
-        TEST_FACTORY
-                .app("-s")
-                .autoLoadModules()
-                .module((binder) -> JerseyModule.extend(binder).addResource(TokenApi.class))
-                .run();
-    }
 
     private Injector clientStackInjector() {
         return clientFactory.app()
@@ -77,14 +70,14 @@ public class OAuth2AuthenticatorFactory_ExpirationIT {
         // the value must be bigger than token refresh lag of 3 sec. Otherwise we'd invariably get expired tokens...
         // so ... the test will be slower than ideal ... TODO: make the lag configurable
         factory.setExpiresIn(Duration.ofSeconds(3));
-        factory.setTokenUrl("http://127.0.0.1:8080/token");
+        factory.setTokenUrl(JettyTester.getServerUrl(server) + "/token");
 
         ClientRequestFilter filter = factory.createAuthFilter(clientStackInjector());
 
         WebTarget api = ClientBuilder
                 .newClient()
                 .register(filter)
-                .target("http://127.0.0.1:8080/require_token");
+                .target(JettyTester.getServerUrl(server) + "/require_token");
 
         Response r1 = api.request().get();
 

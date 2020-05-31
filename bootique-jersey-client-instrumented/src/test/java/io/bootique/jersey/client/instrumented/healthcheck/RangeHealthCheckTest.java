@@ -8,12 +8,12 @@ import io.bootique.jersey.client.instrumented.threshold.ThresholdHealthCheckFact
 import io.bootique.metrics.health.HealthCheckOutcome;
 import io.bootique.metrics.health.HealthCheckRegistry;
 import io.bootique.metrics.health.check.DoubleRangeFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static io.bootique.jersey.client.instrumented.threshold.ThresholdHealthCheckFactory.THRESHOLD_REQUESTS_CHECK;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RangeHealthCheckTest {
 
@@ -21,7 +21,7 @@ public class RangeHealthCheckTest {
     private ThresholdHealthCheckFactory healthCheckFactory;
     private HealthCheckRegistry healthCheckRegistry;
 
-    @Before
+    @BeforeEach
     public void before() {
         this.registry = Mockito.mock(MetricRegistry.class);
         this.healthCheckFactory = new ThresholdHealthCheckFactory();

@@ -19,46 +19,38 @@
 
 package io.bootique.jersey.client.auth;
 
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.di.Injector;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestFactory;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
+@BQTest
 public class OAuth2AuthenticatorFactoryIT {
 
-    @ClassRule
-    public static BQTestFactory SERVER_FACTORY = new BQTestFactory();
+    @BQApp
+    static final BQRuntime server = Bootique.app("-s")
+            .autoLoadModules()
+            .module((binder) -> JerseyModule.extend(binder).addResource(TokenApi.class))
+            .module(JettyTester.moduleReplacingConnectors())
+            .createRuntime();
 
-    @Rule
+    @RegisterExtension
     public BQTestFactory clientFactory = new BQTestFactory();
-
-    @BeforeClass
-    public static void beforeClass() {
-        SERVER_FACTORY
-                .app("-s")
-                .autoLoadModules()
-                .module((binder) -> JerseyModule.extend(binder).addResource(TokenApi.class))
-                .run();
-    }
 
     private Injector clientStackInjector() {
         return clientFactory.app()
@@ -73,8 +65,7 @@ public class OAuth2AuthenticatorFactoryIT {
         OAuth2AuthenticatorFactory factory = new OAuth2AuthenticatorFactory();
         factory.setPassword("p");
         factory.setUsername("u");
-        factory.setTokenUrl("http://127.0.0.1:8080/token");
-
+        factory.setTokenUrl(JettyTester.getServerUrl(server) + "/token");
 
         OAuth2Token token = factory
                 .createOAuth2TokenDAO(clientStackInjector())
@@ -84,15 +75,15 @@ public class OAuth2AuthenticatorFactoryIT {
         assertEquals("t:client_credentials:Basic dTpw", token.getAccessToken());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testGetToken_Error() {
 
         OAuth2AuthenticatorFactory factory = new OAuth2AuthenticatorFactory();
         factory.setPassword("p");
         factory.setUsername("u");
-        factory.setTokenUrl("http://127.0.0.1:8080/token_error");
+        factory.setTokenUrl(JettyTester.getServerUrl(server) + "/token_error");
 
-        factory.createOAuth2TokenDAO(clientStackInjector()).getToken();
+        assertThrows(RuntimeException.class, () -> factory.createOAuth2TokenDAO(clientStackInjector()).getToken());
     }
 
     @Test
@@ -101,14 +92,14 @@ public class OAuth2AuthenticatorFactoryIT {
         OAuth2AuthenticatorFactory factory = new OAuth2AuthenticatorFactory();
         factory.setPassword("p");
         factory.setUsername("u");
-        factory.setTokenUrl("http://127.0.0.1:8080/token");
+        factory.setTokenUrl(JettyTester.getServerUrl(server) + "/token");
 
         ClientRequestFilter filter = factory.createAuthFilter(clientStackInjector());
 
         Response r1 = ClientBuilder
                 .newClient()
                 .register(filter)
-                .target("http://127.0.0.1:8080/require_token")
+                .target(JettyTester.getServerUrl(server) + "/require_token")
                 .request()
                 .get();
 
@@ -117,7 +108,7 @@ public class OAuth2AuthenticatorFactoryIT {
         Response r2 = ClientBuilder
                 .newClient()
                 .register(filter)
-                .target("http://127.0.0.1:8080/require_token")
+                .target(JettyTester.getServerUrl(server) + "/require_token")
                 .request()
                 .get();
 
