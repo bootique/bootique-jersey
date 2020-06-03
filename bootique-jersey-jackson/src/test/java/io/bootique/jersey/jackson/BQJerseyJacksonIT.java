@@ -27,14 +27,11 @@ import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.*;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.time.LocalDateTime;
 
 @BQTest
 public class BQJerseyJacksonIT {
@@ -43,16 +40,20 @@ public class BQJerseyJacksonIT {
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
             .module(binder -> JerseyModule.extend(binder).addResource(JsonResource.class))
+            .module(JettyTester.moduleReplacingConnectors())
             .createRuntime();
-
-    private static WebTarget target = JettyTester.getTarget(app);
 
     @Test
     public void testJacksonSerialization() {
-        Response r1 = target.request().get();
-        assertEquals(Response.Status.OK.getStatusCode(), r1.getStatus());
-        assertEquals("{\"p1\":\"s\",\"p2\":45}", r1.readEntity(String.class));
-        r1.close();
+        Response r = JettyTester.getTarget(app).request().get();
+        JettyTester.assertOk(r).assertContent("{\"p1\":\"s\",\"p2\":45,\"ts\":\"2020-01-02T03:04:05\"}");
+    }
+
+    @Test
+    public void testJacksonDeserialization() {
+        String entity = "{\"p1\":\"xx\",\"p2\":55,\"ts\":\"2021-01-02T01:04:05\"}";
+        Response r = JettyTester.getTarget(app).request().put(Entity.entity(entity, MediaType.APPLICATION_JSON_TYPE));
+        JettyTester.assertOk(r).assertContent(entity);
     }
 
     @Path("/")
@@ -61,17 +62,28 @@ public class BQJerseyJacksonIT {
 
         @GET
         public Model get() {
-            return new Model("s", 45);
+            return new Model("s", 45, LocalDateTime.of(2020, 1, 2, 3, 4, 5));
+        }
+
+        @PUT
+        @Consumes(MediaType.APPLICATION_JSON)
+        public Response echo(Model model) {
+            return Response.ok().entity(model).build();
         }
     }
 
     public static class Model {
         private String p1;
         private int p2;
+        private LocalDateTime ts;
 
-        public Model(String p1, int p2) {
+        public Model() {
+        }
+
+        public Model(String p1, int p2, LocalDateTime ts) {
             this.p1 = p1;
             this.p2 = p2;
+            this.ts = ts;
         }
 
         public String getP1() {
@@ -80,6 +92,10 @@ public class BQJerseyJacksonIT {
 
         public int getP2() {
             return p2;
+        }
+
+        public LocalDateTime getTs() {
+            return ts;
         }
     }
 }

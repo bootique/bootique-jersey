@@ -7,6 +7,7 @@
 * #50 Integrate 'jersey-bean-validation'
 * #51 Resources with dynamically defined paths
 * #52 Configurable JSON serialization
+* #53 bootique-jersey-jackson: Support java.time serialization
 
 ## 1.0.RC1
 

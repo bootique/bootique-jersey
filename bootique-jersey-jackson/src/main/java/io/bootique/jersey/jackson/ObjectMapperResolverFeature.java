@@ -18,27 +18,24 @@
  */
 package io.bootique.jersey.jackson;
 
-import io.bootique.BQCoreModule;
-import io.bootique.di.Binder;
+import javax.ws.rs.core.Feature;
+import javax.ws.rs.core.FeatureContext;
+import java.util.Objects;
 
 /**
  * @since 2.0
  */
-public class JerseyJacksonModuleExtender {
+public class ObjectMapperResolverFeature implements Feature {
 
-    private Binder binder;
+    private ObjectMapperResolver resolver;
 
-    public JerseyJacksonModuleExtender(Binder binder) {
-        this.binder = binder;
+    public ObjectMapperResolverFeature(ObjectMapperResolver resolver) {
+        this.resolver = Objects.requireNonNull(resolver);
     }
 
-    /**
-     * Configures global JSON serialization strategy that would skip properties with null values in responses.
-     *
-     * @return this extender instance
-     */
-    public JerseyJacksonModuleExtender skipNullProperties() {
-        BQCoreModule.extend(binder).setProperty("bq.jerseyjackson.skipNullProperties", "true");
-        return this;
+    @Override
+    public boolean configure(FeatureContext context) {
+        context.register(resolver);
+        return true;
     }
 }

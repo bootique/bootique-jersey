@@ -19,7 +19,15 @@
 package io.bootique.jersey.jackson;
 
 import io.bootique.BaseModule;
+import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
+import io.bootique.di.Provides;
+import io.bootique.jersey.JerseyModule;
+
+import javax.inject.Singleton;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * @since 2.0
@@ -28,5 +36,22 @@ public class JerseyJacksonModule extends BaseModule {
 
     public static JerseyJacksonModuleExtender extend(Binder binder) {
         return new JerseyJacksonModuleExtender(binder);
+    }
+
+    @Override
+    public Map<String, Type> configs() {
+        return Collections.singletonMap(configPrefix, JerseyJacksonFactory.class);
+    }
+
+    @Override
+    public void configure(Binder binder) {
+        JerseyModule.extend(binder).addFeature(ObjectMapperResolverFeature.class);
+    }
+
+    @Singleton
+    @Provides
+    ObjectMapperResolverFeature provideObjectMapperResolverFeature(ConfigurationFactory configurationFactory) {
+        ObjectMapperResolver omr = config(JerseyJacksonFactory.class, configurationFactory).createObjectMapperResolver();
+        return new ObjectMapperResolverFeature(omr);
     }
 }

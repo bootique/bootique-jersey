@@ -34,6 +34,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.LocalDateTime;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -63,7 +64,7 @@ public class BQJerseyJackson_NullsIT {
 
         Response r = target.request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
-        assertEquals("{\"p1\":null,\"p2\":45}", r.readEntity(String.class));
+        assertEquals("{\"p1\":null,\"p2\":45,\"ts\":\"2020-01-02T03:04:05\"}", r.readEntity(String.class));
     }
 
     @Test
@@ -75,7 +76,7 @@ public class BQJerseyJackson_NullsIT {
 
         Response r = target.request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
-        assertEquals("{\"p2\":45}", r.readEntity(String.class));
+        assertEquals("{\"p2\":45,\"ts\":\"2020-01-02T03:04:05\"}", r.readEntity(String.class));
     }
 
     @Path("/")
@@ -84,25 +85,31 @@ public class BQJerseyJackson_NullsIT {
 
         @GET
         public Model get() {
-            return new Model(null, 45);
+            return new Model(null, 45, LocalDateTime.of(2020, 1, 2, 3, 4, 5));
         }
     }
 
     public static class Model {
         private String p1;
-        private Integer p2;
+        private int p2;
+        private LocalDateTime ts;
 
-        public Model(String p1, Integer p2) {
+        public Model(String p1, int p2, LocalDateTime ts) {
             this.p1 = p1;
             this.p2 = p2;
+            this.ts = ts;
         }
 
         public String getP1() {
             return p1;
         }
 
-        public Integer getP2() {
+        public int getP2() {
             return p2;
+        }
+
+        public LocalDateTime getTs() {
+            return ts;
         }
     }
 }

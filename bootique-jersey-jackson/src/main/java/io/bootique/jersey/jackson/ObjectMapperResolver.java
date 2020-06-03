@@ -18,26 +18,28 @@
  */
 package io.bootique.jersey.jackson;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.jaxrs.cfg.Annotations;
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
 
-// need wildcard to catch JSON variants
-@Produces(MediaType.WILDCARD)
-@Consumes(MediaType.WILDCARD)
-public class BQJacksonJaxbJsonProvider extends JacksonJaxbJsonProvider {
+/**
+ * A Jersey extension that provides a preconfigured Jackson ObjectMapper for all object (de)serialization needed
+ * within Jersey.
+ *
+ * @since 2.0
+ */
+@Provider
+public class ObjectMapperResolver implements ContextResolver<ObjectMapper> {
 
-    protected BQJacksonJaxbJsonProvider(ObjectMapper mapper, Annotations[] annotationsToUse) {
-        super(mapper, annotationsToUse);
+    private ObjectMapper mapper;
+
+    public ObjectMapperResolver(ObjectMapper mapper) {
+        this.mapper = mapper;
     }
 
-    public static BQJacksonJaxbJsonProvider create(JsonInclude.Include nullsPolicy) {
-        ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(nullsPolicy);
-        return new BQJacksonJaxbJsonProvider(objectMapper, JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS);
+    @Override
+    public ObjectMapper getContext(Class<?> type) {
+        return mapper;
     }
 }
