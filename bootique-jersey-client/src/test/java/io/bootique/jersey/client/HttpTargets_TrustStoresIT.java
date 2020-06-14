@@ -58,7 +58,6 @@ public class HttpTargets_TrustStoresIT {
     final BQTestFactory clientFactory = new BQTestFactory();
 
     protected String serviceUrl() {
-        // TODO: replace 127.0.0.1 with "localhost" for certificates to work... Do it in YAML?
         return JettyTester.getUrl(app) + "/get";
     }
 

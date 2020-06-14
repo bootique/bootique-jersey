@@ -49,15 +49,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @BQTest
 public class HttpHealthCheckIT {
 
+    static final JettyTester jetty = JettyTester.create();
+
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
             .modules(JettyModule.class, JerseyClientInstrumentedModule.class, JerseyModule.class)
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
-            .module(JettyTester.moduleReplacingConnectors())
+            .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
     private WebTarget target(String path) {
-        return JettyTester.getTarget(server).path(path);
+        return jetty.getTarget().path(path);
     }
 
     @Test

@@ -41,11 +41,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @BQTest
 public class HttpClientFactory_FeaturesIT {
 
+    static final JettyTester jetty = JettyTester.create();
+
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
             .modules(JettyModule.class, JerseyModule.class)
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
-            .module(JettyTester.moduleReplacingConnectors())
+            .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
     @BQApp(skipRun = true)
@@ -65,7 +67,7 @@ public class HttpClientFactory_FeaturesIT {
 
         client.getInstance(HttpClientFactory.class)
                 .newClient()
-                .target(JettyTester.getUrl(server))
+                .target(jetty.getUrl())
                 .request().get().close();
 
         assertTrue(Feature1.LOADED);

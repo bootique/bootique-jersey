@@ -36,23 +36,25 @@ import java.time.LocalDateTime;
 @BQTest
 public class BQJerseyJacksonIT {
 
+    static final JettyTester jetty = JettyTester.create();
+
     @BQApp
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
             .module(binder -> JerseyModule.extend(binder).addResource(JsonResource.class))
-            .module(JettyTester.moduleReplacingConnectors())
+            .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
     @Test
     public void testJacksonSerialization() {
-        Response r = JettyTester.getTarget(app).request().get();
+        Response r = jetty.getTarget().request().get();
         JettyTester.assertOk(r).assertContent("{\"p1\":\"s\",\"p2\":45,\"ts\":\"2020-01-02T03:04:05\"}");
     }
 
     @Test
     public void testJacksonDeserialization() {
         String entity = "{\"p1\":\"xx\",\"p2\":55,\"ts\":\"2021-01-02T01:04:05\"}";
-        Response r = JettyTester.getTarget(app).request().put(Entity.entity(entity, MediaType.APPLICATION_JSON_TYPE));
+        Response r = jetty.getTarget().request().put(Entity.entity(entity, MediaType.APPLICATION_JSON_TYPE));
         JettyTester.assertOk(r).assertContent(entity);
     }
 

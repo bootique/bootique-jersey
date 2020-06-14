@@ -44,12 +44,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @BQTest
 public class HttpTargets_FeaturesIT {
 
+    static final JettyTester jetty = JettyTester.create();
+
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
             .modules(JettyModule.class, JerseyModule.class)
             .moduleProvider(new LogbackModuleProvider())
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
-            .module(JettyTester.moduleReplacingConnectors())
+            .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
     @RegisterExtension

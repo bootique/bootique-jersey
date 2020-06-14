@@ -44,11 +44,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @BQTest
 public class OAuth2AuthenticatorFactory_ExpirationIT {
 
+    static final JettyTester jetty = JettyTester.create();
+
     @BQApp
     static final BQRuntime server = Bootique.app("-s")
             .autoLoadModules()
             .module((binder) -> JerseyModule.extend(binder).addResource(TokenApi.class))
-            .module(JettyTester.moduleReplacingConnectors())
+            .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
     @RegisterExtension

@@ -47,15 +47,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @BQTest
 public class ValidationIT {
 
+    static final JettyTester jetty = JettyTester.create();
+
     @BQApp
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
             .module(b -> JerseyBeanValidationModule.extend(b).sendErrorsInResponse())
-            .module(JettyTester.moduleReplacingConnectors())
+            .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    private static WebTarget target = JettyTester.getTarget(app);
+    private static WebTarget target = jetty.getTarget();
 
     private static Consumer<String> assertTrimmed(String expected) {
         return c -> {

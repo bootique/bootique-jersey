@@ -54,15 +54,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @BQTest
 public class InstrumentedClientIT {
 
+    static final JettyTester jetty = JettyTester.create();
+
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
             .modules(JettyModule.class, JerseyModule.class)
             .module(binder -> JerseyModule.extend(binder).addResource(Resource.class))
-            .module(JettyTester.moduleReplacingConnectors())
+            .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    static final String getUrl = JettyTester.getUrl(server) + "/get";
-    static final String get500Url = JettyTester.getUrl(server) + "/get500";
+    static final String getUrl = jetty.getUrl() + "/get";
+    static final String get500Url = jetty.getUrl() + "/get500";
 
     @RegisterExtension
     final BQTestFactory testFactory = new BQTestFactory();
