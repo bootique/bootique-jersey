@@ -86,7 +86,7 @@ public class HttpHealthCheckIT {
         // testing that while the initial target is setup to not follow redirects, health check still does.
 
         ClientConfig config = new ClientConfig().property(ClientProperties.FOLLOW_REDIRECTS, false);
-        WebTarget target = ClientBuilder.newClient(config).target(JettyTester.getServerUrl(server) + "/moved");
+        WebTarget target = ClientBuilder.newClient(config).target(JettyTester.getUrl(server) + "/moved");
 
         HealthCheckOutcome outcome = HttpHealthCheck.viaGET(target).safeCheck();
         assertEquals(HealthCheckStatus.OK, outcome.getStatus(), outcome.toString());
@@ -148,7 +148,7 @@ public class HttpHealthCheckIT {
         @GET
         @Path("moved")
         public Response getMoved() throws URISyntaxException {
-            return Response.status(Response.Status.MOVED_PERMANENTLY).location(new URI(JettyTester.getServerUrl(server) + "/get")).build();
+            return Response.status(Response.Status.MOVED_PERMANENTLY).location(new URI(JettyTester.getUrl(server) + "/get")).build();
         }
 
         @GET

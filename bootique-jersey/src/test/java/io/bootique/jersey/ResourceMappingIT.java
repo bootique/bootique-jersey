@@ -42,6 +42,8 @@ import javax.ws.rs.core.UriInfo;
 @BQTest
 public class ResourceMappingIT {
 
+    static final JettyTester jetty = JettyTester.create();
+
     @BQApp
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
@@ -59,10 +61,10 @@ public class ResourceMappingIT {
 
                     .addMappedResource(new TypeLiteral<MappedResource<MappedPathOverrideResource>>() {
                     }))
-            .module(JettyTester.moduleReplacingConnectors())
+            .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    private static final WebTarget client = JettyTester.getTarget(app);
+    private static final WebTarget client = jetty.getTarget();
 
     @Test
     public void testAsInstance() {

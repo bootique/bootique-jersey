@@ -47,18 +47,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @BQTest
 public class MultiPartFeatureIT {
 
+    static final JettyTester jetty = JettyTester.create();
+
     @BQApp
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
             .module(b -> JerseyModule.extend(b).addFeature(MultiPartFeature.class).addResource(Resource.class))
-            .module(JettyTester.moduleReplacingConnectors())
+            .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
     private WebTarget multiPartTarget = ClientBuilder
             .newBuilder()
             .register(MultiPartFeature.class)
             .build()
-            .target(JettyTester.getServerUrl(app));
+            .target(jetty.getUrl());
 
     @Test
     public void testResponse() {

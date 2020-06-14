@@ -59,7 +59,7 @@ public class HttpTargets_TrustStoresIT {
 
     protected String serviceUrl() {
         // TODO: replace 127.0.0.1 with "localhost" for certificates to work... Do it in YAML?
-        return JettyTester.getServerUrl(app) + "/get";
+        return JettyTester.getUrl(app) + "/get";
     }
 
     @Test

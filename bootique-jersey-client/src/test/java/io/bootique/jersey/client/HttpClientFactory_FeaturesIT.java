@@ -65,7 +65,7 @@ public class HttpClientFactory_FeaturesIT {
 
         client.getInstance(HttpClientFactory.class)
                 .newClient()
-                .target(JettyTester.getServerUrl(server))
+                .target(JettyTester.getUrl(server))
                 .request().get().close();
 
         assertTrue(Feature1.LOADED);

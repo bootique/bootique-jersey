@@ -74,7 +74,7 @@ public class ProviderInjectionIT {
         WebTarget target = client
                 .getInstance(HttpClientFactory.class)
                 .newClient()
-                .target(JettyTester.getServerUrl(server));
+                .target(JettyTester.getUrl(server));
 
         Response r1 = target.request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());

@@ -61,8 +61,8 @@ public class InstrumentedClientIT {
             .module(JettyTester.moduleReplacingConnectors())
             .createRuntime();
 
-    static final String getUrl = JettyTester.getServerUrl(server) + "/get";
-    static final String get500Url = JettyTester.getServerUrl(server) + "/get500";
+    static final String getUrl = JettyTester.getUrl(server) + "/get";
+    static final String get500Url = JettyTester.getUrl(server) + "/get500";
 
     @RegisterExtension
     final BQTestFactory testFactory = new BQTestFactory();

@@ -64,7 +64,7 @@ public class HttpClientFactoryFactoryIT {
         factoryFactory.setFollowRedirects(true);
         Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
 
-        Response r = client.target(JettyTester.getServerUrl(app)).path("/302").request().get();
+        Response r = client.target(JettyTester.getUrl(app)).path("/302").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
         assertEquals("got", r.readEntity(String.class));
     }
@@ -76,8 +76,8 @@ public class HttpClientFactoryFactoryIT {
         factoryFactory.setFollowRedirects(false);
         Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
 
-        Response r = client.target(JettyTester.getServerUrl(app)).path("/302").request().get();
-        JettyTester.assertStatus(r, 307).assertHeader("location", JettyTester.getServerUrl(app) + "/get");
+        Response r = client.target(JettyTester.getUrl(app)).path("/302").request().get();
+        JettyTester.assertStatus(r, 307).assertHeader("location", JettyTester.getUrl(app) + "/get");
     }
 
     @Test
@@ -86,7 +86,7 @@ public class HttpClientFactoryFactoryIT {
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
 
-        Response r = client.target(JettyTester.getServerUrl(app)).path("/302").request().get();
+        Response r = client.target(JettyTester.getUrl(app)).path("/302").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
         assertEquals("got", r.readEntity(String.class));
     }
@@ -98,7 +98,7 @@ public class HttpClientFactoryFactoryIT {
         factoryFactory.setCompression(true);
         Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
 
-        Response r = client.target(JettyTester.getServerUrl(app)).path("/getbig").request().get();
+        Response r = client.target(JettyTester.getUrl(app)).path("/getbig").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
         assertEquals("gzip", r.getHeaderString("Content-Encoding"));
     }
@@ -110,7 +110,7 @@ public class HttpClientFactoryFactoryIT {
         factoryFactory.setCompression(false);
         Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
 
-        Response r = client.target(JettyTester.getServerUrl(app)).path("/getbig").request().get();
+        Response r = client.target(JettyTester.getUrl(app)).path("/getbig").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
         assertNull(r.getHeaderString("Content-Encoding"));
     }
@@ -122,7 +122,7 @@ public class HttpClientFactoryFactoryIT {
         factoryFactory.setCompression(true);
         Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
 
-        Response r = client.target(JettyTester.getServerUrl(app)).path("/getbig").request().get();
+        Response r = client.target(JettyTester.getUrl(app)).path("/getbig").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
         assertEquals("gzip", r.getHeaderString("Content-Encoding"));
     }
@@ -133,7 +133,7 @@ public class HttpClientFactoryFactoryIT {
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
 
-        Response r = client.target(JettyTester.getServerUrl(app)).path("/slowget").request().get();
+        Response r = client.target(JettyTester.getUrl(app)).path("/slowget").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
         assertEquals("slowly_got", r.readEntity(String.class));
     }
@@ -145,7 +145,7 @@ public class HttpClientFactoryFactoryIT {
         factoryFactory.setReadTimeoutMs(2000);
         Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
 
-        Response r = client.target(JettyTester.getServerUrl(app)).path("/slowget").request().get();
+        Response r = client.target(JettyTester.getUrl(app)).path("/slowget").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
         assertEquals("slowly_got", r.readEntity(String.class));
     }
@@ -158,7 +158,7 @@ public class HttpClientFactoryFactoryIT {
         Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
 
         assertThrows(ProcessingException.class,
-                () -> client.target(JettyTester.getServerUrl(app)).path("/slowget").request().get());
+                () -> client.target(JettyTester.getUrl(app)).path("/slowget").request().get());
     }
 
     @Test
@@ -179,7 +179,7 @@ public class HttpClientFactoryFactoryIT {
                 .newBuilder().auth("a1")
                 .build();
 
-        Response r = client.target(JettyTester.getServerUrl(app)).path("/basicget").request().get();
+        Response r = client.target(JettyTester.getUrl(app)).path("/basicget").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
         assertEquals("got_basic_Basic dTE6cDE=", r.readEntity(String.class));
     }

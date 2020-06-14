@@ -45,7 +45,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MessageBodyReaderIT {
@@ -56,15 +55,18 @@ public class MessageBodyReaderIT {
     final BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
 
     protected WebTarget startServer(BQModule... modules) {
+
+        JettyTester jetty = JettyTester.create();
+
         TestRuntumeBuilder builder = testFactory
                 .app("-s")
-                .module(JettyTester.moduleReplacingConnectors());
+                .module(jetty.moduleReplacingConnectors());
 
         asList(modules).forEach(builder::module);
 
         BQRuntime server = builder.createRuntime();
         assertTrue(server.run().isSuccess());
-        return JettyTester.getTarget(server);
+        return jetty.getTarget();
     }
 
     @Test

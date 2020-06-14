@@ -66,7 +66,7 @@ public class HttpClientFactoryIT {
 
         Client client = factory.newClient();
 
-        Response r1 = client.target(JettyTester.getServerUrl(server)).path("get").request().get();
+        Response r1 = client.target(JettyTester.getUrl(server)).path("get").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("got", r1.readEntity(String.class));
     }
@@ -85,7 +85,7 @@ public class HttpClientFactoryIT {
 
         Client client = factory.newBuilder().auth("auth1").build();
 
-        Response r1 = client.target(JettyTester.getServerUrl(server)).path("get_auth").request().get();
+        Response r1 = client.target(JettyTester.getUrl(server)).path("get_auth").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("got_Basic dTpw", r1.readEntity(String.class));
     }

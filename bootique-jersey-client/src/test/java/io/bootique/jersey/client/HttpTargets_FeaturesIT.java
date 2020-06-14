@@ -60,7 +60,7 @@ public class HttpTargets_FeaturesIT {
         HttpTargets targets = clientFactory.app()
                 .moduleProvider(new JerseyClientModuleProvider())
                 .moduleProvider(new LogbackModuleProvider())
-                .property("bq.jerseyclient.targets.t.url", JettyTester.getServerUrl(server) + "/get")
+                .property("bq.jerseyclient.targets.t.url", JettyTester.getUrl(server) + "/get")
                 .createRuntime()
                 .getInstance(HttpTargets.class);
 

@@ -47,6 +47,8 @@ public class ResourceInjectionIT {
     private static final String TEST_PROPERTY = "bq.test.label";
     private static final InjectedService service = new InjectedService();
 
+    static final JettyTester jetty = JettyTester.create();
+
     @BQApp
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
@@ -60,11 +62,11 @@ public class ResourceInjectionIT {
                     .addResource(FieldInjectedResource.class)
                     .addResource(ConstructorInjectedResource.class)
                     .addResource(UnInjectedResource.class))
-            .module(JettyTester.moduleReplacingConnectors())
+            .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
 
-    private static final WebTarget client = JettyTester.getTarget(app);
+    private static final WebTarget client = jetty.getTarget();
 
     @BeforeEach
     public void before() {

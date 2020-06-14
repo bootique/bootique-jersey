@@ -55,7 +55,7 @@ public class HttpClientFactory_TrustStoresIT {
     final BQTestFactory clientFactory = new BQTestFactory();
 
     private String serviceUrl() {
-        return JettyTester.getServerUrl(server) + "/get";
+        return JettyTester.getUrl(server) + "/get";
     }
 
     @Test

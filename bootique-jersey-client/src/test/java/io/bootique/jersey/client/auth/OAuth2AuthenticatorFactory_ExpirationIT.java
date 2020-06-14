@@ -70,14 +70,14 @@ public class OAuth2AuthenticatorFactory_ExpirationIT {
         // the value must be bigger than token refresh lag of 3 sec. Otherwise we'd invariably get expired tokens...
         // so ... the test will be slower than ideal ... TODO: make the lag configurable
         factory.setExpiresIn(Duration.ofSeconds(3));
-        factory.setTokenUrl(JettyTester.getServerUrl(server) + "/token");
+        factory.setTokenUrl(JettyTester.getUrl(server) + "/token");
 
         ClientRequestFilter filter = factory.createAuthFilter(clientStackInjector());
 
         WebTarget api = ClientBuilder
                 .newClient()
                 .register(filter)
-                .target(JettyTester.getServerUrl(server) + "/require_token");
+                .target(JettyTester.getUrl(server) + "/require_token");
 
         Response r1 = api.request().get();
 

@@ -64,7 +64,7 @@ public class HttpTargetsIT {
         HttpTargets targets = clientFactory.app()
                 .moduleProvider(new JerseyClientModuleProvider())
                 .moduleProvider(new LogbackModuleProvider())
-                .property("bq.jerseyclient.targets.t1.url", JettyTester.getServerUrl(server) + "/get")
+                .property("bq.jerseyclient.targets.t1.url", JettyTester.getUrl(server) + "/get")
                 .createRuntime()
                 .getInstance(HttpTargets.class);
 
@@ -88,7 +88,7 @@ public class HttpTargetsIT {
                         .property("bq.jerseyclient.auth.a1.type", "basic")
                         .property("bq.jerseyclient.auth.a1.username", "u")
                         .property("bq.jerseyclient.auth.a1.password", "p")
-                        .property("bq.jerseyclient.targets.t1.url", JettyTester.getServerUrl(server) + "/get_auth")
+                        .property("bq.jerseyclient.targets.t1.url", JettyTester.getUrl(server) + "/get_auth")
                         .property("bq.jerseyclient.targets.t1.auth", "a1")
                         .createRuntime()
                         .getInstance(HttpTargets.class);
@@ -190,7 +190,7 @@ public class HttpTargetsIT {
         public void expectNoFollow() {
             Response r = createTarget().request().get();
             assertEquals(307, r.getStatus());
-            assertEquals(JettyTester.getServerUrl(server) + "/get", r.getHeaderString("location"));
+            assertEquals(JettyTester.getUrl(server) + "/get", r.getHeaderString("location"));
         }
 
         private WebTarget createTarget() {
@@ -198,7 +198,7 @@ public class HttpTargetsIT {
             TestRuntumeBuilder builder = clientFactory.app()
                     .moduleProvider(new JerseyClientModuleProvider())
                     .moduleProvider(new LogbackModuleProvider())
-                    .property("bq.jerseyclient.targets.t.url", JettyTester.getServerUrl(server) + "/302");
+                    .property("bq.jerseyclient.targets.t.url", JettyTester.getUrl(server) + "/302");
 
             if (clientRedirects != null) {
                 builder.property("bq.jerseyclient.followRedirects", clientRedirects.toString());
@@ -238,7 +238,7 @@ public class HttpTargetsIT {
             TestRuntumeBuilder builder = clientFactory.app()
                     .moduleProvider(new JerseyClientModuleProvider())
                     .moduleProvider(new LogbackModuleProvider())
-                    .property("bq.jerseyclient.targets.t.url", JettyTester.getServerUrl(server) + "/getbig");
+                    .property("bq.jerseyclient.targets.t.url", JettyTester.getUrl(server) + "/getbig");
 
             if (clientCompression != null) {
                 builder.property("bq.jerseyclient.compression", clientCompression.toString());

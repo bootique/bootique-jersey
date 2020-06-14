@@ -47,18 +47,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @BQTest
 public class ProviderInjectionIT {
 
+    static final JettyTester jetty = JettyTester.create();
+
     @BQApp
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
             .module(b -> b.bind(InjectedService.class).inSingletonScope())
             .module(b -> JerseyModule.extend(b).addFeature(StringWriterFeature.class).addResource(Resource.class))
-            .module(JettyTester.moduleReplacingConnectors())
+            .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
     @Test
     public void testResponse() {
 
-        WebTarget client = JettyTester.getTarget(app);
+        WebTarget client = jetty.getTarget();
 
         Response r1 = client.request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());

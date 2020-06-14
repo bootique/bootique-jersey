@@ -65,7 +65,7 @@ public class OAuth2AuthenticatorFactoryIT {
         OAuth2AuthenticatorFactory factory = new OAuth2AuthenticatorFactory();
         factory.setPassword("p");
         factory.setUsername("u");
-        factory.setTokenUrl(JettyTester.getServerUrl(server) + "/token");
+        factory.setTokenUrl(JettyTester.getUrl(server) + "/token");
 
         OAuth2Token token = factory
                 .createOAuth2TokenDAO(clientStackInjector())
@@ -81,7 +81,7 @@ public class OAuth2AuthenticatorFactoryIT {
         OAuth2AuthenticatorFactory factory = new OAuth2AuthenticatorFactory();
         factory.setPassword("p");
         factory.setUsername("u");
-        factory.setTokenUrl(JettyTester.getServerUrl(server) + "/token_error");
+        factory.setTokenUrl(JettyTester.getUrl(server) + "/token_error");
 
         assertThrows(RuntimeException.class, () -> factory.createOAuth2TokenDAO(clientStackInjector()).getToken());
     }
@@ -92,14 +92,14 @@ public class OAuth2AuthenticatorFactoryIT {
         OAuth2AuthenticatorFactory factory = new OAuth2AuthenticatorFactory();
         factory.setPassword("p");
         factory.setUsername("u");
-        factory.setTokenUrl(JettyTester.getServerUrl(server) + "/token");
+        factory.setTokenUrl(JettyTester.getUrl(server) + "/token");
 
         ClientRequestFilter filter = factory.createAuthFilter(clientStackInjector());
 
         Response r1 = ClientBuilder
                 .newClient()
                 .register(filter)
-                .target(JettyTester.getServerUrl(server) + "/require_token")
+                .target(JettyTester.getUrl(server) + "/require_token")
                 .request()
                 .get();
 
@@ -108,7 +108,7 @@ public class OAuth2AuthenticatorFactoryIT {
         Response r2 = ClientBuilder
                 .newClient()
                 .register(filter)
-                .target(JettyTester.getServerUrl(server) + "/require_token")
+                .target(JettyTester.getUrl(server) + "/require_token")
                 .request()
                 .get();
 
