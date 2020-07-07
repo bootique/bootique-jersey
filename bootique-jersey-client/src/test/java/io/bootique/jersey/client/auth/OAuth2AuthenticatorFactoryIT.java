@@ -27,8 +27,8 @@ import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestTool;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.*;
 import javax.ws.rs.client.ClientBuilder;
@@ -51,8 +51,8 @@ public class OAuth2AuthenticatorFactoryIT {
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    @RegisterExtension
-    public BQTestFactory clientFactory = new BQTestFactory();
+    @BQTestTool
+    final BQTestFactory clientFactory = new BQTestFactory();
 
     private Injector clientStackInjector() {
         return clientFactory.app()

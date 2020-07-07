@@ -27,9 +27,9 @@ import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestTool;
 import io.bootique.logback.LogbackModuleProvider;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -54,7 +54,7 @@ public class HttpTargets_FeaturesIT {
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    @RegisterExtension
+    @BQTestTool
     final BQTestFactory clientFactory = new BQTestFactory();
 
     @Test

@@ -19,18 +19,20 @@
 
 package io.bootique.jersey;
 
+import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestTool;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@BQTest
 public class CustomFeaturesIT {
 
-    @RegisterExtension
+    @BQTestTool
     final BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
 
     @Test

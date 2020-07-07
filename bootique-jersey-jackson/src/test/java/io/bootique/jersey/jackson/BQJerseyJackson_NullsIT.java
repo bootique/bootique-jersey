@@ -23,10 +23,11 @@ import io.bootique.BQRuntime;
 import io.bootique.di.BQModule;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestTool;
 import io.bootique.junit5.TestRuntumeBuilder;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -40,9 +41,10 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@BQTest
 public class BQJerseyJackson_NullsIT {
 
-    @RegisterExtension
+    @BQTestTool
     final BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
 
     protected WebTarget startServer(BQModule... modules) {

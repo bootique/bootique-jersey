@@ -22,10 +22,11 @@ package io.bootique.jersey;
 import io.bootique.BQRuntime;
 import io.bootique.di.*;
 import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestTool;
 import io.bootique.junit5.TestRuntumeBuilder;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@BQTest
 public class ResourceInjection_GenericsIT {
 
     private static final S1<String> STRING_BOUND = new S1<>("sss");
@@ -47,7 +49,7 @@ public class ResourceInjection_GenericsIT {
     private static final int[] INT_ARRAY_BOUND = {1, 2, 3};
     private static final String[] STRING_ARRAY_BOUND = {"a, b, c"};
 
-    @RegisterExtension
+    @BQTestTool
     final BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
 
     protected WebTarget startServer(BQModule... modules) {

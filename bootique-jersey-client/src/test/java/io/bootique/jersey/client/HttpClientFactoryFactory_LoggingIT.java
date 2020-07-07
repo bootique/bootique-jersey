@@ -24,11 +24,12 @@ import io.bootique.di.BQModule;
 import io.bootique.di.Injector;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
+import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestTool;
 import io.bootique.logback.LogbackModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -50,9 +51,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
+@BQTest
 public class HttpClientFactoryFactory_LoggingIT {
 
-    @RegisterExtension
+    @BQTestTool
     final BQTestFactory serverFactory = new BQTestFactory();
 
     private Injector mockInjector;

@@ -32,9 +32,9 @@ import io.bootique.jetty.server.ServerHolder;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestTool;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -49,7 +49,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @BQTest
 public class InstrumentedClientIT {
@@ -66,8 +67,9 @@ public class InstrumentedClientIT {
     static final String getUrl = jetty.getUrl() + "/get";
     static final String get500Url = jetty.getUrl() + "/get500";
 
-    @RegisterExtension
+    @BQTestTool
     final BQTestFactory testFactory = new BQTestFactory();
+
     BQRuntime client;
 
     private static String getUrlBadPort(String getUrl) {

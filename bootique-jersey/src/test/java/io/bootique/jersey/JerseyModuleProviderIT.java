@@ -21,16 +21,14 @@ package io.bootique.jersey;
 
 import io.bootique.BQRuntime;
 import io.bootique.jetty.JettyModule;
-import io.bootique.junit5.BQModuleProviderChecker;
-import io.bootique.junit5.BQRuntimeChecker;
-import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.*;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
+@BQTest
 public class JerseyModuleProviderIT {
 
-    @RegisterExtension
-    public BQTestFactory testFactory = new BQTestFactory();
+    @BQTestTool
+    final BQTestFactory testFactory = new BQTestFactory();
 
     @Test
     public void testAutoLoadable() {
