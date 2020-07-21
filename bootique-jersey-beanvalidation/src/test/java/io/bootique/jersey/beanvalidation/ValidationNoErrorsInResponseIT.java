@@ -66,7 +66,7 @@ public class ValidationNoErrorsInResponseIT {
         JettyTester.assertOk(ok).assertContent("_A_");
 
         Response missing = target.path("notNull").request(MediaType.TEXT_PLAIN).get();
-        JettyTester.assertStatus(missing, 400).assertContent(assertTrimmed(
+        JettyTester.assertBadRequest(missing).assertContent(assertTrimmed(
                 "HTTP ERROR 400 Bad Request\n" +
                         "URI: /notNull\n" +
                         "STATUS: 400\n" +

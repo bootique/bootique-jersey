@@ -72,7 +72,7 @@ public class ValidationIT {
         JettyTester.assertOk(ok).assertContent("_A_");
 
         Response missing = target.path("notNull").request(MediaType.TEXT_PLAIN).get();
-        JettyTester.assertStatus(missing, 400)
+        JettyTester.assertBadRequest(missing)
                 .assertContent(assertTrimmed("'q' is required (path = Resource.getNotNull.arg0, invalidValue = null)"));
     }
 
@@ -82,7 +82,7 @@ public class ValidationIT {
         JettyTester.assertOk(ok).assertContent("_3_");
 
         Response outOfRange = target.path("range").queryParam("q", "2").request(MediaType.TEXT_PLAIN).get();
-        JettyTester.assertStatus(outOfRange, 400)
+        JettyTester.assertBadRequest(outOfRange)
                 .assertContent(assertTrimmed("'q' is out of range (path = Resource.getRange.arg0, invalidValue = 2)"));
 
         Response missing = target.path("range").request(MediaType.TEXT_PLAIN).get();
@@ -101,11 +101,11 @@ public class ValidationIT {
         Response listTooShort = target.path("size")
                 .queryParam("q", "2")
                 .request(MediaType.TEXT_PLAIN).get();
-        JettyTester.assertStatus(listTooShort, 400)
+        JettyTester.assertBadRequest(listTooShort)
                 .assertContent(assertTrimmed("'q' is the wrong size (path = Resource.getSize.arg0, invalidValue = [2])"));
 
         Response missing = target.path("size").request(MediaType.TEXT_PLAIN).get();
-        JettyTester.assertStatus(missing, 400)
+        JettyTester.assertBadRequest(missing)
                 .assertContent(assertTrimmed("'q' is the wrong size (path = Resource.getSize.arg0, invalidValue = [])"));
     }
 
@@ -115,7 +115,7 @@ public class ValidationIT {
         JettyTester.assertOk(ok).assertContent("_{a1}_");
 
         Response badChars = target.path("valid").queryParam("q", "a*").request(MediaType.TEXT_PLAIN).get();
-        JettyTester.assertStatus(badChars, 400)
+        JettyTester.assertBadRequest(badChars)
                 .assertContent(assertTrimmed("Not an alphanumeric String (path = Resource.getValid.arg0.alphaNum, invalidValue = a*)"));
 
         Response missing = target.path("valid").request(MediaType.TEXT_PLAIN).get();
@@ -128,7 +128,7 @@ public class ValidationIT {
         JettyTester.assertOk(ok).assertContent("_a1_");
 
         Response badChars = target.path("custom").queryParam("q", "b1").request(MediaType.TEXT_PLAIN).get();
-        JettyTester.assertStatus(badChars, 400)
+        JettyTester.assertBadRequest(badChars)
                 .assertContent(assertTrimmed("'q' doesn't start with 'a' (path = Resource.getCustom.arg0, invalidValue = b1)"));
 
         Response missing = target.path("custom").request(MediaType.TEXT_PLAIN).get();

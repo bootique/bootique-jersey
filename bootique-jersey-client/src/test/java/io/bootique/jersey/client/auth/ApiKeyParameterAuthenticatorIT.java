@@ -84,7 +84,7 @@ public class ApiKeyParameterAuthenticatorIT {
                 .request()
                 .get();
 
-        JettyTester.assertStatus(response, 401).assertContent("INVALID: invalid");
+        JettyTester.assertUnauthorized(response).assertContent("INVALID: invalid");
     }
 
     @Test
