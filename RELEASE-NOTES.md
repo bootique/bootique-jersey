@@ -1,4 +1,4 @@
-## 2.0
+## 2.0.M1
 
 * Migrated from Guice to "bootique-di"
 * #47 Set<Package> bound in JerseyModule must be qualified with annotation
