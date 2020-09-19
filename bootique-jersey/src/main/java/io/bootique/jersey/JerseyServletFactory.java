@@ -26,50 +26,55 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Set;
 
 /**
  * A YAML-configurable factory of Jersey servlet.
- * 
+ *
  * @since 0.10
  */
 @BQConfig("Configures the servlet that is an entry point to Jersey REST API engine.")
 public class JerseyServletFactory {
 
-	protected String urlPattern;
+    private static final String URL_PATTERN = "/*";
 
-	/**
-	 * @since 0.11
-	 * @param urlPattern
-	 *            a URL: pattern for the Jersey servlet. Default is "/*".
-	 */
-	@BQConfigProperty
-	public void setUrlPattern(String urlPattern) {
-		this.urlPattern = urlPattern;
-	}
+    protected String urlPattern;
 
-	/**
-	 * Conditionally initializes servlet url pattern if it is null.
-	 * 
-	 * @param urlPattern
-	 *            a URL: pattern for the Jersey servlet unless it was already
-	 *            set.
-	 * @return self.
-	 * @since 0.11
-	 */
-	public JerseyServletFactory initUrlPatternIfNotSet(String urlPattern) {
+    /**
+     * @param urlPattern a URL: pattern for the Jersey servlet. Default is "/*".
+     * @since 0.11
+     */
+    @BQConfigProperty
+    public void setUrlPattern(String urlPattern) {
+        this.urlPattern = urlPattern;
+    }
 
-		if (this.urlPattern == null) {
-			this.urlPattern = urlPattern;
-		}
+    /**
+     * Conditionally initializes servlet url pattern if it is null.
+     *
+     * @param urlPattern a URL: pattern for the Jersey servlet unless it was already
+     *                   set.
+     * @return self.
+     * @since 0.11
+     * @deprecated since 2.0 as we don't need to initialize the urlPattern explicitly to be able to returna  default.
+     */
+    @Deprecated
+    public JerseyServletFactory initUrlPatternIfNotSet(String urlPattern) {
 
-		return this;
-	}
+        if (this.urlPattern == null) {
+            this.urlPattern = urlPattern;
+        }
 
-	public MappedServlet<ServletContainer> createJerseyServlet(ResourceConfig resourceConfig) {
-		ServletContainer servlet = new ServletContainer(resourceConfig);
-		Set<String> urlPatterns = Collections.singleton(Objects.requireNonNull(urlPattern));
-		return new MappedServlet<>(servlet, urlPatterns, "jersey");
-	}
+        return this;
+    }
+
+    public MappedServlet<ServletContainer> createJerseyServlet(ResourceConfig resourceConfig) {
+        ServletContainer servlet = new ServletContainer(resourceConfig);
+        Set<String> urlPatterns = Collections.singleton(getUrlPattern());
+        return new MappedServlet<>(servlet, urlPatterns, "jersey");
+    }
+
+    protected String getUrlPattern() {
+        return urlPattern != null ? urlPattern : URL_PATTERN;
+    }
 }

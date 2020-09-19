@@ -45,7 +45,7 @@ import java.util.Set;
 public class JerseyModule extends ConfigModule {
 
     static final String RESOURCES_BY_PATH_BINDING = "io.bootique.jersey.resourcesByPath";
-    private static final String URL_PATTERN = "/*";
+
 
     /**
      * Returns an instance of {@link JerseyModuleExtender} used by downstream modules to load custom extensions of
@@ -123,8 +123,6 @@ public class JerseyModule extends ConfigModule {
     @Provides
     @Singleton
     private MappedServlet<ServletContainer> provideJerseyServlet(ConfigurationFactory configFactory, ResourceConfig config) {
-        return config(JerseyServletFactory.class, configFactory)
-                .initUrlPatternIfNotSet(URL_PATTERN)
-                .createJerseyServlet(config);
+        return config(JerseyServletFactory.class, configFactory).createJerseyServlet(config);
     }
 }
