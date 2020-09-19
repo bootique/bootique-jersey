@@ -44,7 +44,10 @@ public class JerseyServletFactory {
      * @param urlPattern a URL: pattern for the Jersey servlet. Default is "/*".
      * @since 0.11
      */
-    @BQConfigProperty
+    @BQConfigProperty("Optional URL pattern for all Jersey resources within the webapp. Follows syntax and rules for " +
+            "servlet 'url-pattern' described in the Servlet spec. Default pattern is '/*'. It will take over the " +
+            "entire URL space of the webapp for Jersey. A non-default pattern allows to separate Jersey URL space from " +
+            "other servlets. E.g. '/api/*' will result in URLs of all resources prefixed with '/api'. ")
     public void setUrlPattern(String urlPattern) {
         this.urlPattern = urlPattern;
     }
