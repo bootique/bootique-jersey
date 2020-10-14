@@ -1,6 +1,6 @@
 ## 2.0.B1
 
-* #56 Support JAX-RS @ApplicationPath
+* #56 Support JAX-RS Application
 
 ## 2.0.M1
 
