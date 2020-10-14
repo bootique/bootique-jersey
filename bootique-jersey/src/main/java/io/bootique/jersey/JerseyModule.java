@@ -37,6 +37,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.ws.rs.container.DynamicFeature;
+import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.GenericType;
 import java.util.Map;
@@ -80,20 +81,16 @@ public class JerseyModule extends ConfigModule {
             Set<MappedResource> mappedResources,
             @JerseyResource Map<String, Object> properties) {
 
-        ResourceConfig config = new ResourceConfig();
+        ResourceConfig config = createResourceConfig(injector);
+
         // configure bridge between BQ DI and Jersey HK2
         config.register(new AbstractBinder() {
             @Override
             protected void configure() {
-                bind(injector).to(Injector.class)
-                        .in(Singleton.class);
-                bind(BqInjectorBridge.class)
-                        .to(JustInTimeInjectionResolver.class)
-                        .in(Singleton.class);
-                bind(BqInjectInjector.class)
-                        .to(new GenericType<InjectionResolver<BQInject>>() {
-                        })
-                        .in(Singleton.class);
+                bind(injector).to(Injector.class).in(Singleton.class);
+                bind(BqInjectorBridge.class).to(JustInTimeInjectionResolver.class).in(Singleton.class);
+                bind(BqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>() {
+                }).in(Singleton.class);
             }
         });
 
@@ -118,6 +115,13 @@ public class JerseyModule extends ConfigModule {
         config.register(ResourceModelDebugger.class);
 
         return config;
+    }
+
+    protected ResourceConfig createResourceConfig(Injector injector) {
+        // application is an optional binding. If not defined, build a default ResourceConfig
+        return injector.hasProvider(Application.class)
+                ? ResourceConfig.forApplication(injector.getInstance(Application.class))
+                : new ResourceConfig();
     }
 
     @Provides

@@ -1,3 +1,7 @@
+## 2.0.B1
+
+* #56 Support JAX-RS @ApplicationPath
+
 ## 2.0.M1
 
 * Migrated from Guice to "bootique-di"

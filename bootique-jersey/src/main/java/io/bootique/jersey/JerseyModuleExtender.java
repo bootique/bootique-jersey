@@ -27,6 +27,7 @@ import io.bootique.di.SetBuilder;
 import io.bootique.di.TypeLiteral;
 
 import javax.ws.rs.container.DynamicFeature;
+import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Feature;
 import java.util.Map;
 
@@ -154,6 +155,22 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
     /**
+     * @since 2.0.B1
+     */
+    public JerseyModuleExtender setApplication(Application app) {
+        binder.bind(Application.class).toInstance(app);
+        return this;
+    }
+
+    /**
+     * @since 2.0.B1
+     */
+    public JerseyModuleExtender setApplication(Class<? extends Application> appType) {
+        binder.bind(Application.class).to(appType);
+        return this;
+    }
+
+    /**
      * Sets Jersey container property. This allows setting ResourceConfig properties that can not be set via JAX RS features.
      *
      * @param name  property name
@@ -170,7 +187,6 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     /**
      * Sets Jersey container properties.  This allows setting ResourceConfig properties that can not be set via JAX RS features.
      *
-     * @param properties
      * @return this extender instance
      * @see org.glassfish.jersey.server.ServerProperties
      * @since 0.22

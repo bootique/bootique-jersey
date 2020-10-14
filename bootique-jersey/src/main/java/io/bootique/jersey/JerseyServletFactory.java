@@ -25,6 +25,8 @@ import io.bootique.jetty.MappedServlet;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 import java.util.Collections;
 import java.util.Set;
 
@@ -33,10 +35,10 @@ import java.util.Set;
  *
  * @since 0.10
  */
-@BQConfig("Configures the servlet that is an entry point to Jersey REST API engine.")
+@BQConfig("Configures a servlet that is an entry point to Jersey REST API engine.")
 public class JerseyServletFactory {
 
-    private static final String URL_PATTERN = "/*";
+    private static final String DEFAULT_URL_PATTERN = "/*";
 
     protected String urlPattern;
 
@@ -73,11 +75,53 @@ public class JerseyServletFactory {
 
     public MappedServlet<ServletContainer> createJerseyServlet(ResourceConfig resourceConfig) {
         ServletContainer servlet = new ServletContainer(resourceConfig);
-        Set<String> urlPatterns = Collections.singleton(getUrlPattern());
+        Set<String> urlPatterns = Collections.singleton(getUrlPattern(resourceConfig));
         return new MappedServlet<>(servlet, urlPatterns, "jersey");
     }
 
-    protected String getUrlPattern() {
-        return urlPattern != null ? urlPattern : URL_PATTERN;
+    protected String getUrlPattern(ResourceConfig resourceConfig) {
+
+        // explicit definition overrides annotation-defined path
+        if (this.urlPattern != null) {
+            return urlPattern;
+        }
+
+        String fromAnnotation = getUrlPatternFromAnnotation(resourceConfig);
+        return fromAnnotation != null ? fromAnnotation : DEFAULT_URL_PATTERN;
+    }
+
+    protected String getUrlPatternFromAnnotation(ResourceConfig resourceConfig) {
+        Application app = resourceConfig.getApplication();
+        if (app != resourceConfig) {
+
+            ApplicationPath a = app.getClass().getAnnotation(ApplicationPath.class);
+            if (a != null) {
+                String path = a.value();
+                if (path != null) {
+                    return normalizeAppPath(path);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    protected String normalizeAppPath(String path) {
+        // TODO: %-encode per ApplicationPath javadoc?
+
+        StringBuilder normal = new StringBuilder();
+        if (!path.startsWith("/")) {
+            normal.append('/');
+        }
+
+        normal.append(path);
+
+        if (path.length() > 0 && !path.endsWith("/")) {
+            normal.append('/');
+        }
+
+        normal.append('*');
+
+        return normal.toString();
     }
 }
