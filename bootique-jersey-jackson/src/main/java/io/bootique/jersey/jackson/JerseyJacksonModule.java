@@ -18,6 +18,7 @@
  */
 package io.bootique.jersey.jackson;
 
+import com.fasterxml.jackson.databind.JsonSerializer;
 import io.bootique.BaseModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
@@ -28,6 +29,7 @@ import javax.inject.Singleton;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @since 2.0
@@ -46,12 +48,18 @@ public class JerseyJacksonModule extends BaseModule {
     @Override
     public void configure(Binder binder) {
         JerseyModule.extend(binder).addFeature(ObjectMapperResolverFeature.class);
+        JerseyJacksonModule.extend(binder).initAllExtensions();
     }
 
     @Singleton
     @Provides
-    ObjectMapperResolverFeature provideObjectMapperResolverFeature(ConfigurationFactory configurationFactory) {
-        ObjectMapperResolver omr = config(JerseyJacksonFactory.class, configurationFactory).createObjectMapperResolver();
+    ObjectMapperResolverFeature provideObjectMapperResolverFeature(
+            ConfigurationFactory configurationFactory,
+            Set<JsonSerializer> serializers) {
+
+        ObjectMapperResolver omr = config(JerseyJacksonFactory.class, configurationFactory)
+                .createObjectMapperResolver(serializers);
+
         return new ObjectMapperResolverFeature(omr);
     }
 }

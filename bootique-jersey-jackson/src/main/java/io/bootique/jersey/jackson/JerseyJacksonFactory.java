@@ -19,11 +19,16 @@
 package io.bootique.jersey.jackson;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
+
+import java.util.Set;
 
 /**
  * @since 2.0
@@ -38,14 +43,21 @@ public class JerseyJacksonFactory {
         this.skipNullProperties = skipNullProperties;
     }
 
-    public ObjectMapperResolver createObjectMapperResolver() {
-        return new ObjectMapperResolver(createObjectMapper());
+    public ObjectMapperResolver createObjectMapperResolver(Set<JsonSerializer> serializers) {
+        return new ObjectMapperResolver(createObjectMapper(serializers));
     }
 
-    protected ObjectMapper createObjectMapper() {
+    protected ObjectMapper createObjectMapper(Set<JsonSerializer> serializers) {
         ObjectMapper mapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        if (!serializers.isEmpty()) {
+            SimpleModule m = new SimpleModule("BQJerseyJacksonSerializers", Version.unknownVersion());
+            serializers.forEach(m::addSerializer);
+
+            mapper.registerModule(m);
+        }
 
         if (skipNullProperties) {
             mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);

@@ -1,6 +1,7 @@
 ## 2.0.B1
 
 * #56 Support JAX-RS Application
+* #57 bootique-jersey-jackson - add extender method to register custom type serializers
 
 ## 2.0.M1
 

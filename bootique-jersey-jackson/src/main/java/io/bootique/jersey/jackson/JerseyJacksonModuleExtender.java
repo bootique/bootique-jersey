@@ -18,18 +18,27 @@
  */
 package io.bootique.jersey.jackson;
 
+import com.fasterxml.jackson.databind.JsonSerializer;
 import io.bootique.BQCoreModule;
+import io.bootique.ModuleExtender;
 import io.bootique.di.Binder;
+import io.bootique.di.SetBuilder;
 
 /**
  * @since 2.0
  */
-public class JerseyJacksonModuleExtender {
+public class JerseyJacksonModuleExtender extends ModuleExtender<JerseyJacksonModuleExtender> {
 
-    private Binder binder;
+    private SetBuilder<JsonSerializer> serializers;
 
     public JerseyJacksonModuleExtender(Binder binder) {
-        this.binder = binder;
+        super(binder);
+    }
+
+    @Override
+    public JerseyJacksonModuleExtender initAllExtensions() {
+        contributeSerializers();
+        return this;
     }
 
     /**
@@ -40,5 +49,35 @@ public class JerseyJacksonModuleExtender {
     public JerseyJacksonModuleExtender skipNullProperties() {
         BQCoreModule.extend(binder).setProperty("bq.jerseyjackson.skipNullProperties", "true");
         return this;
+    }
+
+    /**
+     * Adds a custom serializer for a value type.
+     *
+     * @return this extender instance
+     * @since 2.0.B1
+     */
+    public JerseyJacksonModuleExtender addSerializer(Class<? extends JsonSerializer> serializerType) {
+        contributeSerializers().add(serializerType);
+        return this;
+    }
+
+    /**
+     * Adds a custom serializer for a value type.
+     *
+     * @return this extender instance
+     * @since 2.0.B1
+     */
+    public JerseyJacksonModuleExtender addSerializer(JsonSerializer serializer) {
+        contributeSerializers().add(serializer);
+        return this;
+    }
+
+    protected SetBuilder<JsonSerializer> contributeSerializers() {
+        if (serializers == null) {
+            serializers = newSet(JsonSerializer.class);
+        }
+
+        return serializers;
     }
 }
