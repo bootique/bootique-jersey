@@ -86,9 +86,6 @@ public class BQJerseyJackson_JsonSerializerIT {
         private String p1;
         private X x;
 
-        public Model() {
-        }
-
         public Model(String p1, X x) {
             this.p1 = p1;
             this.x = x;

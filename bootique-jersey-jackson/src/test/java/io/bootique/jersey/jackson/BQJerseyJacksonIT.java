@@ -79,6 +79,7 @@ public class BQJerseyJacksonIT {
         private int p2;
         private LocalDateTime ts;
 
+        // needed for Jackson deserialization
         public Model() {
         }
 
