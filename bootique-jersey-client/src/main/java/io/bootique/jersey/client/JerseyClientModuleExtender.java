@@ -43,7 +43,7 @@ public class JerseyClientModuleExtender {
 
 
     public JerseyClientModuleExtender addFeature(Feature feature) {
-        contributeFeatures().add(feature);
+        contributeFeatures().addInstance(feature);
         return this;
     }
 

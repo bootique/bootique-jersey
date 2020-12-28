@@ -58,17 +58,17 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
     public JerseyModuleExtender addPackage(Package aPackage) {
-        contributePackages().add(aPackage);
+        contributePackages().addInstance(aPackage);
         return this;
     }
 
     public JerseyModuleExtender addPackage(Class<?> anyClassInPackage) {
-        contributePackages().add(anyClassInPackage.getPackage());
+        contributePackages().addInstance(anyClassInPackage.getPackage());
         return this;
     }
 
     public JerseyModuleExtender addFeature(Feature feature) {
-        contributeFeatures().add(feature);
+        contributeFeatures().addInstance(feature);
         return this;
     }
 
@@ -78,7 +78,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
     public JerseyModuleExtender addDynamicFeature(DynamicFeature feature) {
-        contributeDynamicFeatures().add(feature);
+        contributeDynamicFeatures().addInstance(feature);
         return this;
     }
 
@@ -88,7 +88,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
     public JerseyModuleExtender addResource(Object resource) {
-        contributeResources().add(resource);
+        contributeResources().addInstance(resource);
         return this;
     }
 
@@ -122,7 +122,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
      * @since 2.0
      */
     public <T> JerseyModuleExtender addMappedResource(MappedResource<T> mappedResource) {
-        contributeMappedResources().add(mappedResource);
+        contributeMappedResources().addInstance(mappedResource);
         return this;
     }
 
@@ -180,7 +180,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
      * @since 0.22
      */
     public JerseyModuleExtender setProperty(String name, Object value) {
-        contributeProperties().put(name, value);
+        contributeProperties().putInstance(name, value);
         return this;
     }
 

@@ -25,7 +25,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.config.PolymorphicConfiguration;
 import io.bootique.config.TypesFactory;
-import io.bootique.config.jackson.JsonNodeConfigurationFactory;
+import io.bootique.config.jackson.JsonConfigurationFactory;
 import io.bootique.jackson.DefaultJacksonService;
 import io.bootique.jackson.JacksonService;
 import io.bootique.jersey.client.auth.AuthenticatorFactory;
@@ -61,7 +61,7 @@ public class HttpClientFactoryFactory_ConfigIT {
         try {
             parser = new YAMLFactory().createParser(yaml);
             JsonNode rootNode = jacksonService.newObjectMapper().readTree(parser);
-            return new JsonNodeConfigurationFactory(rootNode, jacksonService.newObjectMapper());
+            return new JsonConfigurationFactory(rootNode, jacksonService.newObjectMapper());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

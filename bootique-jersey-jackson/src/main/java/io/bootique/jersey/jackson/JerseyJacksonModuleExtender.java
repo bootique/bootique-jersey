@@ -69,7 +69,7 @@ public class JerseyJacksonModuleExtender extends ModuleExtender<JerseyJacksonMod
      * @since 2.0.B1
      */
     public JerseyJacksonModuleExtender addSerializer(JsonSerializer serializer) {
-        contributeSerializers().add(serializer);
+        contributeSerializers().addInstance(serializer);
         return this;
     }
 
