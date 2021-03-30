@@ -17,7 +17,7 @@
   under the License.
   -->
 
-[![Build Status](https://travis-ci.org/bootique/bootique-jersey.svg)](https://travis-ci.org/bootique/bootique-jersey)
+[![build test deploy](https://github.com/bootique/bootique-jersey/actions/workflows/maven.yml/badge.svg)](https://github.com/bootique/bootique-jersey/actions/workflows/maven.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/io.bootique.jersey/bootique-jersey.svg?colorB=brightgreen)](https://search.maven.org/artifact/io.bootique.jersey/bootique-jersey/)
 
 # bootique-jersey
