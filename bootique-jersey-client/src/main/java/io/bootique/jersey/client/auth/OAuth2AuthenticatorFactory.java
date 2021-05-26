@@ -33,9 +33,6 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.function.Function;
 
-/**
- * @since 0.3
- */
 @JsonTypeName("oauth2")
 @BQConfig("Authenticator for Oauth2 protocol. Includes URL of the OAuth token endpoint and " +
         "username/password that are exchanged for the token.")
@@ -80,7 +77,6 @@ public class OAuth2AuthenticatorFactory implements AuthenticatorFactory {
 
     /**
      * @param tokenTrustStore the name of the trust store, as mapped in Jersey Client configuration.
-     * @since 0.25
      */
     @BQConfigProperty("An optional name of a mapped trust store to use with when requesting a token.")
     public void setTokenTrustStore(String tokenTrustStore) {

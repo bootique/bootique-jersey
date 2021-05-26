@@ -24,8 +24,6 @@ import java.util.Objects;
 
 /**
  * Represents a token received from a remote oauth server.
- *
- * @since 0.25
  */
 public class OAuth2Token {
 

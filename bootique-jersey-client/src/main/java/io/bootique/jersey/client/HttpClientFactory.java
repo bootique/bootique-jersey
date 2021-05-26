@@ -41,7 +41,6 @@ public interface HttpClientFactory {
      * a preconfigured authentication and trust store.
      *
      * @return a builder for a new client.
-     * @since 0.25
      */
     HttpClientBuilder newBuilder();
 }

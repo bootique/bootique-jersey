@@ -27,9 +27,6 @@ import javax.ws.rs.client.ClientRequestFilter;
 import java.security.KeyStore;
 import java.util.Map;
 
-/**
- * @since 0.2
- */
 public class DefaultHttpClientFactory implements HttpClientFactory {
 
     private ClientConfig config;

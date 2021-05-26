@@ -23,8 +23,6 @@ import javax.ws.rs.client.WebTarget;
 
 /**
  * An injectable manager of preconfigured JAX RS {@link WebTarget} objects.
- *
- * @since 0.25
  */
 public interface HttpTargets {
 
@@ -37,7 +35,6 @@ public interface HttpTargets {
      *                   "jerseyclient.targets".
      * @return a new {@link WebTarget} associated with a named configuration, that can be used to send requests to a
      * given HTTP endpoint.
-     * @since 0.25
      */
     WebTarget newTarget(String targetName);
 }

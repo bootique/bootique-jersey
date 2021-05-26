@@ -19,18 +19,16 @@
 
 package io.bootique.jersey;
 
-import javax.ws.rs.core.Configuration;
-
 import org.glassfish.jersey.server.model.ModelProcessor;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.ResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.Configuration;
+
 /**
  * Debugs all container resources.
- * 
- * @since 0.12
  */
 public class ResourceModelDebugger implements ModelProcessor {
 

@@ -26,9 +26,6 @@ import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 
-/**
- * @since 1.0.RC1
- */
 public class RequestLoggingFilter implements  ClientRequestFilter, ClientResponseFilter {
 
     private static final String REQUEST_PREFIX = "> ";

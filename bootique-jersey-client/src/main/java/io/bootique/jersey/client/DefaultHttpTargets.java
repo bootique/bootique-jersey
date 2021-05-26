@@ -23,9 +23,6 @@ import javax.ws.rs.client.WebTarget;
 import java.util.Map;
 import java.util.function.Supplier;
 
-/**
- * @since 0.25
- */
 public class DefaultHttpTargets implements HttpTargets {
 
     private Map<String, Supplier<WebTarget>> namedTargets;

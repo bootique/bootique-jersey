@@ -177,7 +177,6 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
      * @param value property value
      * @return this extender
      * @see org.glassfish.jersey.server.ServerProperties
-     * @since 0.22
      */
     public JerseyModuleExtender setProperty(String name, Object value) {
         contributeProperties().putInstance(name, value);
@@ -189,7 +188,6 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
      *
      * @return this extender instance
      * @see org.glassfish.jersey.server.ServerProperties
-     * @since 0.22
      */
     public JerseyModuleExtender setProperties(Map<String, String> properties) {
         properties.forEach(this::setProperty);

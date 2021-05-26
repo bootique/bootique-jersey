@@ -32,8 +32,6 @@ import java.util.Set;
 
 /**
  * A YAML-configurable factory of Jersey servlet.
- *
- * @since 0.10
  */
 @BQConfig("Configures a servlet that is an entry point to Jersey REST API engine.")
 public class JerseyServletFactory {
@@ -44,7 +42,6 @@ public class JerseyServletFactory {
 
     /**
      * @param urlPattern a URL: pattern for the Jersey servlet. Default is "/*".
-     * @since 0.11
      */
     @BQConfigProperty("Optional URL pattern for all Jersey resources within the webapp. Follows syntax and rules for " +
             "servlet 'url-pattern' described in the Servlet spec. Default pattern is '/*'. It will take over the " +
@@ -60,7 +57,6 @@ public class JerseyServletFactory {
      * @param urlPattern a URL: pattern for the Jersey servlet unless it was already
      *                   set.
      * @return self.
-     * @since 0.11
      * @deprecated since 2.0 as we don't need to initialize the urlPattern explicitly to be able to returna  default.
      */
     @Deprecated

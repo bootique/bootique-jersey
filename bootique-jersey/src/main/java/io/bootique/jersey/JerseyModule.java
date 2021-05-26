@@ -54,7 +54,6 @@ public class JerseyModule extends ConfigModule {
      *
      * @param binder DI binder passed to the Module that invokes this method.
      * @return an instance of {@link JerseyModuleExtender} that can be used to load Jersey custom extensions.
-     * @since 0.21
      */
     public static JerseyModuleExtender extend(Binder binder) {
         return new JerseyModuleExtender(binder);

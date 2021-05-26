@@ -14,9 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-/**
- * @since 1.0.RC1
- */
 @BQConfig
 public class ThresholdHealthCheckFactory {
 

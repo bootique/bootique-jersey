@@ -22,9 +22,6 @@ package io.bootique.jersey.client.instrumented;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
-/**
- * @since 0.9
- */
 public class InstrumentedFeature implements Feature {
 
     private ClientTimingFilter filter;

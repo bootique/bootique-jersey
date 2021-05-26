@@ -39,7 +39,6 @@ public class JerseyModuleProvider implements BQModuleProvider {
 
     /**
      * @return a single-entry map with {@link JerseyServletFactory}.
-     * @since 0.19
      */
     @Override
     public Map<String, Type> configs() {

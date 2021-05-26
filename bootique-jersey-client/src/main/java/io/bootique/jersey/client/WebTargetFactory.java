@@ -30,9 +30,6 @@ import javax.ws.rs.client.WebTarget;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-/**
- * @since 0.25
- */
 @BQConfig
 public class WebTargetFactory {
 

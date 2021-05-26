@@ -5,9 +5,6 @@ import io.bootique.metrics.health.HealthCheckGroup;
 
 import java.util.Map;
 
-/**
- * @since 1.0.RC1
- */
 public class JerseyHealthChecks implements HealthCheckGroup {
     private Map<String, HealthCheck> healthChecks;
 

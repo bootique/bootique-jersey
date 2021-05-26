@@ -31,8 +31,6 @@ import java.util.function.Supplier;
 
 /**
  * Provides a simple HTTP health check to verify that remote endpoints are alive and accessible.
- *
- * @since 0.25
  */
 public class HttpHealthCheck implements HealthCheck {
 

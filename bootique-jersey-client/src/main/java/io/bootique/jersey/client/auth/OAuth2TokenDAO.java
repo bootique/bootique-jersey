@@ -33,9 +33,6 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.function.Function;
 
-/**
- * @since 0.25
- */
 public class OAuth2TokenDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2TokenDAO.class);

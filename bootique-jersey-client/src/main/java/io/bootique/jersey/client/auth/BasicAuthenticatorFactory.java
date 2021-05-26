@@ -32,9 +32,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
-/**
- * @since 0.2
- */
 @JsonTypeName("basic")
 @BQConfig("Authenticator for BASIC auth protocol.")
 public class BasicAuthenticatorFactory implements AuthenticatorFactory {

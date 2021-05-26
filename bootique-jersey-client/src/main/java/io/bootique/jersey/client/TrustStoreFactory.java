@@ -32,9 +32,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Objects;
 
-/**
- * @since 0.25
- */
 @BQConfig
 public class TrustStoreFactory {
 

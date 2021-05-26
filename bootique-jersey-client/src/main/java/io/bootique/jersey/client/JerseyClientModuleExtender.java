@@ -24,9 +24,6 @@ import io.bootique.di.SetBuilder;
 
 import javax.ws.rs.core.Feature;
 
-/**
- * @since 0.9
- */
 public class JerseyClientModuleExtender {
 
     private Binder binder;

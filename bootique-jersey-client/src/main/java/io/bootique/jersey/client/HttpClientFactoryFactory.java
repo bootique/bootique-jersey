@@ -33,7 +33,6 @@ import org.glassfish.jersey.client.filter.EncodingFeature;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.message.GZipEncoder;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.WebTarget;
@@ -65,7 +64,6 @@ public class HttpClientFactoryFactory {
 
     /**
      * @param auth a map of AuthenticationFactory instances by symbolic name.
-     * @since 0.2
      */
     @BQConfigProperty("A map of named \"authenticators\" for HTTP services that require authentication.")
     public void setAuth(Map<String, AuthenticatorFactory> auth) {
@@ -96,7 +94,6 @@ public class HttpClientFactoryFactory {
      * Sets a map of named client trust store factories.
      *
      * @param trustStores a map of named trust store factories.
-     * @since 0.25
      */
     @BQConfigProperty
     public void setTrustStores(Map<String, TrustStoreFactory> trustStores) {
@@ -107,7 +104,6 @@ public class HttpClientFactoryFactory {
      * Enables or disables client-side compression headers. True by default.
      *
      * @param compression whether compression should be requested.
-     * @since 0.6
      */
     @BQConfigProperty
     public void setCompression(boolean compression) {
@@ -118,7 +114,6 @@ public class HttpClientFactoryFactory {
      * Sets a map of named target factories. This allows to define remote endpoints completely via configuration.
      *
      * @param targets a map of named target factories.
-     * @since 0.25
      */
     @BQConfigProperty
     public void setTargets(Map<String, WebTargetFactory> targets) {
@@ -130,7 +125,6 @@ public class HttpClientFactoryFactory {
      *
      * @param clientFactory
      * @return a new HttpTargetFactory for the preconfigured set of targets.
-     * @since 0.25
      */
     public HttpTargets createTargets(HttpClientFactory clientFactory) {
         return new DefaultHttpTargets(createNamedTargets(clientFactory));
