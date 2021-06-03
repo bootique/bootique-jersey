@@ -34,7 +34,6 @@ import javax.validation.constraints.Size;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.annotation.*;
@@ -57,8 +56,6 @@ public class ValidationIT {
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    private static WebTarget target = jetty.getTarget();
-
     private static Consumer<String> assertTrimmed(String expected) {
         return c -> {
             assertNotNull(c);
@@ -68,70 +65,70 @@ public class ValidationIT {
 
     @Test
     public void testParamValidation_NotNull() {
-        Response ok = target.path("notNull").queryParam("q", "A").request(MediaType.TEXT_PLAIN).get();
+        Response ok = jetty.getTarget().path("notNull").queryParam("q", "A").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(ok).assertContent("_A_");
 
-        Response missing = target.path("notNull").request(MediaType.TEXT_PLAIN).get();
+        Response missing = jetty.getTarget().path("notNull").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertBadRequest(missing)
                 .assertContent(assertTrimmed("'q' is required (path = Resource.getNotNull.arg0, invalidValue = null)"));
     }
 
     @Test
     public void testParamValidation_Range() {
-        Response ok = target.path("range").queryParam("q", "3").request(MediaType.TEXT_PLAIN).get();
+        Response ok = jetty.getTarget().path("range").queryParam("q", "3").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(ok).assertContent("_3_");
 
-        Response outOfRange = target.path("range").queryParam("q", "2").request(MediaType.TEXT_PLAIN).get();
+        Response outOfRange = jetty.getTarget().path("range").queryParam("q", "2").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertBadRequest(outOfRange)
                 .assertContent(assertTrimmed("'q' is out of range (path = Resource.getRange.arg0, invalidValue = 2)"));
 
-        Response missing = target.path("range").request(MediaType.TEXT_PLAIN).get();
+        Response missing = jetty.getTarget().path("range").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(missing).assertContent("_null_");
     }
 
     @Test
     public void testParamValidation_ListSize() {
-        Response ok = target.path("size")
+        Response ok = jetty.getTarget().path("size")
                 .queryParam("q", "3")
                 .queryParam("q", "1")
                 .queryParam("q", "8")
                 .request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(ok).assertContent("_[3, 1, 8]_");
 
-        Response listTooShort = target.path("size")
+        Response listTooShort = jetty.getTarget().path("size")
                 .queryParam("q", "2")
                 .request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertBadRequest(listTooShort)
                 .assertContent(assertTrimmed("'q' is the wrong size (path = Resource.getSize.arg0, invalidValue = [2])"));
 
-        Response missing = target.path("size").request(MediaType.TEXT_PLAIN).get();
+        Response missing = jetty.getTarget().path("size").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertBadRequest(missing)
                 .assertContent(assertTrimmed("'q' is the wrong size (path = Resource.getSize.arg0, invalidValue = [])"));
     }
 
     @Test
     public void testParamValidation_Valid() {
-        Response ok = target.path("valid").queryParam("q", "a1").request(MediaType.TEXT_PLAIN).get();
+        Response ok = jetty.getTarget().path("valid").queryParam("q", "a1").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(ok).assertContent("_{a1}_");
 
-        Response badChars = target.path("valid").queryParam("q", "a*").request(MediaType.TEXT_PLAIN).get();
+        Response badChars = jetty.getTarget().path("valid").queryParam("q", "a*").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertBadRequest(badChars)
                 .assertContent(assertTrimmed("Not an alphanumeric String (path = Resource.getValid.arg0.alphaNum, invalidValue = a*)"));
 
-        Response missing = target.path("valid").request(MediaType.TEXT_PLAIN).get();
+        Response missing = jetty.getTarget().path("valid").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(missing).assertContent("_null_");
     }
 
     @Test
     public void testParamValidation_Custom() {
-        Response ok = target.path("custom").queryParam("q", "a1").request(MediaType.TEXT_PLAIN).get();
+        Response ok = jetty.getTarget().path("custom").queryParam("q", "a1").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(ok).assertContent("_a1_");
 
-        Response badChars = target.path("custom").queryParam("q", "b1").request(MediaType.TEXT_PLAIN).get();
+        Response badChars = jetty.getTarget().path("custom").queryParam("q", "b1").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertBadRequest(badChars)
                 .assertContent(assertTrimmed("'q' doesn't start with 'a' (path = Resource.getCustom.arg0, invalidValue = b1)"));
 
-        Response missing = target.path("custom").request(MediaType.TEXT_PLAIN).get();
+        Response missing = jetty.getTarget().path("custom").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(missing).assertContent("_null_");
     }
 
