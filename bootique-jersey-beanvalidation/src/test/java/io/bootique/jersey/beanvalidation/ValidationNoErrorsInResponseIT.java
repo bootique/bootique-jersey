@@ -31,7 +31,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.function.Consumer;
@@ -51,8 +50,6 @@ public class ValidationNoErrorsInResponseIT {
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    private static WebTarget target = jetty.getTarget();
-
     private static Consumer<String> assertTrimmed(String expected) {
         return c -> {
             assertNotNull(c);
@@ -62,10 +59,10 @@ public class ValidationNoErrorsInResponseIT {
 
     @Test
     public void testParamValidation_NotNull() {
-        Response ok = target.path("notNull").queryParam("q", "A").request(MediaType.TEXT_PLAIN).get();
+        Response ok = jetty.getTarget().path("notNull").queryParam("q", "A").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(ok).assertContent("_A_");
 
-        Response missing = target.path("notNull").request(MediaType.TEXT_PLAIN).get();
+        Response missing = jetty.getTarget().path("notNull").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertBadRequest(missing).assertContent(assertTrimmed(
                 "HTTP ERROR 400 Bad Request\n" +
                         "URI: /notNull\n" +

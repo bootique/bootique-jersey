@@ -64,9 +64,6 @@ public class InstrumentedClientIT {
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    static final String getUrl = jetty.getUrl() + "/get";
-    static final String get500Url = jetty.getUrl() + "/get500";
-
     @BQTestTool
     final BQTestFactory testFactory = new BQTestFactory();
 
@@ -105,10 +102,10 @@ public class InstrumentedClientIT {
         Timer timer = timers.iterator().next();
         assertEquals(0, timer.getCount());
 
-        factory.newClient().target(getUrl).request().get().close();
+        factory.newClient().target(jetty.getUrl() + "/get").request().get().close();
         assertEquals(1, timer.getCount());
 
-        factory.newClient().target(getUrl).request().get().close();
+        factory.newClient().target(jetty.getUrl() + "/get").request().get().close();
         assertEquals(2, timer.getCount());
     }
 
@@ -124,12 +121,12 @@ public class InstrumentedClientIT {
         assertEquals(0, timer.getCount());
 
         // bad request
-        String badPortUrl = getUrlBadPort(getUrl);
+        String badPortUrl = getUrlBadPort(jetty.getUrl() + "/get");
         assertThrows(ProcessingException.class, () -> jaxrsClient.target(badPortUrl).request().get().close());
         assertEquals(0, timer.getCount());
 
         // successful request
-        jaxrsClient.target(getUrl).request().get().close();
+        jaxrsClient.target(jetty.getUrl() + "/get").request().get().close();
         assertEquals(1, timer.getCount());
     }
 
@@ -144,7 +141,7 @@ public class InstrumentedClientIT {
         Timer timer = timers.iterator().next();
         assertEquals(0, timer.getCount());
 
-        jaxrsClient.target(get500Url).request().get().close();
+        jaxrsClient.target(jetty.getUrl() + "/get500").request().get().close();
         assertEquals(1, timer.getCount());
     }
 
