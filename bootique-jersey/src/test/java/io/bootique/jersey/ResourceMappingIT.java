@@ -33,7 +33,6 @@ import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -64,62 +63,60 @@ public class ResourceMappingIT {
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    private static final WebTarget client = jetty.getTarget();
-
     @Test
     public void testAsInstance() {
-        Response r = client.path("as_instance").request().get();
+        Response r = jetty.getTarget().path("as_instance").request().get();
         JettyTester.assertOk(r).assertContent("as instance resource - xxx");
     }
 
     @Test
     public void testAsType() {
-        Response r = client.path("as_type").request().get();
+        Response r = jetty.getTarget().path("as_type").request().get();
         JettyTester.assertOk(r).assertContent("as type resource");
     }
 
     @Test
     public void testAsType_OverriddenPath() {
-        Response r = client.path("as_type_explicit_path").request().get();
+        Response r = jetty.getTarget().path("as_type_explicit_path").request().get();
         JettyTester.assertOk(r).assertContent("as type path override resource: as_type_explicit_path");
     }
 
     @Test
     public void testAsType_MultipleOverriddenPaths() {
-        Response r1 = client.path("as_type_explicit_path1").request().get();
+        Response r1 = jetty.getTarget().path("as_type_explicit_path1").request().get();
         JettyTester.assertOk(r1).assertContent("as type path override resource multiplied: as_type_explicit_path1");
 
-        Response r2 = client.path("as_type_explicit_path2").request().get();
+        Response r2 = jetty.getTarget().path("as_type_explicit_path2").request().get();
         JettyTester.assertOk(r2).assertContent("as type path override resource multiplied: as_type_explicit_path2");
     }
 
     @Test
     public void testDIManaged_OverriddenPath() {
-        Response r = client.path("di_managed_explicit_path").request().get();
+        Response r = jetty.getTarget().path("di_managed_explicit_path").request().get();
         JettyTester.assertOk(r).assertContent("di managed path override resource: DILABEL");
     }
 
     @Test
     public void testMapped_MultipleOverriddenPaths() {
-        Response r1 = client.path("mapped_explicit_path1").request().get();
+        Response r1 = jetty.getTarget().path("mapped_explicit_path1").request().get();
         JettyTester.assertOk(r1).assertContent("mapped path override resource: MAPPEDLABEL");
 
-        Response r2 = client.path("mapped_explicit_path2").request().get();
+        Response r2 = jetty.getTarget().path("mapped_explicit_path2").request().get();
         JettyTester.assertOk(r2).assertContent("mapped path override resource: MAPPEDLABEL");
     }
 
     @Test
     public void testAsType_OverriddenPath_AnnotationPathIgnored() {
-        Response r1 = client.path("as_type_annotation_path").request().get();
+        Response r1 = jetty.getTarget().path("as_type_annotation_path").request().get();
         JettyTester.assertNotFound(r1);
 
-        Response r2 = client.path("as_type_annotation_path_multiply").request().get();
+        Response r2 = jetty.getTarget().path("as_type_annotation_path_multiply").request().get();
         JettyTester.assertNotFound(r2);
 
-        Response r3 = client.path("di_managed_annotation_path").request().get();
+        Response r3 = jetty.getTarget().path("di_managed_annotation_path").request().get();
         JettyTester.assertNotFound(r3);
 
-        Response r4 = client.path("mapped_annotation_path").request().get();
+        Response r4 = jetty.getTarget().path("mapped_annotation_path").request().get();
         JettyTester.assertNotFound(r4);
     }
 

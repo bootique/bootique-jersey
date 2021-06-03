@@ -31,7 +31,6 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -65,9 +64,6 @@ public class ResourceInjectionIT {
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-
-    private static final WebTarget client = jetty.getTarget();
-
     @BeforeEach
     public void before() {
         service.reset();
@@ -76,12 +72,12 @@ public class ResourceInjectionIT {
     @Test
     public void testFieldInjected() {
 
-        Response r1 = client.path("f").request().get();
+        Response r1 = jetty.getTarget().path("f").request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("f_1_x", r1.readEntity(String.class));
         r1.close();
 
-        Response r2 = client.path("f").request().get();
+        Response r2 = jetty.getTarget().path("f").request().get();
         assertEquals(Status.OK.getStatusCode(), r2.getStatus());
         assertEquals("f_2_x", r2.readEntity(String.class));
         r2.close();
@@ -90,12 +86,12 @@ public class ResourceInjectionIT {
     @Test
     public void testConstructorInjected() {
 
-        Response r1 = client.path("c").request().get();
+        Response r1 = jetty.getTarget().path("c").request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("c_1_x", r1.readEntity(String.class));
         r1.close();
 
-        Response r2 = client.path("c").request().get();
+        Response r2 = jetty.getTarget().path("c").request().get();
         assertEquals(Status.OK.getStatusCode(), r2.getStatus());
         assertEquals("c_2_x", r2.readEntity(String.class));
         r2.close();
@@ -104,12 +100,12 @@ public class ResourceInjectionIT {
     @Test
     public void testProviderForResource() {
 
-        Response r1 = client.path("u").request().get();
+        Response r1 = jetty.getTarget().path("u").request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("u_1_x", r1.readEntity(String.class));
         r1.close();
 
-        Response r2 = client.path("u").request().get();
+        Response r2 = jetty.getTarget().path("u").request().get();
         assertEquals(Status.OK.getStatusCode(), r2.getStatus());
         assertEquals("u_2_x", r2.readEntity(String.class));
         r2.close();
