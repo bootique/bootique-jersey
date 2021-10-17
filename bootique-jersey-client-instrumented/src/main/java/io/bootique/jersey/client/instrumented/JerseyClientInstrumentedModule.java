@@ -19,8 +19,6 @@
 
 package io.bootique.jersey.client.instrumented;
 
-import javax.inject.Singleton;
-
 import com.codahale.metrics.MetricRegistry;
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
@@ -32,14 +30,11 @@ import io.bootique.jersey.client.instrumented.threshold.ThresholdHealthCheckFact
 import io.bootique.metrics.MetricNaming;
 import io.bootique.metrics.health.HealthCheckModule;
 
+import javax.inject.Singleton;
+
 public class JerseyClientInstrumentedModule extends ConfigModule {
 
     public static final MetricNaming METRIC_NAMING = MetricNaming.forModule(JerseyClientInstrumentedModule.class);
-
-
-    public JerseyClientInstrumentedModule () {
-        super("jerseyClientInstrumented");
-    }
 
     @Override
     public void configure(Binder binder) {
