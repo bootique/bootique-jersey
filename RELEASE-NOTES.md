@@ -1,3 +1,7 @@
+## 3.0.M1
+
+* #59 Upgrade Jersey 2 to 2.35
+
 ## 2.0.B1
 
 * #56 Support JAX-RS Application

@@ -24,9 +24,12 @@ import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
 import org.junit.jupiter.api.Test;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.FeatureContext;
+import javax.ws.rs.core.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -43,7 +46,11 @@ public class CustomDynamicFeaturesIT {
                 .module(b -> JerseyModule
                         .extend(b)
                         .addDynamicFeature(DynamicFeature1.class)
-                        .addDynamicFeature(DynamicFeature2.class))
+                        .addDynamicFeature(DynamicFeature2.class)
+
+                        // since 2.35 need at least one resource to exist in the container,
+                        // or dynamic features won't be loaded
+                        .addResource(Resource.class))
                 .run();
 
         assertTrue(DynamicFeature1.LOADED);
@@ -70,4 +77,13 @@ public class CustomDynamicFeaturesIT {
         }
     }
 
+    @Path("/")
+    public static class Resource {
+
+        @GET
+        @Produces(MediaType.TEXT_PLAIN)
+        public Response get(@Context UriInfo uriInfo) {
+            return Response.ok("Hi").build();
+        }
+    }
 }

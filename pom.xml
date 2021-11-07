@@ -45,9 +45,6 @@
 
     <properties>
         <bootique.version>${project.version}</bootique.version>
-        <!-- Everything below must be coordinated with Jersey version -->
-        <hk2.version>2.6.1</hk2.version>
-        <jaxrs.version>2.1.6</jaxrs.version>
         <!-- Managing manually due to SLF4J version conflict  -->
         <grizzly.http.client.version>1.16</grizzly.http.client.version>
     </properties>
@@ -78,7 +75,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey.containers</groupId>
                 <artifactId>jersey-container-servlet</artifactId>
-                <version>${jersey.version}</version>
+                <version>${jersey2.version}</version>
                 <exclusions>
                     <!-- Exclusion tags in Maven seem to be recursive, so the following
                    dependencies will be excluded from the underlying HK modules as well. -->
@@ -95,7 +92,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-common</artifactId>
-                <version>${jersey.version}</version>
+                <version>${jersey2.version}</version>
                 <exclusions>
                     <!-- Bootique includes this one -->
                     <exclusion>
@@ -113,7 +110,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey.inject</groupId>
                 <artifactId>jersey-hk2</artifactId>
-                <version>${jersey.version}</version>
+                <version>${jersey2.version}</version>
                 <exclusions>
                     <!-- Bootique includes this one -->
                     <exclusion>
@@ -125,7 +122,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-multipart</artifactId>
-                <version>${jersey.version}</version>
+                <version>${jersey2.version}</version>
                 <exclusions>
                     <!-- Bootique includes this one -->
                     <exclusion>
@@ -137,7 +134,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-client</artifactId>
-                <version>${jersey.version}</version>
+                <version>${jersey2.version}</version>
                 <exclusions>
                     <!-- Bootique includes this one -->
                     <exclusion>
@@ -149,7 +146,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey.connectors</groupId>
                 <artifactId>jersey-grizzly-connector</artifactId>
-                <version>${jersey.version}</version>
+                <version>${jersey2.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.grizzly</groupId>
@@ -207,7 +204,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-json-jackson</artifactId>
-                <version>${jersey.version}</version>
+                <version>${jersey2.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -251,13 +248,12 @@
             <dependency>
                 <groupId>org.glassfish.jersey.ext</groupId>
                 <artifactId>jersey-bean-validation</artifactId>
-                <version>${jersey.version}</version>
+                <version>${jersey2.version}</version>
             </dependency>
             <!--HK2-->
             <dependency>
                 <groupId>org.glassfish.hk2</groupId>
                 <artifactId>hk2-api</artifactId>
-                <version>${hk2.version}</version>
                 <exclusions>
                     <!-- Bootique includes this one -->
                     <exclusion>
@@ -269,7 +265,6 @@
             <dependency>
                 <groupId>org.glassfish.hk2</groupId>
                 <artifactId>hk2-locator</artifactId>
-                <version>${hk2.version}</version>
                 <exclusions>
                     <!-- Bootique includes this one -->
                     <exclusion>
