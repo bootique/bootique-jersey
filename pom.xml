@@ -45,8 +45,6 @@
 
     <properties>
         <bootique.version>${project.version}</bootique.version>
-        <!-- Managing manually due to SLF4J version conflict  -->
-        <grizzly.http.client.version>1.16</grizzly.http.client.version>
     </properties>
 
     <scm>
@@ -147,19 +145,6 @@
                 <groupId>org.glassfish.jersey.connectors</groupId>
                 <artifactId>jersey-grizzly-connector</artifactId>
                 <version>${jersey2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.grizzly</groupId>
-                <artifactId>grizzly-http-client</artifactId>
-                <version>${grizzly.http.client.version}</version>
-                <!-- Must exclude their old SLF.. Why is this module evene dependent on SLF?
-                None of the Jersey libs are..-->
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.bootique.metrics</groupId>
