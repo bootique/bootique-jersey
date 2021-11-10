@@ -45,6 +45,7 @@
 
         <module>bootique-jersey3</module>
         <module>bootique-jersey3-jackson</module>
+        <module>bootique-jersey3-beanvalidation</module>
     </modules>
 
     <properties>
