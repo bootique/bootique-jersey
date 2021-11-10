@@ -18,10 +18,11 @@
  */
 package io.bootique.jersey.v3.client.auth;
 
+import io.bootique.BQCoreModule;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.jersey.v3.client.HttpTargets;
 import io.bootique.jersey.v3.JerseyModule;
+import io.bootique.jersey.v3.client.HttpTargets;
 import io.bootique.jetty.v11.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
@@ -40,12 +41,13 @@ import org.junit.jupiter.api.Test;
 @BQTest
 public class ApiKeyParameterAuthenticatorIT {
 
-    // TODO: using port 8080 on the server as it is configured for the client targets
+    static final JettyTester jetty = JettyTester.create();
 
     @BQApp
     static final BQRuntime server = Bootique.app("-s")
             .autoLoadModules()
-            .module((binder) -> JerseyModule.extend(binder).addResource(ProtectedApi.class))
+            .module(jetty.moduleReplacingConnectors())
+            .module(b -> JerseyModule.extend(b).addResource(ProtectedApi.class))
             .createRuntime();
 
     @BQTestTool
@@ -54,6 +56,9 @@ public class ApiKeyParameterAuthenticatorIT {
     private WebTarget startClient(String targetName) {
         return clientTestFactory.app("-c", "classpath:io/bootique/jersey/v3/client/auth/ApiKeyParameterAuthenticatorIT.yml")
                 .autoLoadModules()
+                .module(b -> BQCoreModule.extend(b).setProperty("bq.jerseyclient.targets.valid.url", jetty.getUrl() + "/r1"))
+                .module(b -> BQCoreModule.extend(b).setProperty("bq.jerseyclient.targets.customValid.url", jetty.getUrl() + "/r2"))
+                .module(b -> BQCoreModule.extend(b).setProperty("bq.jerseyclient.targets.invalid.url", jetty.getUrl() + "/r1"))
                 .createRuntime()
                 .getInstance(HttpTargets.class)
                 .newTarget(targetName);

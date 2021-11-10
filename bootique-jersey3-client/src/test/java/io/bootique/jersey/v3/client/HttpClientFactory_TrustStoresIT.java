@@ -61,7 +61,7 @@ public class HttpClientFactory_TrustStoresIT {
     public void testNamedTrustStore() {
 
         HttpClientFactory factory = clientFactory
-                .app("-c", "classpath:io/bootique/jersey/client/TrustStoresIT_client.yml")
+                .app("-c", "classpath:io/bootique/jersey/v3/client/TrustStoresIT_client.yml")
                 .moduleProvider(new JerseyClientModuleProvider())
                 .moduleProvider(new LogbackModuleProvider())
                 .createRuntime()
@@ -91,7 +91,7 @@ public class HttpClientFactory_TrustStoresIT {
     public void testNamedTrustStore_Invalid() {
 
         HttpClientFactory factory = clientFactory
-                .app("-c", "classpath:io/bootique/jersey/client/TrustStoresIT_client.yml")
+                .app("-c", "classpath:io/bootique/jersey/v3/client/TrustStoresIT_client.yml")
                 .moduleProvider(new JerseyClientModuleProvider())
                 .moduleProvider(new LogbackModuleProvider())
                 .createRuntime()

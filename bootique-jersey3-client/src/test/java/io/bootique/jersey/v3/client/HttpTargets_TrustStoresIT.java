@@ -47,7 +47,7 @@ public class HttpTargets_TrustStoresIT {
 
     @BQApp
     static final BQRuntime app = Bootique
-            .app("-s", "-c", "classpath:io/bootique/jersey/client/TrustStoresIT_server.yml")
+            .app("-s", "-c", "classpath:io/bootique/jersey/v3/client/TrustStoresIT_server.yml")
             .modules(JettyModule.class, JerseyModule.class)
             .moduleProvider(new LogbackModuleProvider())
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))

@@ -51,6 +51,8 @@
 
     <properties>
         <bootique.version>${project.version}</bootique.version>
+
+        <activation2.version>2.0.1</activation2.version>
     </properties>
 
     <scm>
