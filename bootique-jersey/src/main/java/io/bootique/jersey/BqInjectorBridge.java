@@ -19,29 +19,23 @@
 
 package io.bootique.jersey;
 
+import io.bootique.di.Injector;
+import io.bootique.di.Key;
+import io.bootique.di.TypeLiteral;
+import org.glassfish.hk2.api.*;
+import org.glassfish.hk2.utilities.AbstractActiveDescriptor;
+import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-
-import io.bootique.di.Injector;
-import io.bootique.di.Key;
-import io.bootique.di.TypeLiteral;
-import org.glassfish.hk2.api.DescriptorType;
-import org.glassfish.hk2.api.DescriptorVisibility;
-import org.glassfish.hk2.api.Injectee;
-import org.glassfish.hk2.api.JustInTimeInjectionResolver;
-import org.glassfish.hk2.api.ServiceHandle;
-import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.hk2.utilities.AbstractActiveDescriptor;
-import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
-
 /**
- * This class is allows HK2 to do a lookup and grab services from Bootique DI Injector.
+ * Allows HK2 to do a lookup and grab services from Bootique DI Injector.
  */
 public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjectionResolver {
 

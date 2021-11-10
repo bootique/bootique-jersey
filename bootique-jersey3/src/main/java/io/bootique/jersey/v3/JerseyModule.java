@@ -34,8 +34,6 @@ import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.util.Map;
 import java.util.Set;
 
@@ -64,7 +62,7 @@ public class JerseyModule extends ConfigModule {
         JerseyModule.extend(binder).initAllExtensions();
     }
 
-    @Singleton
+    @javax.inject.Singleton
     @Provides
     private ResourceConfig createResourceConfig(
             Injector injector,
@@ -72,7 +70,7 @@ public class JerseyModule extends ConfigModule {
             Set<DynamicFeature> dynamicFeatures,
             @JerseyResource Set<Object> resources,
             @JerseyResource Set<Package> packages,
-            @Named(RESOURCES_BY_PATH_BINDING) Map<String, Object> resourcesByPath,
+            @javax.inject.Named(RESOURCES_BY_PATH_BINDING) Map<String, Object> resourcesByPath,
             Set<MappedResource> mappedResources,
             @JerseyResource Map<String, Object> properties) {
 
@@ -82,10 +80,10 @@ public class JerseyModule extends ConfigModule {
         config.register(new AbstractBinder() {
             @Override
             protected void configure() {
-                bind(injector).to(Injector.class).in(Singleton.class);
-                bind(BqInjectorBridge.class).to(JustInTimeInjectionResolver.class).in(Singleton.class);
-                bind(BqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>() {
-                }).in(Singleton.class);
+                bind(injector).to(Injector.class).in(jakarta.inject.Singleton.class);
+                bind(BqInjectorBridge.class).to(JustInTimeInjectionResolver.class).in(jakarta.inject.Singleton.class);
+                bind(JavaxInjectInjector.class).to(new GenericType<InjectionResolver<javax.inject.Inject>>() {}).in(jakarta.inject.Singleton.class);
+                bind(BqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>() {}).in(jakarta.inject.Singleton.class);
             }
         });
 
@@ -120,7 +118,7 @@ public class JerseyModule extends ConfigModule {
     }
 
     @Provides
-    @Singleton
+    @javax.inject.Singleton
     private MappedServlet<ServletContainer> provideJerseyServlet(ConfigurationFactory configFactory, ResourceConfig config) {
         return config(JerseyServletFactory.class, configFactory).createJerseyServlet(config);
     }

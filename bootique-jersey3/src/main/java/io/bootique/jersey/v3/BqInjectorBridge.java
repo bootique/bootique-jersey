@@ -19,29 +19,21 @@
 
 package io.bootique.jersey.v3;
 
+import io.bootique.di.Injector;
+import io.bootique.di.Key;
+import io.bootique.di.TypeLiteral;
+import org.glassfish.hk2.api.*;
+import org.glassfish.hk2.utilities.AbstractActiveDescriptor;
+import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
+
+import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-
-import io.bootique.di.Injector;
-import io.bootique.di.Key;
-import io.bootique.di.TypeLiteral;
-import org.glassfish.hk2.api.DescriptorType;
-import org.glassfish.hk2.api.DescriptorVisibility;
-import org.glassfish.hk2.api.Injectee;
-import org.glassfish.hk2.api.JustInTimeInjectionResolver;
-import org.glassfish.hk2.api.ServiceHandle;
-import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.hk2.utilities.AbstractActiveDescriptor;
-import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
-
 /**
- * This class is allows HK2 to do a lookup and grab services from Bootique DI Injector.
+ * Allows HK2 to do a lookup and grab services from Bootique DI Injector.
  */
 public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjectionResolver {
 
@@ -55,7 +47,7 @@ public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjec
 
 	private final ServiceLocator locator;
 
-	@Inject
+	@jakarta.inject.Inject
 	public BqInjectorBridge(Injector injector, ServiceLocator locator) {
 		super(injector);
 		this.locator = locator;
@@ -92,7 +84,7 @@ public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjec
 	}
 
 	/**
-	 * This descriptor just holds {@link Provider} reference to get the required service from Bootique DI.
+	 * Holds {@link Provider} reference to get the required service from Bootique DI.
 	 */
 	private static class BqBindingActiveDescriptor<T> extends AbstractActiveDescriptor<T> {
 
@@ -103,7 +95,7 @@ public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjec
 		public BqBindingActiveDescriptor(Provider<T> provider, Type implType, Set<Annotation> qualifiers, Class<T> implClass) {
 			super(
 					Collections.singleton(implType),
-					Singleton.class,
+					jakarta.inject.Singleton.class,
 					null,
 					qualifiers,
 					DescriptorType.CLASS,

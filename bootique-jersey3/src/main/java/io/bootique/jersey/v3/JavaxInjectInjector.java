@@ -31,10 +31,10 @@ import javax.inject.Provider;
 /**
  * This resolver provides support for the {@link BQInject} annotation inside Jersey runtime
  */
-public class BqInjectInjector extends BaseBqHk2Bridge implements InjectionResolver<BQInject>  {
+public class JavaxInjectInjector extends BaseBqHk2Bridge implements InjectionResolver<javax.inject.Inject>  {
 
     @jakarta.inject.Inject
-    public BqInjectInjector(Injector injector) {
+    public JavaxInjectInjector(Injector injector) {
         super(injector);
     }
 
@@ -51,7 +51,7 @@ public class BqInjectInjector extends BaseBqHk2Bridge implements InjectionResolv
     @Override
     public Object resolve(Injectee injectee, ServiceHandle<?> serviceHandle) {
         TypeLiteral<?> typeLiteral = TypeLiteral.of(injectee.getRequiredType());
-        boolean isProvider = javax.inject.Provider.class.equals(typeLiteral.getRawType());
+        boolean isProvider = Provider.class.equals(typeLiteral.getRawType());
 
         Provider<?> provider = resolveBqProvider(injectee);
         return isProvider ? provider : provider.get();

@@ -55,10 +55,6 @@
                     <!-- Exclusion tags in Maven seem to be recursive, so the following
                    dependencies will be excluded from the underlying HK modules as well. -->
                     <exclusion>
-                        <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>jakarta.inject</artifactId>
-                    </exclusion>
-                    <exclusion>
                         <groupId>jakarta.xml.bind</groupId>
                         <artifactId>jakarta.xml.bind-api</artifactId>
                     </exclusion>
@@ -69,11 +65,6 @@
                 <artifactId>jersey-common</artifactId>
                 <version>${jersey3.version}</version>
                 <exclusions>
-                    <!-- Bootique includes this one -->
-                    <exclusion>
-                        <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>jakarta.inject</artifactId>
-                    </exclusion>
                     <!-- Explicitly included downstream-->
                     <exclusion>
                         <groupId>com.sun.activation</groupId>
@@ -86,25 +77,11 @@
                 <groupId>org.glassfish.jersey.inject</groupId>
                 <artifactId>jersey-hk2</artifactId>
                 <version>${jersey3.version}</version>
-                <exclusions>
-                    <!-- Bootique includes this one -->
-                    <exclusion>
-                        <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>jakarta.inject</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-multipart</artifactId>
                 <version>${jersey3.version}</version>
-                <exclusions>
-                    <!-- Bootique includes this one -->
-                    <exclusion>
-                        <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>jakarta.inject</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -145,13 +122,6 @@
             <dependency>
                 <groupId>org.glassfish.hk2</groupId>
                 <artifactId>hk2-locator</artifactId>
-                <exclusions>
-                    <!-- Bootique includes this one -->
-                    <exclusion>
-                        <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>jakarta.inject</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
         </dependencies>
