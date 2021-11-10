@@ -1,1 +1,1 @@
-io.bootique.jersey.jackson.JerseyJacksonModule
+io.bootique.jersey.v3.jackson.JerseyJacksonModule

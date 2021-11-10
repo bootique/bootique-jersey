@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.jackson;
+package io.bootique.jersey.v3.jackson;
 
 import jakarta.ws.rs.core.Feature;
 import jakarta.ws.rs.core.FeatureContext;

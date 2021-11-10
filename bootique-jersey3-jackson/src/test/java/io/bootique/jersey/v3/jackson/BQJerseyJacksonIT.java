@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.bootique.jersey.jackson;
+package io.bootique.jersey.v3.jackson;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;

@@ -16,29 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.jackson;
+package io.bootique.jersey.v3.jackson;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.ws.rs.ext.ContextResolver;
-import jakarta.ws.rs.ext.Provider;
+import io.bootique.junit5.BQModuleProviderChecker;
+import org.junit.jupiter.api.Test;
 
-/**
- * A Jersey extension that provides a preconfigured Jackson ObjectMapper for all object (de)serialization needed
- * within Jersey.
- *
- * @since 2.0
- */
-@Provider
-public class ObjectMapperResolver implements ContextResolver<ObjectMapper> {
+public class JerseyJacksonModuleTest {
 
-    private ObjectMapper mapper;
-
-    public ObjectMapperResolver(ObjectMapper mapper) {
-        this.mapper = mapper;
-    }
-
-    @Override
-    public ObjectMapper getContext(Class<?> type) {
-        return mapper;
+    @Test
+    public void testAutoLoad() {
+        BQModuleProviderChecker.testAutoLoadable(JerseyJacksonModule.class);
     }
 }

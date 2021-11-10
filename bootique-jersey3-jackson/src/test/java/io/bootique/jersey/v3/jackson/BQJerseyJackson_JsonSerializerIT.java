@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.bootique.jersey.jackson;
+package io.bootique.jersey.v3.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.v3.JerseyModule;
+import io.bootique.jersey.v3.jackson.JerseyJacksonModule;
 import io.bootique.jetty.v11.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;

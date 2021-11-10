@@ -17,11 +17,12 @@
  * under the License.
  */
 
-package io.bootique.jersey.jackson;
+package io.bootique.jersey.v3.jackson;
 
 import io.bootique.BQRuntime;
 import io.bootique.di.BQModule;
 import io.bootique.jersey.v3.JerseyModule;
+import io.bootique.jersey.v3.jackson.JerseyJacksonModule;
 import io.bootique.jetty.v11.junit5.JettyTester;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
