@@ -21,11 +21,7 @@ package io.bootique.jersey;
 
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
-import io.bootique.di.BQInject;
-import io.bootique.di.Binder;
-import io.bootique.di.Injector;
-import io.bootique.di.Provides;
-import io.bootique.di.TypeLiteral;
+import io.bootique.di.*;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.MappedServlet;
 import org.glassfish.hk2.api.InjectionResolver;
@@ -95,15 +91,23 @@ public class JerseyModule extends ConfigModule {
 
         packages.forEach(p -> config.packages(true, p.getName()));
 
-        resources.forEach(config::register);
+        // wrap resources registration in a feature. Otherwise, Jersey prints a warning because resources are registered
+        // as instances instead of classes - https://github.com/eclipse-ee4j/jersey/issues/3700
 
-        if (!mappedResources.isEmpty() || !resourcesByPath.isEmpty()) {
-            // first register under the @Path from annotation, then override it via ResourcePathCustomizer
-            mappedResources.forEach(mr -> config.register(mr.getResource()));
-            resourcesByPath.values().forEach(config::register);
+        config.register((Feature) context -> {
 
-            config.register(ResourcePathCustomizer.create(mappedResources, resourcesByPath));
-        }
+            resources.forEach(context::register);
+
+            if (!mappedResources.isEmpty() || !resourcesByPath.isEmpty()) {
+                // first register under the @Path from annotation, then override it via ResourcePathCustomizer
+                mappedResources.forEach(mr -> context.register(mr.getResource()));
+                resourcesByPath.values().forEach(context::register);
+
+                context.register(ResourcePathCustomizer.create(mappedResources, resourcesByPath));
+            }
+
+            return true;
+        });
 
         features.forEach(config::register);
         dynamicFeatures.forEach(config::register);
