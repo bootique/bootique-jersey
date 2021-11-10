@@ -1,21 +1,20 @@
 package io.bootique.jersey.v3;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
-import javax.inject.Provider;
-
 import io.bootique.BootiqueException;
 import io.bootique.di.Injector;
 import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
 import org.glassfish.hk2.api.Injectee;
 
+import javax.inject.Provider;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 /**
  * Base utilities for bridge between Bootique DI and HK2 container
  */
-class BaseBqHk2Bridge {
+abstract class BaseBqHk2Bridge {
 
     protected final Injector injector;
 

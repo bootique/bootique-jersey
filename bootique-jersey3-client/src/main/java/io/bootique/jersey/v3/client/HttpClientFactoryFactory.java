@@ -37,7 +37,6 @@ import org.glassfish.jersey.client.filter.EncodingFeature;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.message.GZipEncoder;
 
-import javax.inject.Singleton;
 import java.security.KeyStore;
 import java.util.Collections;
 import java.util.HashMap;
@@ -136,14 +135,10 @@ public class HttpClientFactoryFactory {
         config.register(new AbstractBinder() {
             @Override
             protected void configure() {
-                bind(injector).to(Injector.class)
-                        .in(Singleton.class);
-                bind(ClientBqInjectorBridge.class)
-                        .to(JustInTimeInjectionResolver.class)
-                        .in(Singleton.class);
-                bind(ClientBqInjectInjector.class)
-                        .to(new GenericType<InjectionResolver<BQInject>>(){})
-                        .in(Singleton.class);
+                bind(injector).to(Injector.class).in(jakarta.inject.Singleton.class);
+                bind(ClientBqInjectorBridge.class).to(JustInTimeInjectionResolver.class).in(jakarta.inject.Singleton.class);
+                bind(ClientJavaxInjectInjector.class).to(new GenericType<InjectionResolver<javax.inject.Inject>>(){}).in(jakarta.inject.Singleton.class);
+                bind(ClientBqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>(){}).in(jakarta.inject.Singleton.class);
             }
         });
 

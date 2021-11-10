@@ -19,7 +19,6 @@
 
 package io.bootique.jersey.v3.client;
 
-import io.bootique.di.BQInject;
 import io.bootique.di.Injector;
 import io.bootique.di.TypeLiteral;
 import org.glassfish.hk2.api.Injectee;
@@ -28,10 +27,13 @@ import org.glassfish.hk2.api.ServiceHandle;
 
 import javax.inject.Provider;
 
-public class ClientBqInjectInjector extends BaseClientBqHk2Bridge implements InjectionResolver<BQInject> {
+/**
+ * @since 3.0.M1
+ */
+public class ClientJavaxInjectInjector extends BaseClientBqHk2Bridge implements InjectionResolver<javax.inject.Inject> {
 
     @jakarta.inject.Inject
-    public ClientBqInjectInjector(Injector injector) {
+    public ClientJavaxInjectInjector(Injector injector) {
         super(injector);
     }
 
@@ -48,7 +50,7 @@ public class ClientBqInjectInjector extends BaseClientBqHk2Bridge implements Inj
     @Override
     public Object resolve(Injectee injectee, ServiceHandle<?> serviceHandle) {
         TypeLiteral<?> typeLiteral = TypeLiteral.of(injectee.getRequiredType());
-        boolean isProvider = javax.inject.Provider.class.equals(typeLiteral.getRawType());
+        boolean isProvider = Provider.class.equals(typeLiteral.getRawType());
 
         Provider<?> provider = resolveBqProvider(injectee);
         return isProvider ? provider : provider.get();

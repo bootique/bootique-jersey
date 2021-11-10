@@ -16,7 +16,7 @@
 log:
   level: debug
   loggers:
-    io.bootique.jersey.client:
+    io.bootique.jersey.v3.client:
       level: debug
       appenderRefs:
       - client
