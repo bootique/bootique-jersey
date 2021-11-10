@@ -42,6 +42,8 @@
         <module>bootique-jersey-beanvalidation</module>
         <module>bootique-jersey-client</module>
         <module>bootique-jersey-client-instrumented</module>
+
+        <module>bootique-jersey3</module>
     </modules>
 
     <properties>
