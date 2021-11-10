@@ -44,6 +44,7 @@
         <module>bootique-jersey-client-instrumented</module>
 
         <module>bootique-jersey3</module>
+        <module>bootique-jersey3-jackson</module>
     </modules>
 
     <properties>
