@@ -35,6 +35,26 @@
 		Provides HTTP client integrated with Bootique, built on top of Jersey.
 	</description>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.bootique.jetty</groupId>
+				<artifactId>bootique-jetty-junit5</artifactId>
+				<version>${bootique.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.bootique.metrics</groupId>
+				<artifactId>bootique-metrics</artifactId>
+				<version>${bootique.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.bootique.metrics</groupId>
+				<artifactId>bootique-metrics-healthchecks</artifactId>
+				<version>${bootique.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<!-- Compile dependencies -->
 		<dependency>
