@@ -18,6 +18,7 @@
  */
 package io.bootique.jersey.client.auth;
 
+import io.bootique.BQCoreModule;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
@@ -40,11 +41,12 @@ import javax.ws.rs.core.Response;
 @BQTest
 public class ApiKeyHeaderAuthenticatorIT {
 
-    // TODO: using port 8080 on the server as it is configured for the client targets
+    static final JettyTester jetty = JettyTester.create();
 
     @BQApp
     static final BQRuntime server = Bootique.app("-s")
             .autoLoadModules()
+            .module(jetty.moduleReplacingConnectors())
             .module((binder) -> JerseyModule.extend(binder).addResource(ProtectedApi.class))
             .createRuntime();
 
@@ -54,6 +56,9 @@ public class ApiKeyHeaderAuthenticatorIT {
     private WebTarget clientTarget(String name) {
         return clientTestFactory.app("-c", "classpath:io/bootique/jersey/client/auth/ApiKeyHeaderAuthenticatorIT.yml")
                 .autoLoadModules()
+                .module(b -> BQCoreModule.extend(b).setProperty("bq.jerseyclient.targets.valid.url", jetty.getUrl() + "/r1"))
+                .module(b -> BQCoreModule.extend(b).setProperty("bq.jerseyclient.targets.customValid.url", jetty.getUrl() + "/r2"))
+                .module(b -> BQCoreModule.extend(b).setProperty("bq.jerseyclient.targets.invalid.url", jetty.getUrl() + "/r1"))
                 .createRuntime()
                 .getInstance(HttpTargets.class)
                 .newTarget(name);
