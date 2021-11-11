@@ -1,6 +1,7 @@
 ## 3.0.M1
 
 * #59 Upgrade Jersey 2 to 2.35
+* #60 Provide Jersey 3 modules
 * #61 Prevent resource registration warning
 
 ## 2.0.B1
