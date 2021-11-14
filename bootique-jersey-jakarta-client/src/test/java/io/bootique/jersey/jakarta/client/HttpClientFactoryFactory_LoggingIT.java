@@ -24,7 +24,7 @@ import io.bootique.di.BQModule;
 import io.bootique.di.Injector;
 import io.bootique.jersey.jakarta.client.HttpClientFactoryFactory;
 import io.bootique.jersey.jakarta.JerseyModule;
-import io.bootique.jetty.v11.JettyModule;
+import io.bootique.jetty.jakarta.JettyModule;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;

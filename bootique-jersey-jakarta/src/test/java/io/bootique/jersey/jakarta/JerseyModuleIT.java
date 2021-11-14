@@ -23,7 +23,7 @@ import io.bootique.BQRuntime;
 import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
 import io.bootique.jersey.jakarta.JerseyModule;
-import io.bootique.jetty.v11.MappedServlet;
+import io.bootique.jetty.jakarta.MappedServlet;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;

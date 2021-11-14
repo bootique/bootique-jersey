@@ -21,7 +21,7 @@ package io.bootique.jersey.jakarta;
 
 import io.bootique.BQModuleProvider;
 import io.bootique.di.BQModule;
-import io.bootique.jetty.v11.JettyModuleProvider;
+import io.bootique.jetty.jakarta.JettyModuleProvider;
 
 import java.lang.reflect.Type;
 import java.util.Collection;

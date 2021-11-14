@@ -21,7 +21,7 @@ package io.bootique.jersey.jakarta;
 
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
-import io.bootique.jetty.v11.MappedServlet;
+import io.bootique.jetty.jakarta.MappedServlet;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import org.glassfish.jersey.server.ResourceConfig;

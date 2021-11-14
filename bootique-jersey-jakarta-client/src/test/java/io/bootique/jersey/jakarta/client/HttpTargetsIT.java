@@ -21,11 +21,9 @@ package io.bootique.jersey.jakarta.client;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.jersey.jakarta.client.HttpTargets;
-import io.bootique.jersey.jakarta.client.JerseyClientModuleProvider;
 import io.bootique.jersey.jakarta.JerseyModule;
-import io.bootique.jetty.v11.JettyModule;
-import io.bootique.jetty.v11.junit5.JettyTester;
+import io.bootique.jetty.jakarta.JettyModule;
+import io.bootique.jetty.jakarta.junit5.JettyTester;
 import io.bootique.junit5.*;
 import io.bootique.logback.LogbackModuleProvider;
 import jakarta.ws.rs.GET;
