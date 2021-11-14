@@ -1,0 +1,5 @@
+io.bootique.jersey.jakarta.client.auth.AuthenticatorFactory
+io.bootique.jersey.jakarta.client.auth.BasicAuthenticatorFactory
+io.bootique.jersey.jakarta.client.auth.OAuth2AuthenticatorFactory
+io.bootique.jersey.jakarta.client.auth.ApiKeyHeaderAuthenticatorFactory
+io.bootique.jersey.jakarta.client.auth.ApiKeyParameterAuthenticatorFactory

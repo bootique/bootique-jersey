@@ -1,5 +1,0 @@
-io.bootique.jersey.v3.client.auth.AuthenticatorFactory
-io.bootique.jersey.v3.client.auth.BasicAuthenticatorFactory
-io.bootique.jersey.v3.client.auth.OAuth2AuthenticatorFactory
-io.bootique.jersey.v3.client.auth.ApiKeyHeaderAuthenticatorFactory
-io.bootique.jersey.v3.client.auth.ApiKeyParameterAuthenticatorFactory

@@ -1,0 +1,28 @@
+# Licensed to ObjectStyle LLC under one or more
+# contributor license agreements. See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ObjectStyle LLC licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License. You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Both stores contain the same key as the server and each other, but are using different password:
+#
+#  keytool -importkeystore -srckeystore bootique-jersey-client/src/test/resources/io/bootique/jersey/client/testkeystore \
+#	 -destkeystore bootique-jersey-client/src/test/resources/io/bootique/jersey/client/testkeystore_default_password \
+#	 -srcstorepass supersecret -deststorepass changeit -srcalias "jetty"
+#
+jerseyclient:
+  trustStores:
+    t1:
+      location: 'classpath:io/bootique/jersey/jakarta/client/testkeystore'
+      password: 'supersecret'
+    t2_default_password:
+      location: 'classpath:io/bootique/jersey/jakarta/client/testkeystore_default_password'

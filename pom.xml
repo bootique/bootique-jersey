@@ -34,7 +34,7 @@
     <packaging>pom</packaging>
 
     <name>bootique-jersey-parent: Parent of Jersey/Bootique integration</name>
-    <description>Parent of Jersey/Bootique integration.</description>
+    <description>Parent of Jersey/Bootique integration</description>
 
     <modules>
         <module>bootique-jersey</module>
@@ -43,11 +43,11 @@
         <module>bootique-jersey-client</module>
         <module>bootique-jersey-client-instrumented</module>
 
-        <module>bootique-jersey3</module>
-        <module>bootique-jersey3-jackson</module>
-        <module>bootique-jersey3-beanvalidation</module>
-        <module>bootique-jersey3-client</module>
-        <module>bootique-jersey3-client-instrumented</module>
+        <module>bootique-jersey-jakarta</module>
+        <module>bootique-jersey-jakarta-jackson</module>
+        <module>bootique-jersey-jakarta-beanvalidation</module>
+        <module>bootique-jersey-jakarta-client</module>
+        <module>bootique-jersey-jakarta-client-instrumented</module>
     </modules>
 
     <properties>
