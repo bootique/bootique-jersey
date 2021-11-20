@@ -24,7 +24,7 @@
     <parent>
         <groupId>io.bootique.modules.parent</groupId>
         <artifactId>bootique-modules-parent</artifactId>
-        <version>2.0.7</version>
+        <version>2.0.8</version>
     </parent>
 
     <groupId>io.bootique.jersey</groupId>
@@ -47,7 +47,6 @@
         <bootique.version>${project.version}</bootique.version>
         <!-- Everything below must be coordinated with Jersey version -->
         <hk2.version>2.6.1</hk2.version>
-        <jaxrs.version>2.1.6</jaxrs.version>
         <!-- Managing manually due to SLF4J version conflict  -->
         <grizzly.http.client.version>1.16</grizzly.http.client.version>
     </properties>

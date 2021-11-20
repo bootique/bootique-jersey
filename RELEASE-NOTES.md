@@ -1,3 +1,7 @@
+## 2.0.RC1
+
+* #62 Java 17 compatibility - Jersey 2.35 upgrade
+
 ## 2.0.B1
 
 * #56 Support JAX-RS Application
