@@ -16,22 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package io.bootique.jersey;
 
-package io.bootique.jersey.jakarta;
+import io.bootique.jersey.JerseyServletFactory;
+import org.junit.jupiter.api.Test;
 
-import javax.inject.Qualifier;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * A binding annotation for explicitly registered Jersey resources.
- */
-@Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD })
-@Retention(RetentionPolicy.RUNTIME)
-@Qualifier
-// TODO: should this be called something like "JerseyComponent" ?
-public @interface JerseyResource {
+public class JerseyServletFactoryTest {
 
+    @Test
+    public void testNormalizeAppPath() {
+
+        JerseyServletFactory f = new JerseyServletFactory();
+        assertEquals("/*", f.normalizeAppPath(""));
+        assertEquals("/*", f.normalizeAppPath("/"));
+        assertEquals("/a/*", f.normalizeAppPath("a"));
+        assertEquals("/a/*", f.normalizeAppPath("/a"));
+        assertEquals("/a/*", f.normalizeAppPath("/a/"));
+    }
 }

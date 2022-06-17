@@ -20,7 +20,7 @@ package io.bootique.jersey.jakarta.beanvalidation;
 
 import io.bootique.ModuleExtender;
 import io.bootique.di.Binder;
-import io.bootique.jersey.jakarta.JerseyModule;
+import io.bootique.jersey.JerseyModule;
 import org.glassfish.jersey.server.ServerProperties;
 
 /**

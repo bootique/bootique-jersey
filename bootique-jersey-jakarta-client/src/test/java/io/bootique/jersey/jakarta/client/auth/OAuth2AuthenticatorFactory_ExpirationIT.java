@@ -22,7 +22,7 @@ package io.bootique.jersey.jakarta.client.auth;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.di.Injector;
-import io.bootique.jersey.jakarta.JerseyModule;
+import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;

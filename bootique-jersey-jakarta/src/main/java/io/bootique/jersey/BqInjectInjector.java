@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.bootique.jersey.jakarta;
+package io.bootique.jersey;
 
 import io.bootique.di.BQInject;
 import io.bootique.di.Injector;
@@ -31,10 +31,10 @@ import javax.inject.Provider;
 /**
  * This resolver provides support for the {@link BQInject} annotation inside Jersey runtime
  */
-public class JavaxInjectInjector extends BaseBqHk2Bridge implements InjectionResolver<javax.inject.Inject>  {
+public class BqInjectInjector extends BaseBqHk2Bridge implements InjectionResolver<BQInject>  {
 
     @jakarta.inject.Inject
-    public JavaxInjectInjector(Injector injector) {
+    public BqInjectInjector(Injector injector) {
         super(injector);
     }
 
@@ -51,7 +51,7 @@ public class JavaxInjectInjector extends BaseBqHk2Bridge implements InjectionRes
     @Override
     public Object resolve(Injectee injectee, ServiceHandle<?> serviceHandle) {
         TypeLiteral<?> typeLiteral = TypeLiteral.of(injectee.getRequiredType());
-        boolean isProvider = Provider.class.equals(typeLiteral.getRawType());
+        boolean isProvider = javax.inject.Provider.class.equals(typeLiteral.getRawType());
 
         Provider<?> provider = resolveBqProvider(injectee);
         return isProvider ? provider : provider.get();

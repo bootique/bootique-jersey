@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.bootique.jersey.jakarta;
+package io.bootique.jersey;
 
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;

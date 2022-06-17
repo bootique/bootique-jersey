@@ -17,8 +17,9 @@
  * under the License.
  */
 
-package io.bootique.jersey.jakarta;
+package io.bootique.jersey;
 
+import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;

@@ -17,30 +17,21 @@
  * under the License.
  */
 
-package io.bootique.jersey.jakarta;
+package io.bootique.jersey;
 
-import io.bootique.BQRuntime;
-import io.bootique.jetty.JettyModule;
-import io.bootique.junit5.*;
-import org.junit.jupiter.api.Test;
+import javax.inject.Qualifier;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@BQTest
-public class JerseyModuleProviderIT {
+/**
+ * A binding annotation for explicitly registered Jersey resources.
+ */
+@Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+// TODO: should this be called something like "JerseyComponent" ?
+public @interface JerseyResource {
 
-    @BQTestTool
-    final BQTestFactory testFactory = new BQTestFactory();
-
-    @Test
-    public void testAutoLoadable() {
-        BQModuleProviderChecker.testAutoLoadable(JerseyModuleProvider.class);
-    }
-
-    @Test
-    public void testModuleDeclaresDependencies() {
-        BQRuntime bqRuntime = testFactory.app().moduleProvider(new JerseyModuleProvider()).createRuntime();
-        BQRuntimeChecker.testModulesLoaded(bqRuntime,
-                JettyModule.class,
-                JerseyModule.class
-        );
-    }
 }

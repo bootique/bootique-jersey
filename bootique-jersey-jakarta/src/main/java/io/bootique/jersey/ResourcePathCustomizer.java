@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.jakarta;
+package io.bootique.jersey;
 
 import jakarta.ws.rs.core.Configuration;
 import org.glassfish.jersey.server.model.ModelProcessor;

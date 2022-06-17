@@ -16,23 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.jakarta;
+package io.bootique.jersey;
 
-import io.bootique.jersey.jakarta.JerseyServletFactory;
-import org.junit.jupiter.api.Test;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static java.util.Arrays.asList;
 
-public class JerseyServletFactoryTest {
+/**
+ * @since 2.0
+ */
+public class MappedResource<T> {
 
-    @Test
-    public void testNormalizeAppPath() {
+    private T resource;
+    private Set<String> urlPatterns;
 
-        JerseyServletFactory f = new JerseyServletFactory();
-        assertEquals("/*", f.normalizeAppPath(""));
-        assertEquals("/*", f.normalizeAppPath("/"));
-        assertEquals("/a/*", f.normalizeAppPath("a"));
-        assertEquals("/a/*", f.normalizeAppPath("/a"));
-        assertEquals("/a/*", f.normalizeAppPath("/a/"));
+    public MappedResource(T resource, Set<String> urlPatterns) {
+        this.resource = resource;
+        this.urlPatterns = urlPatterns;
+    }
+
+    public MappedResource(T resource, String... urlPatterns) {
+        this(resource, new HashSet<>(asList(urlPatterns)));
+    }
+
+    public T getResource() {
+        return resource;
+    }
+
+    public Set<String> getUrlPatterns() {
+        return urlPatterns;
     }
 }

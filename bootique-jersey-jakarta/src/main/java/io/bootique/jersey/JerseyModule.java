@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.bootique.jersey.jakarta;
+package io.bootique.jersey;
 
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;

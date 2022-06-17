@@ -16,12 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.jakarta;
+package io.bootique.jersey;
 
 import io.bootique.BQRuntime;
 import io.bootique.di.BQInject;
 import io.bootique.di.BQModule;
 import io.bootique.di.Injector;
+import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;

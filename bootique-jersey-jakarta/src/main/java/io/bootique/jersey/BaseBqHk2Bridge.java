@@ -1,4 +1,4 @@
-package io.bootique.jersey.jakarta;
+package io.bootique.jersey;
 
 import io.bootique.BootiqueException;
 import io.bootique.di.Injector;

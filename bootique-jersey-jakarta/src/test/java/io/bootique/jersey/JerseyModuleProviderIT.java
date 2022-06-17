@@ -16,35 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.jakarta;
 
-import java.util.HashSet;
-import java.util.Set;
+package io.bootique.jersey;
 
-import static java.util.Arrays.asList;
+import io.bootique.BQRuntime;
+import io.bootique.jersey.JerseyModule;
+import io.bootique.jersey.JerseyModuleProvider;
+import io.bootique.jetty.JettyModule;
+import io.bootique.junit5.*;
+import org.junit.jupiter.api.Test;
 
-/**
- * @since 2.0
- */
-public class MappedResource<T> {
+@BQTest
+public class JerseyModuleProviderIT {
 
-    private T resource;
-    private Set<String> urlPatterns;
+    @BQTestTool
+    final BQTestFactory testFactory = new BQTestFactory();
 
-    public MappedResource(T resource, Set<String> urlPatterns) {
-        this.resource = resource;
-        this.urlPatterns = urlPatterns;
+    @Test
+    public void testAutoLoadable() {
+        BQModuleProviderChecker.testAutoLoadable(JerseyModuleProvider.class);
     }
 
-    public MappedResource(T resource, String... urlPatterns) {
-        this(resource, new HashSet<>(asList(urlPatterns)));
-    }
-
-    public T getResource() {
-        return resource;
-    }
-
-    public Set<String> getUrlPatterns() {
-        return urlPatterns;
+    @Test
+    public void testModuleDeclaresDependencies() {
+        BQRuntime bqRuntime = testFactory.app().moduleProvider(new JerseyModuleProvider()).createRuntime();
+        BQRuntimeChecker.testModulesLoaded(bqRuntime,
+                JettyModule.class,
+                JerseyModule.class
+        );
     }
 }

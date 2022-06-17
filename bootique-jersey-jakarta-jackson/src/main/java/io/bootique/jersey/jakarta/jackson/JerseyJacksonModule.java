@@ -23,7 +23,7 @@ import io.bootique.BaseModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
 import io.bootique.di.Provides;
-import io.bootique.jersey.jakarta.JerseyModule;
+import io.bootique.jersey.JerseyModule;
 
 import javax.inject.Singleton;
 import java.lang.reflect.Type;

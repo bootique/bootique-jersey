@@ -22,7 +22,7 @@ package io.bootique.jersey.jakarta.client;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.di.DIRuntimeException;
-import io.bootique.jersey.jakarta.JerseyModule;
+import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
