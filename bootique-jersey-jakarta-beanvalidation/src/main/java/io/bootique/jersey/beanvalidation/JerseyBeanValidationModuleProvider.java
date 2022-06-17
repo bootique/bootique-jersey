@@ -16,16 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.jakarta.beanvalidation;
+package io.bootique.jersey.beanvalidation;
 
-import io.bootique.jersey.jakarta.beanvalidation.JerseyBeanValidationModuleProvider;
-import io.bootique.junit5.BQModuleProviderChecker;
-import org.junit.jupiter.api.Test;
+import io.bootique.BQModuleProvider;
+import io.bootique.di.BQModule;
 
-public class JerseyBeanValidationModuleProviderTest {
+/**
+ * @since 2.0
+ */
+public class JerseyBeanValidationModuleProvider implements BQModuleProvider {
 
-    @Test
-    public void testAutoLoadable() {
-        BQModuleProviderChecker.testAutoLoadable(JerseyBeanValidationModuleProvider.class);
+    @Override
+    public BQModule module() {
+        return new JerseyBeanValidationModule();
     }
 }

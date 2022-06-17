@@ -16,18 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.jakarta.beanvalidation;
+package io.bootique.jersey.beanvalidation;
 
-import io.bootique.BQModuleProvider;
-import io.bootique.di.BQModule;
+import io.bootique.ModuleExtender;
+import io.bootique.di.Binder;
+import io.bootique.jersey.JerseyModule;
+import org.glassfish.jersey.server.ServerProperties;
 
 /**
  * @since 2.0
  */
-public class JerseyBeanValidationModuleProvider implements BQModuleProvider {
+public class JerseyBeanValidationModuleExtender extends ModuleExtender<JerseyBeanValidationModuleExtender> {
+
+    public JerseyBeanValidationModuleExtender(Binder binder) {
+        super(binder);
+    }
 
     @Override
-    public BQModule module() {
-        return new JerseyBeanValidationModule();
+    public JerseyBeanValidationModuleExtender initAllExtensions() {
+        return this;
     }
+
+    public JerseyBeanValidationModuleExtender sendErrorsInResponse() {
+        // TODO: should that be configured in YAML, so that the switch can happen between different environments
+        //  dynamically?
+        JerseyModule.extend(binder).setProperty(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+        return this;
+    }
+
 }

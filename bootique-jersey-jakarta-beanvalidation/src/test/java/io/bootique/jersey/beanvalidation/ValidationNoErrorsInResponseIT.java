@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.jakarta.beanvalidation;
+package io.bootique.jersey.beanvalidation;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
