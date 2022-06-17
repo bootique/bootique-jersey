@@ -24,7 +24,7 @@ import com.codahale.metrics.Timer;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.jersey.jakarta.client.HttpClientFactory;
+import io.bootique.jersey.client.HttpClientFactory;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.connector.PortFinder;
 import io.bootique.jetty.junit5.JettyTester;

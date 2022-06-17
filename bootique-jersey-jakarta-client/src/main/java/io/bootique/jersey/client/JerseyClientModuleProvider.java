@@ -17,38 +17,34 @@
  * under the License.
  */
 
-package io.bootique.jersey.jakarta.client.instrumented;
+package io.bootique.jersey.client;
 
+import io.bootique.BQModuleMetadata;
 import io.bootique.BQModuleProvider;
 import io.bootique.di.BQModule;
-import io.bootique.jersey.client.JerseyClientModule;
-import io.bootique.jersey.client.JerseyClientModuleProvider;
-import io.bootique.metrics.MetricsModuleProvider;
-import io.bootique.metrics.health.HealthCheckModuleProvider;
 
-import java.util.Collection;
+import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.Map;
 
-import static java.util.Arrays.asList;
-
-public class JerseyClientInstrumentedModuleProvider implements BQModuleProvider {
+public class JerseyClientModuleProvider implements BQModuleProvider {
 
     @Override
     public BQModule module() {
-        return new JerseyClientInstrumentedModule();
+        return new JerseyClientModule();
     }
 
     @Override
-    public Collection<Class<? extends BQModule>> overrides() {
-        return Collections.singleton(JerseyClientModule.class);
+    public Map<String, Type> configs() {
+        // TODO: config prefix is hardcoded. Refactor away from ConfigModule, and make provider
+        // generate config prefix, reusing it in metadata...
+        return Collections.singletonMap("jerseyclient", HttpClientFactoryFactory.class);
     }
 
     @Override
-    public Collection<BQModuleProvider> dependencies() {
-        return asList(
-                new JerseyClientModuleProvider(),
-                new HealthCheckModuleProvider(),
-                new MetricsModuleProvider()
-        );
+    public BQModuleMetadata.Builder moduleBuilder() {
+        return BQModuleProvider.super
+                .moduleBuilder()
+                .description("Provides configurable JAX-RS HTTP client with pluggable authentication.");
     }
 }

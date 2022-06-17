@@ -26,7 +26,7 @@ import io.bootique.di.Binder;
 import io.bootique.di.Provides;
 import io.bootique.jersey.jakarta.client.instrumented.threshold.JerseyHealthChecks;
 import io.bootique.jersey.jakarta.client.instrumented.threshold.ThresholdHealthCheckFactory;
-import io.bootique.jersey.jakarta.client.JerseyClientModule;
+import io.bootique.jersey.client.JerseyClientModule;
 import io.bootique.metrics.MetricNaming;
 import io.bootique.metrics.health.HealthCheckModule;
 

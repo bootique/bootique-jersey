@@ -21,7 +21,7 @@ package io.bootique.jersey.jakarta.client.instrumented;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import io.bootique.jersey.jakarta.client.log.RequestLoggingFilter;
+import io.bootique.jersey.client.log.RequestLoggingFilter;
 import io.bootique.metrics.MetricNaming;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientResponseContext;

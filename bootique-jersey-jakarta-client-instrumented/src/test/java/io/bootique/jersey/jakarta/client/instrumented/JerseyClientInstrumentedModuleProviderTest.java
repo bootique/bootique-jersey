@@ -20,9 +20,7 @@
 package io.bootique.jersey.jakarta.client.instrumented;
 
 import io.bootique.BQRuntime;
-import io.bootique.jersey.jakarta.client.JerseyClientModule;
-import io.bootique.jersey.jakarta.client.instrumented.JerseyClientInstrumentedModule;
-import io.bootique.jersey.jakarta.client.instrumented.JerseyClientInstrumentedModuleProvider;
+import io.bootique.jersey.client.JerseyClientModule;
 import io.bootique.junit5.*;
 import io.bootique.metrics.MetricsModule;
 import io.bootique.metrics.health.HealthCheckModule;
