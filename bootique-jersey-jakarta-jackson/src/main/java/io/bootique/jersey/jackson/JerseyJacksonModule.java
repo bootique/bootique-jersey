@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.jakarta.jackson;
+package io.bootique.jersey.jackson;
 
 import com.fasterxml.jackson.databind.JsonSerializer;
 import io.bootique.BaseModule;
