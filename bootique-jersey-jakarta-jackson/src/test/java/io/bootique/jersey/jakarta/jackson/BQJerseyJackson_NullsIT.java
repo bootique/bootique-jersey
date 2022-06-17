@@ -22,7 +22,7 @@ package io.bootique.jersey.jakarta.jackson;
 import io.bootique.BQRuntime;
 import io.bootique.di.BQModule;
 import io.bootique.jersey.jakarta.JerseyModule;
-import io.bootique.jetty.jakarta.junit5.JettyTester;
+import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
