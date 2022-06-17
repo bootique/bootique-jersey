@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.bootique.jersey.jakarta.client.instrumented.healthcheck;
+package io.bootique.jersey.client.instrumented.healthcheck;
 
 import io.bootique.metrics.health.HealthCheck;
 import io.bootique.metrics.health.HealthCheckOutcome;

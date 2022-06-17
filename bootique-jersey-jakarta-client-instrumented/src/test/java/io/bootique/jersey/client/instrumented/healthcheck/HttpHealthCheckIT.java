@@ -17,12 +17,13 @@
  * under the License.
  */
 
-package io.bootique.jersey.jakarta.client.instrumented.healthcheck;
+package io.bootique.jersey.client.instrumented.healthcheck;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.jersey.jakarta.client.instrumented.JerseyClientInstrumentedModule;
+import io.bootique.jersey.client.instrumented.JerseyClientInstrumentedModule;
 import io.bootique.jersey.JerseyModule;
+import io.bootique.jersey.client.instrumented.healthcheck.HttpHealthCheck;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.connector.PortFinder;
 import io.bootique.jetty.junit5.JettyTester;

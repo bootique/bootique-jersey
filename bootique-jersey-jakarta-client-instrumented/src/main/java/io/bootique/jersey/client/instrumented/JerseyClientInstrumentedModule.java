@@ -17,15 +17,15 @@
  * under the License.
  */
 
-package io.bootique.jersey.jakarta.client.instrumented;
+package io.bootique.jersey.client.instrumented;
 
 import com.codahale.metrics.MetricRegistry;
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
 import io.bootique.di.Provides;
-import io.bootique.jersey.jakarta.client.instrumented.threshold.JerseyHealthChecks;
-import io.bootique.jersey.jakarta.client.instrumented.threshold.ThresholdHealthCheckFactory;
+import io.bootique.jersey.client.instrumented.threshold.JerseyHealthChecks;
+import io.bootique.jersey.client.instrumented.threshold.ThresholdHealthCheckFactory;
 import io.bootique.jersey.client.JerseyClientModule;
 import io.bootique.metrics.MetricNaming;
 import io.bootique.metrics.health.HealthCheckModule;

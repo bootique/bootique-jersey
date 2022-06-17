@@ -1,1 +1,1 @@
-io.bootique.jersey.jakarta.client.instrumented.JerseyClientInstrumentedModuleProvider
+io.bootique.jersey.client.instrumented.JerseyClientInstrumentedModuleProvider

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.bootique.jersey.jakarta.client.instrumented;
+package io.bootique.jersey.client.instrumented;
 
 import io.bootique.BQModuleProvider;
 import io.bootique.di.BQModule;

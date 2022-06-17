@@ -1,10 +1,10 @@
-package io.bootique.jersey.jakarta.client.instrumented.healthcheck;
+package io.bootique.jersey.client.instrumented.healthcheck;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import io.bootique.jersey.jakarta.client.instrumented.ClientTimingFilter;
-import io.bootique.jersey.jakarta.client.instrumented.threshold.JerseyHealthChecks;
-import io.bootique.jersey.jakarta.client.instrumented.threshold.ThresholdHealthCheckFactory;
+import io.bootique.jersey.client.instrumented.ClientTimingFilter;
+import io.bootique.jersey.client.instrumented.threshold.JerseyHealthChecks;
+import io.bootique.jersey.client.instrumented.threshold.ThresholdHealthCheckFactory;
 import io.bootique.metrics.health.HealthCheckOutcome;
 import io.bootique.metrics.health.HealthCheckRegistry;
 import io.bootique.metrics.health.check.DoubleRangeFactory;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static io.bootique.jersey.jakarta.client.instrumented.threshold.ThresholdHealthCheckFactory.THRESHOLD_REQUESTS_CHECK;
+import static io.bootique.jersey.client.instrumented.threshold.ThresholdHealthCheckFactory.THRESHOLD_REQUESTS_CHECK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RangeHealthCheckTest {

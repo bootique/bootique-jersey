@@ -1,10 +1,10 @@
-package io.bootique.jersey.jakarta.client.instrumented.threshold;
+package io.bootique.jersey.client.instrumented.threshold;
 
 import com.codahale.metrics.MetricRegistry;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
-import io.bootique.jersey.jakarta.client.instrumented.ClientTimingFilter;
-import io.bootique.jersey.jakarta.client.instrumented.JerseyClientInstrumentedModule;
+import io.bootique.jersey.client.instrumented.ClientTimingFilter;
+import io.bootique.jersey.client.instrumented.JerseyClientInstrumentedModule;
 import io.bootique.metrics.health.HealthCheck;
 import io.bootique.metrics.health.check.DoubleRangeFactory;
 import io.bootique.metrics.health.check.ValueRange;
