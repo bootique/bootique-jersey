@@ -23,8 +23,6 @@ import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.di.DIRuntimeException;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.jersey.client.HttpTargets;
-import io.bootique.jersey.client.JerseyClientModuleProvider;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
@@ -45,11 +43,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @BQTest
 public class HttpTargets_TrustStoresIT {
 
-    private static final String CLIENT_TRUST_STORE = "classpath:io/bootique/jersey/jakarta/client/testkeystore_default_password";
+    private static final String CLIENT_TRUST_STORE = "classpath:io/bootique/jersey/client/testkeystore_default_password";
 
     @BQApp
     static final BQRuntime app = Bootique
-            .app("-s", "-c", "classpath:io/bootique/jersey/jakarta/client/TrustStoresIT_server.yml")
+            .app("-s", "-c", "classpath:io/bootique/jersey/client/TrustStoresIT_server.yml")
             .modules(JettyModule.class, JerseyModule.class)
             .moduleProvider(new LogbackModuleProvider())
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
