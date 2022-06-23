@@ -55,6 +55,9 @@
         <activation2.version>2.0.1</activation2.version>
         <glassfish.jaxb3.version>3.0.1</glassfish.jaxb3.version>
         <jaxb3.version>3.0.1</jaxb3.version>
+
+        <!-- TODO: upgrade to modules parent 3.0.14 that maintains this version -->
+        <jersey2.version>2.36</jersey2.version>
     </properties>
 
     <scm>

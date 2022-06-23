@@ -3,6 +3,7 @@
 * #59 Upgrade Jersey 2 to 2.35
 * #60 Provide Jersey 3 (-jakarta) modules
 * #61 Prevent resource registration warning
+* #63 Upgrade Jersey 2.x to 2.36
 
 ## 2.0.B1
 
