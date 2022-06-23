@@ -38,6 +38,17 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+                <artifactId>jackson-jakarta-rs-base</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+                <artifactId>jackson-jakarta-rs-json-provider</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-multipart</artifactId>
                 <version>${jersey3.version}</version>
@@ -51,20 +62,12 @@
                 <version>${jersey3.version}</version>
                 <exclusions>
                     <exclusion>
-                        <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                        <artifactId>jackson-jaxrs-base</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                        <artifactId>jackson-jaxrs-json-provider</artifactId>
-                    </exclusion>
-                    <exclusion>
                         <groupId>com.fasterxml.jackson.core</groupId>
-                        <artifactId>jackson-annotations</artifactId>
+                        <artifactId>*</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>com.fasterxml.jackson.module</groupId>
-                        <artifactId>jackson-module-jaxb-annotations</artifactId>
+                        <artifactId>*</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -73,21 +76,10 @@
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
-            <!-- Transitive dependency of jersey-media-json-jackson -->
             <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-jaxb-annotations</artifactId>
+                <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
                 <version>${jackson.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>jakarta.activation</groupId>
-                        <artifactId>jakarta.activation-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>jakarta.xml.bind</groupId>
-                        <artifactId>jakarta.xml.bind-api</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.bootique.jetty</groupId>
@@ -114,31 +106,27 @@
         <!--
          Dependency resolution is the heart of this module. We need to ensure that Jersey's Jackson libraries
          connected are compatible with Bootique Jackson. So a bunch of things excluded from
-         "jersey-media-json-jackson" in the parent pom are readded here explicitly.
+         "jersey-media-json-jackson" in the parent pom are re-added here explicitly.
         -->
         <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-base</artifactId>
-            <scope>compile</scope>
+            <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+            <artifactId>jackson-jakarta-rs-base</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <scope>compile</scope>
+            <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+            <artifactId>jackson-jakarta-rs-json-provider</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
         </dependency>
 
         <!-- Unit test dependencies -->
