@@ -26,8 +26,8 @@ import io.bootique.di.Injector;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.xml.bind.DatatypeConverter;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;

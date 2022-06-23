@@ -24,10 +24,10 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.xml.bind.annotation.XmlAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
