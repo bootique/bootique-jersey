@@ -25,7 +25,7 @@
     <parent>
         <groupId>io.bootique.modules.parent</groupId>
         <artifactId>bootique-modules-parent</artifactId>
-        <version>3.0.13</version>
+        <version>3.0.14</version>
     </parent>
 
     <groupId>io.bootique.jersey</groupId>
@@ -55,9 +55,6 @@
         <activation2.version>2.0.1</activation2.version>
         <glassfish.jaxb3.version>3.0.1</glassfish.jaxb3.version>
         <jaxb3.version>3.0.1</jaxb3.version>
-
-        <!-- TODO: upgrade to modules parent 3.0.14 that maintains this version -->
-        <jersey2.version>2.36</jersey2.version>
     </properties>
 
     <scm>
@@ -73,11 +70,25 @@
                 <artifactId>bootique</artifactId>
                 <version>${bootique.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
