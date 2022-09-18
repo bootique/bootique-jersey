@@ -29,11 +29,17 @@ This provides the necessary API to create REST services and consume someone else
 Integrates JAX-RS server as a servlet in Bootique. See usage example
 [bootique-rest-demo](https://github.com/bootique-examples/bootique-rest-demo). A few quick tips:
 
+
+_Jakarta vs JavaEE: Bootique 3.x supports both the legacy JavaEE and the newer Jakarta versions of Jersey. Each 
+Bootique Jersey module is shipped in two flavors (with and without `-jakarta` in the name). The examples below a based 
+on the newer Jakarta modules. But It is your choice which one to use. The API of both is identical (except for the 
+import package)._
+
 Add Jersey server capabilities to your Bootique app:
 ```xml
 <dependency>
 	<groupId>io.bootique.jersey</groupId>
-	<artifactId>bootique-jersey</artifactId>
+	<artifactId>bootique-jersey-jakarta</artifactId>
 </dependency>
 ```
 
@@ -50,7 +56,7 @@ Add JSON serialization capabilities:
 ```xml
 <dependency>
 	<groupId>io.bootique.jersey</groupId>
-	<artifactId>bootique-jersey-jackson</artifactId>
+	<artifactId>bootique-jersey-jakarta-jackson</artifactId>
 </dependency>
 ```
 
@@ -84,7 +90,7 @@ Add the client module to your Bootique app:
 ```xml
 <dependency>
 	<groupId>io.bootique.jersey</groupId>
-	<artifactId>bootique-jersey-client</artifactId>
+	<artifactId>bootique-jersey-jakarta-client</artifactId>
 </dependency>
 ```
 
@@ -93,7 +99,7 @@ Or if you need clients with health checks and metrics:
 ```xml
 <dependency>
 	<groupId>io.bootique.jersey</groupId>
-	<artifactId>bootique-jersey-client-instrumented</artifactId>
+	<artifactId>bootique-jersey-jakarta-client-instrumented</artifactId>
 </dependency>
 ```
 
