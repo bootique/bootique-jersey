@@ -40,8 +40,9 @@ Add Jersey server capabilities to your Bootique app:
 Publish individual endpoints:
 ```java
 public void configure(Binder binder) {
-    // use any API class from the package to include the entire package
-    JerseyModule.extend(binder).addResource(MyApi.class);
+    JerseyModule.extend(binder)
+        .addResource(MyApi1.class)
+        .addResource(MyApi2.class);
 }
 ```
 
