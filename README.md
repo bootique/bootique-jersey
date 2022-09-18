@@ -77,9 +77,9 @@ server authentication (BASIC, OAuth2, etc.). Allows to configure multiple
 client runtime parameters, as well as define server URL endpoints.
 Implementation is built on top of Jersey and Grizzly connector.
 
-### Quick Start
+### Basic Client Usage
 
-Add the module to your Bootique app:
+Add the client module to your Bootique app:
 
 ```xml
 <dependency>
@@ -88,7 +88,7 @@ Add the module to your Bootique app:
 </dependency>
 ```
 
-Or if you want HTTPS clients with health checks and metrics:
+Or if you need clients with health checks and metrics:
 
 ```xml
 <dependency>
@@ -113,11 +113,7 @@ public void doSomething() {
 }
 ```
 
-### Configuring Connection Parameters
-
-You can specify a number of runtime parameters for your HTTP clients via
-the app ```.yml``` (or any other Bootique configuration mechanism):
-
+Optionally, configure client parameters:
 ```yml
 jerseyclient:
   followRedirects: true
@@ -126,7 +122,7 @@ jerseyclient:
   asyncThreadPoolSize: 10
 ```
 
-### Mapping URL Targets
+### URL Targets
 
 In the example above we injected `HttpClientFactory` (that produced instances
 of JAX RS `Client`), and hardcoded the endpoint URL in Java. Instead you
