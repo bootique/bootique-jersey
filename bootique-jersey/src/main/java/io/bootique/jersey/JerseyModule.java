@@ -113,8 +113,6 @@ public class JerseyModule extends ConfigModule {
         dynamicFeatures.forEach(config::register);
 
         config.addProperties(properties);
-
-        // TODO: make this pluggable?
         config.register(ResourceModelDebugger.class);
 
         return config;

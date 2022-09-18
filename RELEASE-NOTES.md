@@ -1,5 +1,6 @@
 ## 3.0.M1
 
+* #32 Expose application REST resources
 * #59 Upgrade Jersey 2 to 2.35
 * #60 Provide Jersey 3 (-jakarta) modules
 * #61 Prevent resource registration warning

@@ -59,6 +59,15 @@ public void configure(Binder binder) {
 }
 ```
 
+Enable debug output of the application resources:
+
+```yaml
+log:
+  loggers:
+    io.bootique.jersey:
+      level: debug # or "trace" for even more detailed output
+```
+
 ## Jersey Client
 
 Integrates JAX-RS-based HTTP client in Bootique with support for various types of
