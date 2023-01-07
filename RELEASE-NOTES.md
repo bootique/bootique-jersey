@@ -1,3 +1,7 @@
+## 3.0.M2
+
+* #65 Upgrade to Jersey 2.38 / 3.0.9
+
 ## 3.0.M1
 
 * #32 Expose application REST resources
