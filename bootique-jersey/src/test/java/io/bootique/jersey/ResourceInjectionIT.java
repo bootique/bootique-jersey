@@ -21,6 +21,7 @@ package io.bootique.jersey;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
+import io.bootique.di.BQInject;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -45,6 +47,8 @@ public class ResourceInjectionIT {
 
     private static final String TEST_PROPERTY = "bq.test.label";
     private static final InjectedService service = new InjectedService();
+    private static final InjectedServiceInterface serviceA = new InjectedServiceImplA();
+    private static final InjectedServiceInterface serviceB = new InjectedServiceImplB();
 
     static final JettyTester jetty = JettyTester.create();
 
@@ -52,6 +56,8 @@ public class ResourceInjectionIT {
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
             .module(b -> b.bind(InjectedService.class).toInstance(service))
+            .module(b -> b.bind(InjectedServiceInterface.class, "A").toInstance(serviceA))
+            .module(b -> b.bind(InjectedServiceInterface.class, "B").toInstance(serviceB))
             .module(b -> b.bind(UnInjectedResource.class).toProviderInstance(() -> new UnInjectedResource(service)))
             .module(b -> JerseyModule.extend(b)
                     .addFeature(ctx -> {
@@ -59,6 +65,7 @@ public class ResourceInjectionIT {
                         return false;
                     })
                     .addResource(FieldInjectedResource.class)
+                    .addResource(NamedFieldInjectedResource.class)
                     .addResource(ConstructorInjectedResource.class)
                     .addResource(UnInjectedResource.class))
             .module(jetty.moduleReplacingConnectors())
@@ -80,6 +87,20 @@ public class ResourceInjectionIT {
         Response r2 = jetty.getTarget().path("f").request().get();
         assertEquals(Status.OK.getStatusCode(), r2.getStatus());
         assertEquals("f_2_x", r2.readEntity(String.class));
+        r2.close();
+    }
+
+    @Test
+    public void testNamedFieldInjected() {
+
+        Response r1 = jetty.getTarget().path("nf").request().get();
+        assertEquals(Status.OK.getStatusCode(), r1.getStatus());
+        assertEquals("nf_1_2_x", r1.readEntity(String.class));
+        r1.close();
+
+        Response r2 = jetty.getTarget().path("nf").request().get();
+        assertEquals(Status.OK.getStatusCode(), r2.getStatus());
+        assertEquals("nf_3_4_x", r2.readEntity(String.class));
         r2.close();
     }
 
@@ -127,6 +148,27 @@ public class ResourceInjectionIT {
         }
     }
 
+    @Path("/nf")
+    @Produces(MediaType.TEXT_PLAIN)
+    public static class NamedFieldInjectedResource {
+
+        @Inject
+        @Named("A")
+        private InjectedServiceInterface serviceA;
+
+        @Inject
+        @Named("B")
+        private InjectedServiceInterface serviceB;
+
+        @Context
+        private Configuration config;
+
+        @GET
+        public String get() {
+            return "nf_" + serviceA.getNext() + "_" + serviceA.getNext()+ "_" + config.getProperty(TEST_PROPERTY);
+        }
+    }
+
     @Path("/c")
     @Produces(MediaType.TEXT_PLAIN)
     public static class ConstructorInjectedResource {
@@ -167,6 +209,37 @@ public class ResourceInjectionIT {
     }
 
     public static class InjectedService {
+
+        private AtomicInteger atomicInt = new AtomicInteger();
+
+        public void reset() {
+            atomicInt.set(0);
+        }
+
+        public int getNext() {
+            return atomicInt.incrementAndGet();
+        }
+    }
+
+    public static interface InjectedServiceInterface {
+        public void reset();
+        public int getNext();
+    }
+
+    public static class InjectedServiceImplA implements InjectedServiceInterface {
+
+        private AtomicInteger atomicInt = new AtomicInteger();
+
+        public void reset() {
+            atomicInt.set(0);
+        }
+
+        public int getNext() {
+            return atomicInt.incrementAndGet();
+        }
+    }
+
+    public static class InjectedServiceImplB implements InjectedServiceInterface {
 
         private AtomicInteger atomicInt = new AtomicInteger();
 
