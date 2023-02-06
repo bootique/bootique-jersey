@@ -1,6 +1,7 @@
 ## 3.0.M2
 
 * #65 Upgrade to Jersey 2.38 / 3.0.9
+* #67 ParamConverter for LocalDate, LocalTime, LocalDateTime
 
 ## 3.0.M1
 

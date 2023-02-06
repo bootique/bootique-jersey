@@ -20,15 +20,12 @@
 package io.bootique.jersey;
 
 import io.bootique.ModuleExtender;
-import io.bootique.di.Binder;
-import io.bootique.di.Key;
-import io.bootique.di.MapBuilder;
-import io.bootique.di.SetBuilder;
-import io.bootique.di.TypeLiteral;
+import io.bootique.di.*;
 
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Feature;
+import javax.ws.rs.ext.ParamConverter;
 import java.util.Map;
 
 public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
@@ -40,6 +37,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     private SetBuilder<MappedResource> mappedResources;
     private MapBuilder<String, Object> resourcesByPath;
     private MapBuilder<String, Object> properties;
+    private MapBuilder<Class<?>, ParamConverter> paramConverters;
 
     JerseyModuleExtender(Binder binder) {
         super(binder);
@@ -53,6 +51,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         contributeResourcesByPath();
         contributeMappedResources();
         contributeProperties();
+        contributeParamConverters();
 
         return this;
     }
@@ -64,6 +63,22 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
 
     public JerseyModuleExtender addPackage(Class<?> anyClassInPackage) {
         contributePackages().addInstance(anyClassInPackage.getPackage());
+        return this;
+    }
+
+    /**
+     * @since 3.0
+     */
+    public <T> JerseyModuleExtender addParamConverter(Class<T> valueType, Class<? extends ParamConverter<T>> converterType) {
+        contributeParamConverters().put(valueType, converterType);
+        return this;
+    }
+
+    /**
+     * @since 3.0
+     */
+    public <T> JerseyModuleExtender addParamConverter(Class<T> valueType, ParamConverter<T> converterType) {
+        contributeParamConverters().putInstance(valueType, converterType);
         return this;
     }
 
@@ -245,5 +260,12 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
             packages = newSet(Package.class, JerseyResource.class);
         }
         return packages;
+    }
+
+    protected MapBuilder<Class<?>, ParamConverter> contributeParamConverters() {
+        if (paramConverters == null) {
+            paramConverters = newMap(new TypeLiteral<Class<?>>() {}, TypeLiteral.of(ParamConverter.class));
+        }
+        return paramConverters;
     }
 }

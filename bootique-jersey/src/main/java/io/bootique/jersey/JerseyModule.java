@@ -22,6 +22,10 @@ package io.bootique.jersey;
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.*;
+import io.bootique.jersey.jaxrs.LocalDateConverter;
+import io.bootique.jersey.jaxrs.LocalDateTimeConverter;
+import io.bootique.jersey.jaxrs.LocalTimeConverter;
+import io.bootique.jersey.jaxrs.MappedParamConvertersProvider;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.MappedServlet;
 import org.glassfish.hk2.api.InjectionResolver;
@@ -36,6 +40,12 @@ import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.ext.ParamConverter;
+import javax.ws.rs.ext.ParamConverterProvider;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -74,6 +84,7 @@ public class JerseyModule extends ConfigModule {
             @JerseyResource Set<Package> packages,
             @Named(RESOURCES_BY_PATH_BINDING) Map<String, Object> resourcesByPath,
             Set<MappedResource> mappedResources,
+            Map<Class<?>, ParamConverter> paramConverters,
             @JerseyResource Map<String, Object> properties) {
 
         ResourceConfig config = createResourceConfig(injector);
@@ -109,6 +120,9 @@ public class JerseyModule extends ConfigModule {
             return true;
         });
 
+        ParamConverterProvider converterProvider = createParamConvertersProvider(paramConverters);
+        config.register(converterProvider);
+
         features.forEach(config::register);
         dynamicFeatures.forEach(config::register);
 
@@ -116,6 +130,18 @@ public class JerseyModule extends ConfigModule {
         config.register(ResourceModelDebugger.class);
 
         return config;
+    }
+
+    protected ParamConverterProvider createParamConvertersProvider(Map<Class<?>, ParamConverter> paramConverters) {
+
+        // start with standard converters, and allow customer overrides of those
+        Map<Class<?>, ParamConverter> allConverters = new HashMap<>();
+        allConverters.put(LocalDate.class, new LocalDateConverter());
+        allConverters.put(LocalTime.class, new LocalTimeConverter());
+        allConverters.put(LocalDateTime.class, new LocalDateTimeConverter());
+
+        allConverters.putAll(paramConverters);
+        return new MappedParamConvertersProvider(allConverters);
     }
 
     protected ResourceConfig createResourceConfig(Injector injector) {

@@ -24,6 +24,7 @@ import io.bootique.di.*;
 import jakarta.ws.rs.container.DynamicFeature;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.ext.ParamConverter;
 
 import java.util.Map;
 
@@ -36,6 +37,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     private SetBuilder<MappedResource> mappedResources;
     private MapBuilder<String, Object> resourcesByPath;
     private MapBuilder<String, Object> properties;
+    private MapBuilder<Class<?>, ParamConverter> paramConverters;
 
     JerseyModuleExtender(Binder binder) {
         super(binder);
@@ -49,6 +51,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         contributeResourcesByPath();
         contributeMappedResources();
         contributeProperties();
+        contributeParamConverters();
 
         return this;
     }
@@ -60,6 +63,16 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
 
     public JerseyModuleExtender addPackage(Class<?> anyClassInPackage) {
         contributePackages().addInstance(anyClassInPackage.getPackage());
+        return this;
+    }
+
+    public <T> JerseyModuleExtender addParamConverter(Class<T> valueType, Class<? extends ParamConverter<T>> converterType) {
+        contributeParamConverters().put(valueType, converterType);
+        return this;
+    }
+
+    public <T> JerseyModuleExtender addParamConverter(Class<T> valueType, ParamConverter<T> converterType) {
+        contributeParamConverters().putInstance(valueType, converterType);
         return this;
     }
 
@@ -241,5 +254,12 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
             packages = newSet(Package.class, JerseyResource.class);
         }
         return packages;
+    }
+
+    protected MapBuilder<Class<?>, ParamConverter> contributeParamConverters() {
+        if (paramConverters == null) {
+            paramConverters = newMap(new TypeLiteral<Class<?>>() {}, TypeLiteral.of(ParamConverter.class));
+        }
+        return paramConverters;
     }
 }
