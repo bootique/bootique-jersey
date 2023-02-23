@@ -22,10 +22,7 @@ package io.bootique.jersey;
 import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.*;
-import io.bootique.jersey.jaxrs.LocalDateConverter;
-import io.bootique.jersey.jaxrs.LocalDateTimeConverter;
-import io.bootique.jersey.jaxrs.LocalTimeConverter;
-import io.bootique.jersey.jaxrs.MappedParamConvertersProvider;
+import io.bootique.jersey.jaxrs.*;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.MappedServlet;
 import jakarta.ws.rs.container.DynamicFeature;
@@ -40,9 +37,7 @@ import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -139,6 +134,8 @@ public class JerseyModule extends ConfigModule {
         allConverters.put(LocalDate.class, new LocalDateConverter());
         allConverters.put(LocalTime.class, new LocalTimeConverter());
         allConverters.put(LocalDateTime.class, new LocalDateTimeConverter());
+        allConverters.put(Year.class, new YearConverter());
+        allConverters.put(YearMonth.class, new YearMonthConverter());
 
         allConverters.putAll(paramConverters);
         return new MappedParamConvertersProvider(allConverters);

@@ -32,9 +32,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 
 @BQTest
 public class ParamConvertersIT {
@@ -47,6 +45,18 @@ public class ParamConvertersIT {
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
+
+    @Test
+    public void testYearConverter() {
+        Response r = jetty.getTarget().path("year/2019").request().get();
+        JettyTester.assertOk(r).assertContent("[2019]");
+    }
+
+    @Test
+    public void testYearMonthConverter() {
+        Response r = jetty.getTarget().path("year-month/2019-05").request().get();
+        JettyTester.assertOk(r).assertContent("[2019-05]");
+    }
 
     @Test
     public void testDateConverter() {
@@ -69,6 +79,20 @@ public class ParamConvertersIT {
     @Path("/")
     public static class Resource {
 
+        @GET
+        @Produces(MediaType.TEXT_PLAIN)
+        @Path("year/{year}")
+        public String getY(@PathParam("year") Year year) {
+            return "[" + year + "]";
+        }
+
+        @GET
+        @Produces(MediaType.TEXT_PLAIN)
+        @Path("year-month/{year-month}")
+        public String getYM(@PathParam("year-month") YearMonth yearMonth) {
+            return "[" + yearMonth + "]";
+        }
+        
         @GET
         @Produces(MediaType.TEXT_PLAIN)
         @Path("date/{date}")
