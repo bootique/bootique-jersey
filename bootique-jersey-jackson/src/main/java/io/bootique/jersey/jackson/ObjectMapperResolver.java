@@ -32,7 +32,7 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class ObjectMapperResolver implements ContextResolver<ObjectMapper> {
 
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
     public ObjectMapperResolver(ObjectMapper mapper) {
         this.mapper = mapper;
