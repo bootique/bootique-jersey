@@ -21,11 +21,12 @@ package io.bootique.jersey.client;
 
 import javax.ws.rs.client.WebTarget;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class DefaultHttpTargets implements HttpTargets {
 
-    private Map<String, Supplier<WebTarget>> namedTargets;
+    private final Map<String, Supplier<WebTarget>> namedTargets;
 
     public DefaultHttpTargets(Map<String, Supplier<WebTarget>> namedTargets) {
         this.namedTargets = namedTargets;
@@ -44,5 +45,10 @@ public class DefaultHttpTargets implements HttpTargets {
         }
 
         return supplier;
+    }
+
+    @Override
+    public Set<String> getTargetNames() {
+        return namedTargets.keySet();
     }
 }
