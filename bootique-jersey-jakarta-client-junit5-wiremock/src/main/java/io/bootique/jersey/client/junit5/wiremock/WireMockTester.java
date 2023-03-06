@@ -133,7 +133,8 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
     }
 
     public String getUrl() {
-        return ensureRunning().url("");
+        // do not use WireMockServer.url(""), as it forces a slash even for root URLs
+        return ensureRunning().baseUrl();
     }
 
     /**
