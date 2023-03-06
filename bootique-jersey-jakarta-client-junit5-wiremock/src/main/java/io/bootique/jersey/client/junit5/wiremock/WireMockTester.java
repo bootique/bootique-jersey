@@ -125,21 +125,21 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
      */
     public BQModule moduleWithTestTarget(String targetName) {
         String propName = "bq.jerseyclient.targets." + targetName + ".url";
-        return b -> BQCoreModule.extend(b).setProperty(propName, url());
+        return b -> BQCoreModule.extend(b).setProperty(propName, getUrl());
     }
 
-    public Integer port() {
+    public Integer getPort() {
         return ensureRunning().port();
     }
 
-    public String url() {
+    public String getUrl() {
         return ensureRunning().url("");
     }
 
     /**
      * The name of the tester-specific folder located in the wiremock scenarios base folder.
      */
-    public String folder() {
+    public String getFolder() {
         return folder;
     }
 
