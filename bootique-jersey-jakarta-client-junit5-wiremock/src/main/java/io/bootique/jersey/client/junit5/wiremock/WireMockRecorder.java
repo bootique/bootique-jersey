@@ -21,7 +21,6 @@ package io.bootique.jersey.client.junit5.wiremock;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.common.SingleRootFileSource;
-import com.github.tomakehurst.wiremock.core.MappingsSaver;
 import com.github.tomakehurst.wiremock.core.WireMockApp;
 import com.github.tomakehurst.wiremock.recording.RecordSpecBuilder;
 import com.github.tomakehurst.wiremock.recording.SnapshotRecordResult;
@@ -62,14 +61,9 @@ public class WireMockRecorder {
     }
 
     private static void saveScenarios(List<StubMapping> scenarios, String rootDir, ExtensionContext context) throws IOException {
-        if (scenarios.isEmpty()) {
-            return;
+        if (!scenarios.isEmpty()) {
+            new JsonFileMappingsSource(prepareRecordingDir(rootDir, context)).save(scenarios);
         }
-
-        FileSource recordingDir = prepareRecordingDir(rootDir, context);
-        MappingsSaver src = new JsonFileMappingsSource(recordingDir);
-
-        src.save(scenarios);
     }
 
     private static FileSource prepareRecordingDir(String rootDir, ExtensionContext context) throws IOException {
@@ -81,8 +75,8 @@ public class WireMockRecorder {
             Files.createDirectories(Paths.get(recordingsPath.toString()));
         }
 
+        // cleanup old files
         try (Stream<Path> stream = Files.list(recordingsPath)) {
-            // cleanup old files
             stream.map(Path::toFile).forEach(File::delete);
         }
 
