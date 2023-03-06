@@ -43,9 +43,9 @@ import java.util.stream.Stream;
  */
 public class WireMockRecorder {
 
-    public static void startRecording(WireMockServer wiremock, String targetUrl) {
+    public static void startRecording(WireMockServer wiremock, String targetUrlBase) {
         wiremock.startRecording(new RecordSpecBuilder()
-                .forTarget(targetUrl)
+                .forTarget(targetUrlBase)
                 .extractTextBodiesOver(9_999_999)
                 .extractBinaryBodiesOver(9_999_999)
                 .ignoreRepeatRequests()

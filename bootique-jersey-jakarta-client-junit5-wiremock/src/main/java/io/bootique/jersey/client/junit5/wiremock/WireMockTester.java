@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * A Bootique test tool that customises and manages Wiremock lifecycle: server start/stop, recording start/stop.
@@ -54,8 +53,7 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
     public static final String RECORDING_PROPERTY = "bq.wiremock.recording";
     private static final boolean IS_RECORDING_ENABLED = System.getProperty(RECORDING_PROPERTY) != null;
 
-    private final String targetUrl;
-    private final String folder;
+    private final WireMockTesterUrl url;
     private WireMockConfiguration config;
     private File filesRoot;
 
@@ -65,12 +63,11 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
      * @param targetUrl url of resource to mock, for example: "https://www.example.com/foo/bar"
      */
     public static WireMockTester tester(String targetUrl) {
-        return new WireMockTester(targetUrl);
+        return new WireMockTester(WireMockTesterUrl.of(targetUrl));
     }
 
-    protected WireMockTester(String targetUrl) {
-        this.targetUrl = Objects.requireNonNull(targetUrl);
-        this.folder = convertToFolderName(targetUrl);
+    protected WireMockTester(WireMockTesterUrl url) {
+        this.url = url;
     }
 
     /**
@@ -132,16 +129,18 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
         return ensureRunning().port();
     }
 
+    /**
+     * Returns the target URL of the tester rewritten to access the WireMock proxy.
+     */
     public String getUrl() {
-        // do not use WireMockServer.url(""), as it forces a slash even for root URLs
-        return ensureRunning().baseUrl();
+        return ensureRunning().baseUrl() + url.getPath();
     }
 
     /**
      * The name of the tester-specific folder located in the wiremock scenarios base folder.
      */
     public String getFolder() {
-        return folder;
+        return url.getTesterFolder();
     }
 
     private WireMockServer ensureRunning() {
@@ -169,7 +168,7 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
 
         // TODO: the default must be portable and should not assume Maven project structure
         File filesRoot = this.filesRoot != null ? this.filesRoot : DEFAULT_FILES_ROOT;
-        File testerRoot = new File(filesRoot, folder);
+        File testerRoot = new File(filesRoot, url.getTesterFolder());
 
         return WireMockConfiguration
                 .wireMockConfig()
@@ -191,7 +190,8 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
     @Override
     public void beforeMethod(BQTestScope scope, ExtensionContext context) {
         if (IS_RECORDING_ENABLED) {
-            WireMockRecorder.startRecording(wiremockServer, targetUrl);
+            // note that we are recording relative to the "baseUrl", not the full target URL
+            WireMockRecorder.startRecording(wiremockServer, url.getBaseUrl());
         }
     }
 
@@ -200,37 +200,5 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
         if (IS_RECORDING_ENABLED) {
             WireMockRecorder.stopRecording(wiremockServer, context);
         }
-    }
-
-    static String convertToFolderName(String url) {
-        int len = url.length();
-        StringBuilder out = new StringBuilder(len);
-
-        boolean wasReplaced = false;
-        for (int i = 0; i < len; i++) {
-            char c = url.charAt(i);
-            switch (c) {
-                case '.':
-                case ':':
-                case '/':
-                case '?':
-                case '&':
-
-                    // squash repeating _'s
-                    if (!wasReplaced) {
-                        out.append('_');
-                        wasReplaced = true;
-                    }
-
-                    break;
-
-                default:
-                    wasReplaced = false;
-                    out.append(c);
-                    break;
-            }
-        }
-
-        return out.toString();
     }
 }

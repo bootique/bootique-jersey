@@ -47,8 +47,8 @@ public class WireMockTester_ServerOnlyIT {
     @Test
     public void testTarget() {
         WebTarget bqOnGitHub = app.getInstance(HttpTargets.class).newTarget("t1");
-        Response response = bqOnGitHub.request().get();
-        JettyTester.assertOk(response)
+        Response r1 = bqOnGitHub.request().get();
+        JettyTester.assertOk(r1)
                 .assertContentType(MediaType.TEXT_HTML_TYPE)
                 .assertContent(c -> assertTrue(c.contains("<title>GitHub")));
     }
@@ -58,6 +58,27 @@ public class WireMockTester_ServerOnlyIT {
         WebTarget bqOnGitHub = app.getInstance(HttpTargets.class).newTarget("t1").path("bootique");
         Response response = bqOnGitHub.request().get();
         JettyTester.assertOk(response)
+                .assertContentType(MediaType.TEXT_HTML_TYPE)
+                .assertContent(c -> assertTrue(c.contains("<title>Bootique Project")));
+    }
+
+    @Test
+    public void testTwoRequestsSameMethod() {
+        WebTarget bqOnGitHub = app.getInstance(HttpTargets.class).newTarget("t1");
+        Response r1 = bqOnGitHub.request().get();
+        JettyTester.assertOk(r1)
+                .assertContentType(MediaType.TEXT_HTML_TYPE)
+                .assertContent(c -> assertTrue(c.contains("<title>GitHub")));
+
+        // make sure we can run another request from the same test method
+
+        Response r2 = bqOnGitHub.request().get();
+        JettyTester.assertOk(r2)
+                .assertContentType(MediaType.TEXT_HTML_TYPE)
+                .assertContent(c -> assertTrue(c.contains("<title>GitHub")));
+
+        Response r3 = bqOnGitHub.path("bootique").request().get();
+        JettyTester.assertOk(r3)
                 .assertContentType(MediaType.TEXT_HTML_TYPE)
                 .assertContent(c -> assertTrue(c.contains("<title>Bootique Project")));
     }

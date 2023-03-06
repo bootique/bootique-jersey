@@ -36,22 +36,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class WireMockTester_QueryIT {
 
     @BQTestTool
-    static final WireMockTester search = WireMockTester.tester("https://www.google.com/search");
+    static final WireMockTester youtube = WireMockTester.tester("https://www.youtube.com/watch");
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
             .autoLoadModules()
-            .module(search.moduleWithTestTarget("search"))
+            .module(youtube.moduleWithTestTarget("youtube"))
             .createRuntime();
 
     @Test
     public void testQuery() {
-        WebTarget search = app.getInstance(HttpTargets.class).newTarget("search")
-                .queryParam("q", "bootique");
+        WebTarget youtube = app.getInstance(HttpTargets.class)
+                .newTarget("youtube")
+                // That's an old Bootique video. Hopefully it stays stable
+                .queryParam("v", "o6kSEG4v3VE");
 
-        Response r0 = search.request().get();
+        Response r0 = youtube.request().get();
         JettyTester.assertOk(r0)
                 .assertContentType(MediaType.TEXT_HTML_TYPE)
-                .assertContent(c -> assertTrue(c.contains("<title>bootique ")));
+                .assertContent(c -> assertTrue(c.contains("<title>No container:")));
     }
 }
