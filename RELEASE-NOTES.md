@@ -3,6 +3,7 @@
 * #65 Upgrade to Jersey 2.38 / 3.0.9
 * #67 ParamConverter for LocalDate, LocalTime, LocalDateTime
 * #68 ParamConverter for Year, YearMonth
+* #69 Integrate Wiremock for testing apps using "jersey-client"
 
 ## 3.0.M1
 
