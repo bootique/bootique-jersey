@@ -18,7 +18,6 @@
  */
 package io.bootique.jersey.client.junit5.wiremock;
 
-import io.bootique.BQCoreModule;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.client.HttpTargets;
@@ -45,8 +44,8 @@ public class WireMockTester_MultipleIT {
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
             .autoLoadModules()
-            .module(b -> BQCoreModule.extend(b).setProperty("bq.jerseyclient.targets.bqOnGitHub.url", bqOnGithub.url()))
-            .module(b -> BQCoreModule.extend(b).setProperty("bq.jerseyclient.targets.google.url", google.url()))
+            .module(bqOnGithub.moduleWithTestTarget("bqOnGitHub"))
+            .module(google.moduleWithTestTarget("google"))
             .createRuntime();
 
     @Test

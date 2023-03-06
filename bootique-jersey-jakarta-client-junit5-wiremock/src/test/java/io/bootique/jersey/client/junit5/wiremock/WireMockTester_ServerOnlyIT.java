@@ -18,7 +18,6 @@
  */
 package io.bootique.jersey.client.junit5.wiremock;
 
-import io.bootique.BQCoreModule;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.client.HttpTargets;
@@ -42,7 +41,7 @@ public class WireMockTester_ServerOnlyIT {
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
             .autoLoadModules()
-            .module(b -> BQCoreModule.extend(b).setProperty("bq.jerseyclient.targets.t1.url", tester.url()))
+            .module(tester.moduleWithTestTarget("t1"))
             .createRuntime();
 
     @Test

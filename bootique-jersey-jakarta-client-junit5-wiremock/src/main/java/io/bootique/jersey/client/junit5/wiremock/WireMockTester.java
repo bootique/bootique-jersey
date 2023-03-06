@@ -21,6 +21,8 @@ package io.bootique.jersey.client.junit5.wiremock;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.common.Slf4jNotifier;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import io.bootique.BQCoreModule;
+import io.bootique.di.BQModule;
 import io.bootique.junit5.BQTestScope;
 import io.bootique.junit5.scope.BQAfterMethodCallback;
 import io.bootique.junit5.scope.BQAfterScopeCallback;
@@ -113,6 +115,17 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
         if (wiremockServer != null) {
             wiremockServer.shutdown();
         }
+    }
+
+    /**
+     * Returns a Bootique module that can be used to configure a named Jersey client "target" in test {@link io.bootique.BQRuntime}.
+     * This method can be used to initialize one or more BQRuntimes in a test class, so that they can share the Wiremock instance.
+     *
+     * @param targetName the name of the mapped target in {@link io.bootique.jersey.client.HttpTargets}.
+     */
+    public BQModule moduleWithTestTarget(String targetName) {
+        String propName = "bq.jerseyclient.targets." + targetName + ".url";
+        return b -> BQCoreModule.extend(b).setProperty(propName, url());
     }
 
     public Integer port() {
