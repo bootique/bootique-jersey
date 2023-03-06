@@ -70,9 +70,10 @@ public class WireMockRecorder {
         String testClass = context.getRequiredTestClass().getName();
         String testMethod = context.getRequiredTestMethod().getName();
         Path recordingsPath = Paths.get(rootDir, WireMockApp.MAPPINGS_ROOT, testClass, testMethod);
+
+        // create path if it does not exist
         if (!Files.exists(recordingsPath)) {
-            // create path if not exists
-            Files.createDirectories(Paths.get(recordingsPath.toString()));
+            Files.createDirectories(recordingsPath);
         }
 
         // cleanup old files
