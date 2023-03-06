@@ -27,13 +27,13 @@ import java.util.Objects;
  *
  * @since 3.0
  */
-public class WireMockTesterUrl {
+public class WireMockUrlParts {
 
     private final String baseUrl;
     private final String path;
     private final String testerFolder;
 
-    public static WireMockTesterUrl of(String targetUrl) {
+    public static WireMockUrlParts of(String targetUrl) {
         Objects.requireNonNull(targetUrl);
 
         URL url;
@@ -43,14 +43,14 @@ public class WireMockTesterUrl {
             throw new RuntimeException("Invalid 'targetUrl': " + targetUrl, e);
         }
 
-        return new WireMockTesterUrl(
+        return new WireMockUrlParts(
                 url.getProtocol() + "://" + url.getAuthority(),
                 url.getPath(),
                 convertToFolderName(url.getAuthority())
         );
     }
 
-    protected WireMockTesterUrl(String baseUrl, String path, String testerFolder) {
+    protected WireMockUrlParts(String baseUrl, String path, String testerFolder) {
         this.baseUrl = baseUrl;
         this.path = path;
         this.testerFolder = testerFolder;

@@ -53,7 +53,7 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
     public static final String RECORDING_PROPERTY = "bq.wiremock.recording";
     private static final boolean IS_RECORDING_ENABLED = System.getProperty(RECORDING_PROPERTY) != null;
 
-    private final WireMockTesterUrl url;
+    private final WireMockUrlParts url;
     private WireMockConfiguration config;
     private File filesRoot;
 
@@ -63,10 +63,10 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
      * @param targetUrl url of resource to mock, for example: "https://www.example.com/foo/bar"
      */
     public static WireMockTester tester(String targetUrl) {
-        return new WireMockTester(WireMockTesterUrl.of(targetUrl));
+        return new WireMockTester(WireMockUrlParts.of(targetUrl));
     }
 
-    protected WireMockTester(WireMockTesterUrl url) {
+    protected WireMockTester(WireMockUrlParts url) {
         this.url = url;
     }
 

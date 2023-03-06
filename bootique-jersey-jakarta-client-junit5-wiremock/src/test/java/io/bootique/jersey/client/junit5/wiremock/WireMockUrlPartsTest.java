@@ -22,11 +22,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class WireMockTesterUrlTest {
+public class WireMockUrlPartsTest {
 
     @Test
     public void testOf_Host() {
-        WireMockTesterUrl url = WireMockTesterUrl.of("https://google.com");
+        WireMockUrlParts url = WireMockUrlParts.of("https://google.com");
         assertEquals("https://google.com", url.getBaseUrl());
         assertEquals("", url.getPath());
         assertEquals("google_com", url.getTesterFolder());
@@ -34,7 +34,7 @@ public class WireMockTesterUrlTest {
 
     @Test
     public void testOf_WithPath() {
-        WireMockTesterUrl url = WireMockTesterUrl.of("https://google.com/search");
+        WireMockUrlParts url = WireMockUrlParts.of("https://google.com/search");
         assertEquals("https://google.com", url.getBaseUrl());
         assertEquals("/search", url.getPath());
         assertEquals("google_com", url.getTesterFolder());
@@ -42,7 +42,7 @@ public class WireMockTesterUrlTest {
 
     @Test
     public void testOf_HostWithQuery() {
-        WireMockTesterUrl url = WireMockTesterUrl.of("https://google.com/search?q=bootique");
+        WireMockUrlParts url = WireMockUrlParts.of("https://google.com/search?q=bootique");
         assertEquals("https://google.com", url.getBaseUrl());
         assertEquals("/search", url.getPath());
         assertEquals("google_com", url.getTesterFolder());
@@ -50,7 +50,7 @@ public class WireMockTesterUrlTest {
 
     @Test
     public void testOf_WithQuery() {
-        WireMockTesterUrl url = WireMockTesterUrl.of("https://google.com?q=bootique");
+        WireMockUrlParts url = WireMockUrlParts.of("https://google.com?q=bootique");
         assertEquals("https://google.com", url.getBaseUrl());
         assertEquals("", url.getPath());
         assertEquals("google_com", url.getTesterFolder());
