@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class WireMockTester_QueryIT {
 
     @BQTestTool
-    static final WireMockTester youtube = WireMockTester.tester("https://www.youtube.com/watch");
+    static final WireMockTester youtube = WireMockTester.create("https://www.youtube.com/watch");
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()

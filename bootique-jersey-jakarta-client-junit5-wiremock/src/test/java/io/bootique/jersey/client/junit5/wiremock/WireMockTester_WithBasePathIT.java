@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class WireMockTester_WithBasePathIT {
 
     @BQTestTool
-    static final WireMockTester tester = WireMockTester.tester("https://github.com/bootique");
+    static final WireMockTester tester = WireMockTester.create("https://github.com/bootique");
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()

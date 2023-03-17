@@ -51,23 +51,40 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
      * If present, enables wiremock recording mode for all tests
      */
     public static final String RECORDING_PROPERTY = "bq.wiremock.recording";
-    private static final boolean IS_RECORDING_ENABLED = System.getProperty(RECORDING_PROPERTY) != null;
 
     private final WireMockUrlParts url;
     private WireMockConfiguration config;
     private File filesRoot;
+    private boolean recordingEnabled;
 
     private volatile WireMockServer wiremockServer;
 
     /**
      * @param targetUrl url of resource to mock, for example: "https://www.example.com/foo/bar"
      */
-    public static WireMockTester tester(String targetUrl) {
+    public static WireMockTester create(String targetUrl) {
         return new WireMockTester(WireMockUrlParts.of(targetUrl));
+    }
+
+    // keep for a while to allow early adopters to upgrade
+    @Deprecated(since = "3.0.M2")
+    public static WireMockTester tester(String targetUrl) {
+        return create(targetUrl);
     }
 
     protected WireMockTester(WireMockUrlParts url) {
         this.url = url;
+        this.recordingEnabled = System.getProperty(RECORDING_PROPERTY) != null;
+    }
+
+    /**
+     * Enables the recording mode for this tester. It will result in this tester going to the origin for the request
+     * data and storing it in a file. The same can be achieved for all testers at once by starting the tests JVM with
+     * {code}-Dbq.wiremock.recording{code} property.
+     */
+    public WireMockTester recordingEnabled() {
+        this.recordingEnabled = true;
+        return this;
     }
 
     /**
@@ -180,7 +197,7 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
     private void startServer() {
         wiremockServer.start();
 
-        if (IS_RECORDING_ENABLED) {
+        if (recordingEnabled) {
             LOGGER.info("Wiremock started in recording mode on port {}", wiremockServer.port());
         } else {
             LOGGER.info("Wiremock started on port {}", wiremockServer.port());
@@ -189,7 +206,7 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
 
     @Override
     public void beforeMethod(BQTestScope scope, ExtensionContext context) {
-        if (IS_RECORDING_ENABLED) {
+        if (recordingEnabled) {
             // note that we are recording relative to the "baseUrl", not the full target URL
             WireMockRecorder.startRecording(wiremockServer, url.getBaseUrl());
         }
@@ -197,7 +214,7 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
 
     @Override
     public void afterMethod(BQTestScope scope, ExtensionContext context) throws IOException {
-        if (IS_RECORDING_ENABLED) {
+        if (recordingEnabled) {
             WireMockRecorder.stopRecording(wiremockServer, context);
         }
     }

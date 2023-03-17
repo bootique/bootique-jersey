@@ -36,10 +36,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class WireMockTester_MultipleIT {
 
     @BQTestTool
-    static final WireMockTester bqOnGithub = WireMockTester.tester("https://github.com/bootique");
+    static final WireMockTester bqOnGithub = WireMockTester.create("https://github.com/bootique");
 
     @BQTestTool
-    static final WireMockTester google = WireMockTester.tester("https://www.google.com");
+    static final WireMockTester google = WireMockTester.create("https://www.google.com");
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()

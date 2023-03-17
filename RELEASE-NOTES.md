@@ -4,6 +4,7 @@
 * #67 ParamConverter for LocalDate, LocalTime, LocalDateTime
 * #68 ParamConverter for Year, YearMonth
 * #69 Integrate Wiremock for testing apps using "jersey-client"
+* #70 Per-tester wiremock recording mode
 
 ## 3.0.M1
 
