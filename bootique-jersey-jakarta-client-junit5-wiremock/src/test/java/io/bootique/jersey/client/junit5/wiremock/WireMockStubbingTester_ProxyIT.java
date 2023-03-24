@@ -21,6 +21,7 @@ package io.bootique.jersey.client.junit5.wiremock;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.client.HttpTargets;
+import io.bootique.jersey.client.junit5.wiremock.junit.TestWithEmulatedBackend;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
@@ -29,17 +30,16 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.Test;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockStubbingTesterIT {
+public class WireMockStubbingTester_ProxyIT extends TestWithEmulatedBackend  {
 
     @BQTestTool
     static final WireMockStubbingTester tester = WireMockTester
             .stubbingTester()
-            .stub(get("/s1").willReturn(aResponse().withHeader("Content-Type", "text/plain").withBody("[s1]")))
-            .stub(get("/s2").willReturn(aResponse().withHeader("Content-Type", "text/plain").withBody("[s2]")));
+            .stub(get(urlPathMatching("/([a-z0-9]*)")).willReturn(aResponse().proxiedFrom(SERVER_URL)));
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
@@ -49,13 +49,9 @@ public class WireMockStubbingTesterIT {
 
     @Test
     public void test() {
-        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester");
-        JettyTester.assertOk(target.path("s1").request().get())
+        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").path("p1");
+        JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
-                .assertContent("[s1]");
-        JettyTester.assertOk(target.path("s2").request().get())
-                .assertContentType(MediaType.TEXT_PLAIN)
-                .assertContent("[s2]");
-        JettyTester.assertNotFound(target.path("s3").request().get());
+                .assertContent(c -> assertTrue(c.contains("get:p1")));
     }
 }
