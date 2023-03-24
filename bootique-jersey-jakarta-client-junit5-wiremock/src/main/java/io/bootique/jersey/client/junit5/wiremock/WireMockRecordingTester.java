@@ -19,6 +19,8 @@
 package io.bootique.jersey.client.junit5.wiremock;
 
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.recording.RecordSpecBuilder;
+import com.github.tomakehurst.wiremock.recording.SnapshotRecordResult;
 import io.bootique.junit5.BQTestScope;
 import io.bootique.junit5.scope.BQAfterMethodCallback;
 import io.bootique.junit5.scope.BQBeforeMethodCallback;
@@ -117,15 +119,24 @@ public class WireMockRecordingTester extends WireMockTester<WireMockRecordingTes
     @Override
     public void beforeMethod(BQTestScope scope, ExtensionContext context) {
         if (recordingEnabled) {
+
             // note that we are recording relative to the "baseUrl", not the full target URL
-            WireMockRecorder.startRecording(wiremockServer, urlParts.getBaseUrl());
+            wireMockServer.startRecording(new RecordSpecBuilder()
+                    .forTarget(urlParts.getBaseUrl())
+                    .extractTextBodiesOver(9_999_999)
+                    .extractBinaryBodiesOver(9_999_999)
+                    .ignoreRepeatRequests()
+                    .makeStubsPersistent(false) // we have our own stub persistence implementation
+                    .build()
+            );
         }
     }
 
     @Override
     public void afterMethod(BQTestScope scope, ExtensionContext context) throws IOException {
         if (recordingEnabled) {
-            WireMockRecorder.stopRecording(wiremockServer, context);
+            SnapshotRecordResult snapshot = wireMockServer.stopRecording();
+            WireMockSnapshotSaver.save(wireMockServer, snapshot, context);
         }
     }
 }

@@ -42,7 +42,8 @@ public abstract class WireMockTester<T extends WireMockTester<T>> implements BQB
 
     protected boolean verbose;
     protected WireMockConfiguration config;
-    protected volatile WireMockServer wiremockServer;
+
+    protected volatile WireMockServer wireMockServer;
 
     /**
      * Creates a new mock tester with a real backend at the given URL.
@@ -97,8 +98,8 @@ public abstract class WireMockTester<T extends WireMockTester<T>> implements BQB
 
     @Override
     public void afterScope(BQTestScope scope, ExtensionContext context) {
-        if (wiremockServer != null) {
-            wiremockServer.shutdown();
+        if (wireMockServer != null) {
+            wireMockServer.shutdown();
         }
     }
 
@@ -123,16 +124,16 @@ public abstract class WireMockTester<T extends WireMockTester<T>> implements BQB
     public abstract String getUrl();
 
     protected WireMockServer ensureRunning() {
-        if (wiremockServer == null) {
+        if (wireMockServer == null) {
             synchronized (this) {
-                if (wiremockServer == null) {
-                    this.wiremockServer = createServer();
+                if (wireMockServer == null) {
+                    this.wireMockServer = createServer();
                     startServer();
                 }
             }
         }
 
-        return wiremockServer;
+        return wireMockServer;
     }
 
     protected WireMockConfiguration ensureServerConfig() {
@@ -152,7 +153,7 @@ public abstract class WireMockTester<T extends WireMockTester<T>> implements BQB
     }
 
     protected void startServer() {
-        wiremockServer.start();
-        LOGGER.info("WireMock started on port {}", wiremockServer.port());
+        wireMockServer.start();
+        LOGGER.info("WireMock started on port {}", wireMockServer.port());
     }
 }

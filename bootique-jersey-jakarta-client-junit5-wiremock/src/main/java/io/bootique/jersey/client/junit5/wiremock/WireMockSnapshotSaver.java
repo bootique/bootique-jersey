@@ -22,10 +22,8 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.common.SingleRootFileSource;
 import com.github.tomakehurst.wiremock.core.WireMockApp;
-import com.github.tomakehurst.wiremock.recording.RecordSpecBuilder;
 import com.github.tomakehurst.wiremock.recording.SnapshotRecordResult;
 import com.github.tomakehurst.wiremock.standalone.JsonFileMappingsSource;
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.io.File;
@@ -33,36 +31,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * A custom Wiremock recorder that keeps "scenarios" in separate directories per test.
+ * A custom Wiremock recorder that keeps recorded scenarios in separate directories per test.
  *
  * @since 3.0
  */
-public class WireMockRecorder {
+class WireMockSnapshotSaver {
 
-    public static void startRecording(WireMockServer wiremock, String targetUrlBase) {
-        wiremock.startRecording(new RecordSpecBuilder()
-                .forTarget(targetUrlBase)
-                .extractTextBodiesOver(9_999_999)
-                .extractBinaryBodiesOver(9_999_999)
-                .ignoreRepeatRequests()
-                .makeStubsPersistent(false) // we have our own persistence implementation
-                .build()
-        );
-    }
-
-    public static void stopRecording(WireMockServer wiremock, ExtensionContext context) throws IOException {
-        SnapshotRecordResult recordingResult = wiremock.stopRecording();
-        String rootDir = wiremock.getOptions().filesRoot().getPath();
-        saveScenarios(recordingResult.getStubMappings(), rootDir, context);
-    }
-
-    private static void saveScenarios(List<StubMapping> scenarios, String rootDir, ExtensionContext context) throws IOException {
-        if (!scenarios.isEmpty()) {
-            new JsonFileMappingsSource(prepareRecordingDir(rootDir, context)).save(scenarios);
+    public static void save(WireMockServer wireMockServer, SnapshotRecordResult snapshot, ExtensionContext context) throws IOException {
+        String rootDir = wireMockServer.getOptions().filesRoot().getPath();
+        if (!snapshot.getStubMappings().isEmpty()) {
+            FileSource fileSource = prepareRecordingDir(rootDir, context);
+            new JsonFileMappingsSource(fileSource).save(snapshot.getStubMappings());
         }
     }
 
