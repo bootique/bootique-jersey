@@ -23,7 +23,7 @@ import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jersey.client.HttpTargets;
-import io.bootique.jersey.client.junit5.wiremock.junit.WireMockRecordingTest;
+import io.bootique.jersey.client.junit5.wiremock.junit.TestWithEmulatedBackend;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockRecordingTester_MultipleIT extends WireMockRecordingTest {
+public class WireMockRecordingTester_MultipleIT extends TestWithEmulatedBackend {
 
     protected static final String SERVER_URL2 = "http://localhost:16349";
 

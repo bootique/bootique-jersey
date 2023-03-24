@@ -33,7 +33,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @BQTest
-public abstract class WireMockRecordingTest {
+public abstract class TestWithEmulatedBackend {
 
     protected static final String SERVER_URL = "http://localhost:16348";
 
