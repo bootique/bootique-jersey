@@ -6,6 +6,7 @@
 * #69 Integrate Wiremock for testing apps using "jersey-client"
 * #70 Per-tester wiremock recording mode
 * #71 Stubbing support in WireMockTester
+* #72 WireMockTester - explicit method to turn on verbose logging 
 
 ## 3.0.M1
 

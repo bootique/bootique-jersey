@@ -40,6 +40,7 @@ public abstract class WireMockTester<T extends WireMockTester<T>> implements BQB
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WireMockTester.class);
 
+    protected boolean verbose;
     protected WireMockConfiguration config;
     protected volatile WireMockServer wiremockServer;
 
@@ -77,6 +78,15 @@ public abstract class WireMockTester<T extends WireMockTester<T>> implements BQB
      */
     public T config(WireMockConfiguration config) {
         this.config = config;
+        return (T) this;
+    }
+
+    /**
+     * A builder method that enables verbose logging for the tester. Ignored if {@link #config(WireMockConfiguration)}
+     * was called explicitly.
+     */
+    public T verbose() {
+        this.verbose = true;
         return (T) this;
     }
 
@@ -133,7 +143,7 @@ public abstract class WireMockTester<T extends WireMockTester<T>> implements BQB
         return WireMockConfiguration
                 .wireMockConfig()
                 .dynamicPort()
-                .notifier(new Slf4jNotifier(true));
+                .notifier(new Slf4jNotifier(verbose));
     }
 
     protected WireMockServer createServer() {
