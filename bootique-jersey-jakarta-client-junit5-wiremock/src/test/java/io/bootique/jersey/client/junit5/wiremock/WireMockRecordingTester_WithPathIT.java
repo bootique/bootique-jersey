@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockTester_WithPathIT extends WireMockRecordingTest {
+public class WireMockRecordingTester_WithPathIT extends WireMockRecordingTest {
 
     @BQTestTool
     static final WireMockRecordingTester tester = WireMockTester.recordingTester(SERVER_URL + "/p1");
