@@ -27,7 +27,7 @@ import java.util.Objects;
  *
  * @since 3.0
  */
-public class WireMockUrlParts {
+class WireMockUrlParts {
 
     private final String baseUrl;
     private final String path;

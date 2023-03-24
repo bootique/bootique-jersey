@@ -5,6 +5,7 @@
 * #68 ParamConverter for Year, YearMonth
 * #69 Integrate Wiremock for testing apps using "jersey-client"
 * #70 Per-tester wiremock recording mode
+* #71 Stubbing support in WireMockTester
 
 ## 3.0.M1
 
