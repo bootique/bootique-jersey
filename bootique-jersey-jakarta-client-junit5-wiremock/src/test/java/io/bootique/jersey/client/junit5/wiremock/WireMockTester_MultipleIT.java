@@ -18,48 +18,75 @@
  */
 package io.bootique.jersey.client.junit5.wiremock;
 
+import io.bootique.BQCoreModule;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
+import io.bootique.jersey.JerseyModule;
 import io.bootique.jersey.client.HttpTargets;
+import io.bootique.jersey.client.junit5.wiremock.junit.BaseTest;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestScope;
 import io.bootique.junit5.BQTestTool;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockTester_MultipleIT {
+public class WireMockTester_MultipleIT extends BaseTest {
+
+    protected static final String SERVER_URL2 = "http://localhost:16349";
+
+    @BQApp(BQTestScope.GLOBAL)
+    protected static BQRuntime server2 = Bootique.app("--server")
+            .autoLoadModules()
+
+            // Unfortunately we have to use the fixed port to be able to record and re-record the service with WireMock
+            // So let's use the port that is less likely to cause conflicts with anything
+            .module(b -> BQCoreModule.extend(b).setProperty("bq.jetty.connectors[0].port", "16349"))
+
+            .module(b -> JerseyModule.extend(b).addResource(Resource2.class))
+            .createRuntime();
 
     @BQTestTool
-    static final WireMockTester bqOnGithub = WireMockTester.create("https://github.com/bootique");
+    static final WireMockTester tester1 = WireMockTester.create(SERVER_URL);
 
     @BQTestTool
-    static final WireMockTester google = WireMockTester.create("https://www.google.com");
+    static final WireMockTester tester2 = WireMockTester.create(SERVER_URL2);
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
             .autoLoadModules()
-            .module(bqOnGithub.moduleWithTestTarget("bqOnGitHub"))
-            .module(google.moduleWithTestTarget("google"))
+            .module(tester1.moduleWithTestTarget("tester1"))
+            .module(tester2.moduleWithTestTarget("tester2"))
             .createRuntime();
 
     @Test
     public void testTwoTargets() {
-        WebTarget google = app.getInstance(HttpTargets.class).newTarget("google");
-        Response r0 = google.request().get();
-        JettyTester.assertOk(r0)
-                .assertContentType(MediaType.TEXT_HTML_TYPE)
-                .assertContent(c -> assertTrue(c.contains("<title>Google</title>")));
+        WebTarget t1 = app.getInstance(HttpTargets.class).newTarget("tester1");
+        JettyTester.assertOk(t1.request().get())
+                .assertContentType(MediaType.TEXT_PLAIN)
+                .assertContent(c -> assertTrue(c.contains("get")));
 
-        WebTarget bqOnGitHub = app.getInstance(HttpTargets.class).newTarget("bqOnGitHub");
-        Response r1 = bqOnGitHub.request().get();
-        JettyTester.assertOk(r1)
-                .assertContentType(MediaType.TEXT_HTML_TYPE)
-                .assertContent(c -> assertTrue(c.contains("<title>Bootique Project")));
+        WebTarget t2 = app.getInstance(HttpTargets.class).newTarget("tester2");
+        JettyTester.assertOk(t2.request().get())
+                .assertContentType(MediaType.TEXT_PLAIN)
+                .assertContent(c -> assertTrue(c.contains("get2")));
+    }
+
+    @Path("")
+    @Produces(MediaType.TEXT_PLAIN)
+    public static class Resource2 {
+
+        @GET
+        public String get() {
+            return "get2";
+        }
     }
 }

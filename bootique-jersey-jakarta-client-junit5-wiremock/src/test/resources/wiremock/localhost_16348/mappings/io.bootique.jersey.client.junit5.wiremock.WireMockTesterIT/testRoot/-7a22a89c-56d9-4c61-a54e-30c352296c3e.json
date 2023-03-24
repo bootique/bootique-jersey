@@ -1,0 +1,19 @@
+{
+  "id" : "7a22a89c-56d9-4c61-a54e-30c352296c3e",
+  "name" : "",
+  "request" : {
+    "url" : "/",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "get",
+    "headers" : {
+      "Date" : "Fri, 24 Mar 2023 12:47:52 GMT",
+      "Content-Type" : "text/plain",
+      "Vary" : "Accept-Encoding"
+    }
+  },
+  "uuid" : "7a22a89c-56d9-4c61-a54e-30c352296c3e",
+  "insertionIndex" : 12
+}

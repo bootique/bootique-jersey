@@ -155,6 +155,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>io.bootique.jersey</groupId>
+			<artifactId>bootique-jersey-jakarta</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<scope>test</scope>

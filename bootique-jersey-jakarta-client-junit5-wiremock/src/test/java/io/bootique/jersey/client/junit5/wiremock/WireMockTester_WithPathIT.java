@@ -21,39 +21,43 @@ package io.bootique.jersey.client.junit5.wiremock;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.client.HttpTargets;
+import io.bootique.jersey.client.junit5.wiremock.junit.BaseTest;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestTool;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockTester_QueryIT {
+public class WireMockTester_WithPathIT extends BaseTest {
 
     @BQTestTool
-    static final WireMockTester youtube = WireMockTester.create("https://www.youtube.com/watch");
+    static final WireMockTester tester = WireMockTester.create(SERVER_URL + "/p1");
+
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
             .autoLoadModules()
-            .module(youtube.moduleWithTestTarget("youtube"))
+            .module(tester.moduleWithTestTarget("tester"))
             .createRuntime();
 
     @Test
-    public void testQuery() {
-        WebTarget youtube = app.getInstance(HttpTargets.class)
-                .newTarget("youtube")
-                // That's an old Bootique video. Hopefully it stays stable
-                .queryParam("v", "o6kSEG4v3VE");
+    public void testTarget() {
+        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester");
+        JettyTester.assertOk(target.request().get())
+                .assertContentType(MediaType.TEXT_PLAIN)
+                .assertContent(c -> assertTrue(c.contains("get:p1")));
+    }
 
-        Response r0 = youtube.request().get();
-        JettyTester.assertOk(r0)
-                .assertContentType(MediaType.TEXT_HTML_TYPE)
-                .assertContent(c -> assertTrue(c.contains("<title>No container:")));
+    @Test
+    public void testSubTarget() {
+        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").path("p11");
+        JettyTester.assertOk(target.request().get())
+                .assertContentType(MediaType.TEXT_PLAIN)
+                .assertContent(c -> assertTrue(c.contains("get:p1:p11")));
     }
 }
