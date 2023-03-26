@@ -30,13 +30,17 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockTester_WithPathIT extends TestWithEmulatedBackend {
+public class WireMockTester_ProxyTo_wPathIT extends TestWithEmulatedBackend {
 
     @BQTestTool
-    static final WireMockTester tester = WireMockTester.create().proxyTo(SERVER_URL + "/p1", true);
+    static final WireMockTester tester = WireMockTester
+            .create()
+            .filesRoot("src/test/resources/wm16348_p1")
+            .proxyTo(SERVER_URL + "/p1", true);
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
@@ -50,6 +54,8 @@ public class WireMockTester_WithPathIT extends TestWithEmulatedBackend {
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
                 .assertContent(c -> assertTrue(c.contains("get:p1")));
+
+        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
     }
 
     @Test
@@ -58,5 +64,7 @@ public class WireMockTester_WithPathIT extends TestWithEmulatedBackend {
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
                 .assertContent(c -> assertTrue(c.contains("get:p1:p11")));
+
+        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
     }
 }

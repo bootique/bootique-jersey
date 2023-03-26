@@ -30,13 +30,17 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockTesterIT extends TestWithEmulatedBackend {
+public class WireMockTester_ProxyToIT extends TestWithEmulatedBackend {
 
     @BQTestTool
-    static final WireMockTester tester = WireMockTester.create().proxyTo(SERVER_URL, true);
+    static final WireMockTester tester = WireMockTester
+            .create()
+            .filesRoot("src/test/resources/wm16348")
+            .proxyTo(SERVER_URL, true);
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
@@ -50,6 +54,8 @@ public class WireMockTesterIT extends TestWithEmulatedBackend {
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
                 .assertContent("get");
+
+        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
     }
 
     @Test
@@ -58,6 +64,8 @@ public class WireMockTesterIT extends TestWithEmulatedBackend {
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
                 .assertContent(c -> assertTrue(c.contains("get:p1")));
+
+        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
     }
 
     @Test
@@ -78,6 +86,8 @@ public class WireMockTesterIT extends TestWithEmulatedBackend {
         JettyTester.assertOk(t3.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
                 .assertContent(c -> assertTrue(c.contains("get:p1")));
+
+        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
     }
 
     @Test
@@ -90,5 +100,7 @@ public class WireMockTesterIT extends TestWithEmulatedBackend {
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
                 .assertContent("get:abc");
+
+        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
     }
 }

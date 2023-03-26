@@ -1,0 +1,20 @@
+{
+  "id" : "02b8f762-26b6-4ba7-af63-88f8ef16b799",
+  "name" : "",
+  "request" : {
+    "url" : "/",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "get2",
+    "headers" : {
+      "Date" : "Sun, 26 Mar 2023 11:28:45 GMT",
+      "Content-Type" : "text/plain",
+      "Vary" : "Accept-Encoding"
+    }
+  },
+  "uuid" : "02b8f762-26b6-4ba7-af63-88f8ef16b799",
+  "persistent" : true,
+  "insertionIndex" : 1
+}

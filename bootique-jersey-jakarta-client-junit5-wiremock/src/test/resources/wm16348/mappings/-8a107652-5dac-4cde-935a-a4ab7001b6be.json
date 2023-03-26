@@ -1,0 +1,20 @@
+{
+  "id" : "8a107652-5dac-4cde-935a-a4ab7001b6be",
+  "name" : "",
+  "request" : {
+    "url" : "/",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "get",
+    "headers" : {
+      "Date" : "Sun, 26 Mar 2023 11:28:45 GMT",
+      "Content-Type" : "text/plain",
+      "Vary" : "Accept-Encoding"
+    }
+  },
+  "uuid" : "8a107652-5dac-4cde-935a-a4ab7001b6be",
+  "persistent" : true,
+  "insertionIndex" : 3
+}

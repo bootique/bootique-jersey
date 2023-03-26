@@ -18,14 +18,14 @@
  */
 package io.bootique.jersey.client.junit5.wiremock;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.Admin;
+import com.github.tomakehurst.wiremock.core.WireMockApp;
+import com.github.tomakehurst.wiremock.extension.PostServeAction;
 import com.github.tomakehurst.wiremock.recording.RecordSpec;
 import com.github.tomakehurst.wiremock.recording.RecordSpecBuilder;
-import com.github.tomakehurst.wiremock.recording.SnapshotRecordResult;
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-import org.junit.jupiter.api.extension.ExtensionContext;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,9 +45,7 @@ class WireMockTesterProxy {
                 .extractTextBodiesOver(9_999_999)
                 .extractBinaryBodiesOver(9_999_999)
                 .ignoreRepeatRequests()
-
-                // do not persist via WireMock as we have our own stub persistence implementation
-                .makeStubsPersistent(false)
+                .makeStubsPersistent(true)
                 .build();
     }
 
@@ -66,10 +64,27 @@ class WireMockTesterProxy {
         return proxyAllTo(proxyToUrl).atPriority(maxPriority + 1).build();
     }
 
-    void saveSnapshotIfNeeded(WireMockServer wireMockServer, ExtensionContext context) throws IOException {
+    PostServeAction createSnapshotRecorder() {
+        return new PostServeAction() {
+            @Override
+            public String getName() {
+                return "bq-snapshot-recorder";
+            }
+
+            @Override
+            public void doGlobalAction(ServeEvent serveEvent, Admin admin) {
+                saveSnapshotIfNeeded(admin);
+            }
+        };
+    }
+
+    void saveSnapshotIfNeeded(Admin admin) {
         if (takeLocalSnapshots) {
-            SnapshotRecordResult snapshot = wireMockServer.snapshotRecord(snapshotSpec);
-            WireMockSnapshotSaver.save(wireMockServer, snapshot, context);
+            admin.getOptions().filesRoot().child(WireMockApp.MAPPINGS_ROOT).createIfNecessary();
+            admin.snapshotRecord(snapshotSpec);
+
+            // this will allow
+            admin.resetRequests();
         }
     }
 }

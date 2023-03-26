@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockTester_Multiple_ProxyIT extends TestWithEmulatedBackend {
+public class WireMockTester_ProxyTo_MultipleIT extends TestWithEmulatedBackend {
 
     protected static final String SERVER_URL2 = "http://localhost:16349";
 
@@ -55,10 +55,16 @@ public class WireMockTester_Multiple_ProxyIT extends TestWithEmulatedBackend {
             .createRuntime();
 
     @BQTestTool
-    static final WireMockTester tester1 = WireMockTester.create().proxyTo(SERVER_URL, true);
+    static final WireMockTester tester1 = WireMockTester
+            .create()
+            .filesRoot("src/test/resources/wm16348")
+            .proxyTo(SERVER_URL, true);
 
     @BQTestTool
-    static final WireMockTester tester2 = WireMockTester.create().proxyTo(SERVER_URL2, true);
+    static final WireMockTester tester2 = WireMockTester
+            .create()
+            .filesRoot("src/test/resources/wm16349")
+            .proxyTo(SERVER_URL2, true);
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()

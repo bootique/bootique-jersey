@@ -7,6 +7,7 @@
 * #70 Per-tester wiremock recording mode
 * #71 Stubbing support in WireMockTester
 * #72 WireMockTester - explicit method to turn on verbose logging 
+* #73 Replace "recording" WireMockTester with proxy/snapshot
 
 ## 3.0.M1
 
