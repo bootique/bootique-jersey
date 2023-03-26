@@ -75,7 +75,14 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
      * will be captured and stored locally. Snapshots location is the folder configured per {@link #filesRoot(String)}.
      * The effect of the capturing snapshots is that all subsequent calls to this URL will only work with local data
      * and will not attempt to access remote URLs.
+     * <p>Limitation: due to a bug in <a href="https://github.com/wiremock/wiremock/issues/655">WireMock proxy
+     * implementation</a>, some "root" requests to WireMock proxies may fail with 404. E.g. consider an origin URL of
+     * "http://example.org/p1/p2?q=a". If the origin is mapped as "http://example.org/p1/p2", for "GET /?q=a", WireMock
+     * will generate a URL of "http://example.org/p1/p2/?q=a", which may fail due to the trailing slash. To work around
+     * this limitation, map WireMock to a URL without the last path component, e.g. "http://example.org/p1", and add the
+     * path to the request as "GET /p2?q=a"</p>
      */
+    // TODO: see the limitation above ... devise a WireMock or Bootique fix for it
     public WireMockTester proxy(String originUrl, boolean takeLocalSnapshots) {
         this.proxy = new WireMockTesterProxy(originUrl, takeLocalSnapshots);
         return this;
