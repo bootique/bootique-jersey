@@ -34,13 +34,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockTester_ProxyTo_wPathIT extends TestWithEmulatedBackend {
+public class WireMockTester_Proxy_NoSnapshotIT extends TestWithEmulatedBackend {
 
     @BQTestTool
     static final WireMockTester tester = WireMockTester
             .create()
-            .filesRoot("src/test/resources/wm16348_p1")
-            .proxy(SERVER_URL + "/p1", true);
+            .proxy(SERVER_URL, false);
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
@@ -49,22 +48,22 @@ public class WireMockTester_ProxyTo_wPathIT extends TestWithEmulatedBackend {
             .createRuntime();
 
     @Test
-    public void testTarget() {
+    public void testRoot() {
         WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester");
+        JettyTester.assertOk(target.request().get())
+                .assertContentType(MediaType.TEXT_PLAIN)
+                .assertContent("get");
+
+        assertEquals(1, getMethodRequestCount(), "Should not fail except in recording mode");
+    }
+
+    @Test
+    public void testPath() {
+        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").path("p1");
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
                 .assertContent(c -> assertTrue(c.contains("get:p1")));
 
-        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
-    }
-
-    @Test
-    public void testSubTarget() {
-        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").path("p11");
-        JettyTester.assertOk(target.request().get())
-                .assertContentType(MediaType.TEXT_PLAIN)
-                .assertContent(c -> assertTrue(c.contains("get:p1:p11")));
-
-        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
+        assertEquals(1, getMethodRequestCount(), "Should not fail except in recording mode");
     }
 }

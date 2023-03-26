@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockTester_ProxyTo_MultipleIT extends TestWithEmulatedBackend {
+public class WireMockTester_Proxy_MultipleIT extends TestWithEmulatedBackend {
 
     protected static final String SERVER_URL2 = "http://localhost:16349";
 

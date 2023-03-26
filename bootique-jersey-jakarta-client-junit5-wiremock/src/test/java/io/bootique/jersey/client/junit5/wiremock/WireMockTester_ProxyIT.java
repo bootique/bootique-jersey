@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockTester_ProxyToIT extends TestWithEmulatedBackend {
+public class WireMockTester_ProxyIT extends TestWithEmulatedBackend {
 
     @BQTestTool
     static final WireMockTester tester = WireMockTester
