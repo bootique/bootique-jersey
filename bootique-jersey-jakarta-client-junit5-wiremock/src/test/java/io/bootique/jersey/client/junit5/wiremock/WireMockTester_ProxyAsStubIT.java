@@ -34,11 +34,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockStubbingTester_SnapshottingIT extends TestWithEmulatedBackend {
+public class WireMockTester_ProxyAsStubIT extends TestWithEmulatedBackend {
 
     @BQTestTool
-    static final WireMockStubbingTester tester = WireMockTester
-            .stubbingTester()
+    static final WireMockTester tester = WireMockTester
+            .create()
             .stub(proxyAllTo(SERVER_URL).atPriority(10));
 
     @BQApp(skipRun = true)

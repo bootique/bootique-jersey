@@ -30,16 +30,13 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.Test;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockStubbingTester_ProxyIT extends TestWithEmulatedBackend  {
+public class WireMockTester_WithPathIT extends TestWithEmulatedBackend {
 
     @BQTestTool
-    static final WireMockStubbingTester tester = WireMockTester
-            .stubbingTester()
-            .stub(get(urlPathMatching("/([a-z0-9]*)")).willReturn(aResponse().proxiedFrom(SERVER_URL)));
+    static final WireMockTester tester = WireMockTester.create().proxyTo(SERVER_URL + "/p1", true);
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
@@ -48,10 +45,18 @@ public class WireMockStubbingTester_ProxyIT extends TestWithEmulatedBackend  {
             .createRuntime();
 
     @Test
-    public void test() {
-        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").path("p1");
+    public void testTarget() {
+        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester");
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
                 .assertContent(c -> assertTrue(c.contains("get:p1")));
+    }
+
+    @Test
+    public void testSubTarget() {
+        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").path("p11");
+        JettyTester.assertOk(target.request().get())
+                .assertContentType(MediaType.TEXT_PLAIN)
+                .assertContent(c -> assertTrue(c.contains("get:p1:p11")));
     }
 }

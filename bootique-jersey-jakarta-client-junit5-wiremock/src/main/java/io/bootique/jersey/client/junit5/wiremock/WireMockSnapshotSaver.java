@@ -26,12 +26,10 @@ import com.github.tomakehurst.wiremock.recording.SnapshotRecordResult;
 import com.github.tomakehurst.wiremock.standalone.JsonFileMappingsSource;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Stream;
 
 /**
  * A custom Wiremock recorder that keeps recorded scenarios in separate directories per test.
@@ -57,12 +55,7 @@ class WireMockSnapshotSaver {
         if (!Files.exists(recordingsPath)) {
             Files.createDirectories(recordingsPath);
         }
-
-        // cleanup old files
-        try (Stream<Path> stream = Files.list(recordingsPath)) {
-            stream.map(Path::toFile).forEach(File::delete);
-        }
-
+        
         return new SingleRootFileSource(recordingsPath.toString());
     }
 }

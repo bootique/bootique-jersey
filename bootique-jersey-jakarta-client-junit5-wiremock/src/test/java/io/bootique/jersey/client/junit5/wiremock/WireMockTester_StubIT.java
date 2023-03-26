@@ -33,11 +33,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 
 @BQTest
-public class WireMockStubbingTesterIT {
+public class WireMockTester_StubIT {
 
     @BQTestTool
-    static final WireMockStubbingTester tester = WireMockTester
-            .stubbingTester()
+    static final WireMockTester tester = WireMockTester
+            .create()
             .stub(get("/s1").willReturn(aResponse().withHeader("Content-Type", "text/plain").withBody("[s1]")))
             .stub(get("/s2").willReturn(aResponse().withHeader("Content-Type", "text/plain").withBody("[s2]")));
 

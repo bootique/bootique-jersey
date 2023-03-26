@@ -19,76 +19,111 @@
 package io.bootique.jersey.client.junit5.wiremock;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.common.Slf4jNotifier;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import io.bootique.BQCoreModule;
 import io.bootique.di.BQModule;
 import io.bootique.junit5.BQTestScope;
+import io.bootique.junit5.scope.BQAfterMethodCallback;
 import io.bootique.junit5.scope.BQAfterScopeCallback;
 import io.bootique.junit5.scope.BQBeforeScopeCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A Bootique test tool that sets up and manages a WireMock "server". Each tester should be annotated with
- * {@link io.bootique.junit5.BQTestTool}.
+ * {@link io.bootique.junit5.BQTestTool}. The tester supports manually configured request "stubs" as well as proxying
+ * a real backend and caching that backend's responses as local "snapshot" files.
  *
  * @since 3.0
  */
-public abstract class WireMockTester<T extends WireMockTester<T>> implements BQBeforeScopeCallback, BQAfterScopeCallback {
+public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallback, BQAfterMethodCallback {
+
+    // TODO: the default must be portable and should not assume Maven project structure
+    private static final File DEFAULT_FILES_ROOT = new File("src/test/resources/wiremock/");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WireMockTester.class);
 
-    protected boolean verbose;
-    protected WireMockConfiguration config;
+    private final List<StubMapping> stubs;
+    private boolean verbose;
+    private WireMockConfiguration config;
+    private WireMockTesterProxy proxy;
+    private File filesRoot;
 
-    protected volatile WireMockServer wireMockServer;
+    protected volatile WireMockServer server;
 
-    /**
-     * Creates a new mock tester with a real backend at the given URL.
-     *
-     * @param targetUrl url of resource to mock, for example: "https://www.example.com/foo/bar"
-     */
-    public static WireMockRecordingTester recordingTester(String targetUrl) {
-        return new WireMockRecordingTester(WireMockUrlParts.of(targetUrl));
+    public static WireMockTester create() {
+        return new WireMockTester();
+    }
+
+    protected WireMockTester() {
+        this.stubs = new ArrayList<>();
+    }
+
+    public WireMockTester stub(MappingBuilder mappingBuilder) {
+        this.stubs.add(mappingBuilder.build());
+        return this;
     }
 
     /**
-     * Creates a new mock tester whose behavior should be later configured with custom stubs.
+     * A builder method that adds a special stub with minimal priority that will proxy all requests to the specified
+     * real backend service (aka "origin"). If "takeLocalSnapshots" is true, each proxy call will result in creation
+     * of a local snapshot file with the origin response. In this case all subsequent calls to this URL will result
+     * in responses generated locally without going to the proxied origin.
      */
-    public static WireMockStubbingTester stubbingTester() {
-        return new WireMockStubbingTester();
-    }
-
-    // keep for a while to allow early adopters to upgrade
-    @Deprecated(since = "3.0.M2")
-    public static WireMockRecordingTester create(String targetUrl) {
-        return recordingTester(targetUrl);
-    }
-
-    // keep for a while to allow early adopters to upgrade
-    @Deprecated(since = "3.0.M2")
-    public static WireMockRecordingTester tester(String targetUrl) {
-        return recordingTester(targetUrl);
+    public WireMockTester proxyTo(String proxyToUrl, boolean takeLocalSnapshots) {
+        this.proxy = new WireMockTesterProxy(proxyToUrl, takeLocalSnapshots);
+        return this;
     }
 
     /**
-     * A builder method that sets an optional custom config for WireMockServer. Overrides certain customization made to the
-     * tester.
+     * A builder method that establishes a local directory that will be used as a root for WireMock recording files.
+     * If not set, a default location will be picked automatically.
      */
-    public T config(WireMockConfiguration config) {
+    public WireMockTester filesRoot(String path) {
+        this.filesRoot = new File(path);
+
+        // reset custom config override
+        this.config = null;
+        return this;
+    }
+
+    /**
+     * A builder method that establishes a local directory that will be used as a root for WireMock recording files.
+     * If not set, a default location will be picked automatically.
+     */
+    public WireMockTester filesRoot(File filesRoot) {
+        this.filesRoot = filesRoot;
+
+        // reset custom config override
+        this.config = null;
+        return this;
+    }
+
+    /**
+     * A builder method that sets an optional custom config for WireMockServer. Overrides certain explicit
+     * customization made to the tester, such as "filesRoot".
+     */
+    public WireMockTester config(WireMockConfiguration config) {
         this.config = config;
-        return (T) this;
+        return this;
     }
 
     /**
      * A builder method that enables verbose logging for the tester. Ignored if {@link #config(WireMockConfiguration)}
      * was called explicitly.
      */
-    public T verbose() {
+    public WireMockTester verbose() {
         this.verbose = true;
-        return (T) this;
+        return this;
     }
 
     @Override
@@ -98,8 +133,15 @@ public abstract class WireMockTester<T extends WireMockTester<T>> implements BQB
 
     @Override
     public void afterScope(BQTestScope scope, ExtensionContext context) {
-        if (wireMockServer != null) {
-            wireMockServer.shutdown();
+        if (server != null) {
+            server.shutdown();
+        }
+    }
+
+    @Override
+    public void afterMethod(BQTestScope scope, ExtensionContext context) throws IOException {
+        if (proxy != null) {
+            proxy.saveSnapshotIfNeeded(server, context);
         }
     }
 
@@ -121,19 +163,22 @@ public abstract class WireMockTester<T extends WireMockTester<T>> implements BQB
     /**
      * Returns the URL of the internal WireMock server.
      */
-    public abstract String getUrl();
+    public String getUrl() {
+        return ensureRunning().baseUrl();
+    }
 
     protected WireMockServer ensureRunning() {
-        if (wireMockServer == null) {
+        if (server == null) {
             synchronized (this) {
-                if (wireMockServer == null) {
-                    this.wireMockServer = createServer();
+                if (server == null) {
+                    this.server = createServer();
+                    installStubs();
                     startServer();
                 }
             }
         }
 
-        return wireMockServer;
+        return server;
     }
 
     protected WireMockConfiguration ensureServerConfig() {
@@ -141,10 +186,14 @@ public abstract class WireMockTester<T extends WireMockTester<T>> implements BQB
     }
 
     protected WireMockConfiguration createServerConfig() {
+
+        File filesRoot = this.filesRoot != null ? this.filesRoot : DEFAULT_FILES_ROOT;
+
         return WireMockConfiguration
                 .wireMockConfig()
                 .dynamicPort()
-                .notifier(new Slf4jNotifier(verbose));
+                .notifier(new Slf4jNotifier(verbose))
+                .usingFilesUnderDirectory(filesRoot.getAbsolutePath());
     }
 
     protected WireMockServer createServer() {
@@ -152,8 +201,16 @@ public abstract class WireMockTester<T extends WireMockTester<T>> implements BQB
         return new WireMockServer(config);
     }
 
+    protected void installStubs() {
+        stubs.forEach(server::addStubMapping);
+
+        if (proxy != null) {
+            server.addStubMapping(proxy.createStub(stubs));
+        }
+    }
+
     protected void startServer() {
-        wireMockServer.start();
-        LOGGER.info("WireMock started on port {}", wireMockServer.port());
+        server.start();
+        LOGGER.info("WireMock started on port {}", server.port());
     }
 }
