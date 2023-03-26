@@ -67,4 +67,14 @@ public class WireMockTester_Proxy_wPathIT extends TestWithEmulatedBackend {
 
         assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
     }
+
+    @Test
+    public void testTarget_wQuery() {
+        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").queryParam("q", "x");
+        JettyTester.assertOk(target.request().get())
+                .assertContentType(MediaType.TEXT_PLAIN)
+                .assertContent(c -> assertTrue(c.contains("get:p1:x")));
+
+        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
+    }
 }

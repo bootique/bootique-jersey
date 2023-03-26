@@ -60,6 +60,10 @@ public abstract class TestWithEmulatedBackend {
             .module(b -> JettyModule.extend(b).addFilter(counter, "counter", 0, "/*"))
             .createRuntime();
 
+    protected static int getMethodRequestCount() {
+        return counter.counter.get();
+    }
+
     @Path("")
     @Produces(MediaType.TEXT_PLAIN)
     public static class Resource {
@@ -72,8 +76,9 @@ public abstract class TestWithEmulatedBackend {
 
         @GET
         @Path("/p1")
-        public Response getPath() {
-            return Response.ok().entity("get:p1").build();
+        public Response getPath(@QueryParam("q") String q) {
+            String response = q != null ? "get:p1:" + q : "get:p1";
+            return Response.ok().entity(response).build();
         }
 
         @GET
@@ -81,10 +86,6 @@ public abstract class TestWithEmulatedBackend {
         public Response getSubPath() {
             return Response.ok().entity("get:p1:p11").build();
         }
-    }
-
-    protected static int getMethodRequestCount() {
-        return counter.counter.get();
     }
 
     public static class RequestCounter implements Filter, BQBeforeMethodCallback {

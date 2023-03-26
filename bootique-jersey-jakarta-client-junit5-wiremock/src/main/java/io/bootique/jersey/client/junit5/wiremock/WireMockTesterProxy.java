@@ -29,7 +29,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import java.util.List;
 import java.util.Objects;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.proxyAllTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 class WireMockTesterProxy {
 
@@ -61,7 +61,10 @@ class WireMockTesterProxy {
             }
         }
 
-        return proxyAllTo(originUrl).atPriority(maxPriority + 1).build();
+        return any(anyUrl())
+                .willReturn(aResponse().proxiedFrom(originUrl))
+                .atPriority(maxPriority + 1)
+                .build();
     }
 
     PostServeAction createSnapshotRecorder() {
