@@ -71,18 +71,20 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
 
     /**
      * A builder method that adds a special stub with minimal priority that will proxy all requests to the specified
-     * real backend service (aka "origin"). If "takeLocalSnapshots" is true, each proxy call will result in creation
-     * of a local snapshot file with the origin response. In this case all subsequent calls to this URL will result
-     * in responses generated locally without going to the proxied origin.
+     * real backend service (aka "origin"). If "takeLocalSnapshots" is true, after each proxy call a response snapshot
+     * will be captured and stored locally. Snapshots location is the folder configured per {@link #filesRoot(String)}.
+     * The effect of the capturing snapshots is that all subsequent calls to this URL will only work with local data
+     * and will not attempt to access remote URLs.
      */
-    public WireMockTester proxyTo(String proxyToUrl, boolean takeLocalSnapshots) {
-        this.proxy = new WireMockTesterProxy(proxyToUrl, takeLocalSnapshots);
+    public WireMockTester proxy(String originUrl, boolean takeLocalSnapshots) {
+        this.proxy = new WireMockTesterProxy(originUrl, takeLocalSnapshots);
         return this;
     }
 
     /**
-     * A builder method that establishes a local directory that will be used as a root for WireMock recording files.
-     * If not set, a default location will be picked automatically.
+     * A builder method that establishes a local directory that will be used as a root for local snapshots of WireMock
+     * responses. Either those recorded by the proxy feature (see {@link #proxy(String, boolean)}), or created manually.
+     * If not set, the default location of "src/main/resources" is used.
      */
     public WireMockTester filesRoot(String path) {
         this.filesRoot = path;

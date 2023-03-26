@@ -40,7 +40,7 @@ public class WireMockTester_ProxyToIT extends TestWithEmulatedBackend {
     static final WireMockTester tester = WireMockTester
             .create()
             .filesRoot("src/test/resources/wm16348")
-            .proxyTo(SERVER_URL, true);
+            .proxy(SERVER_URL, true);
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()

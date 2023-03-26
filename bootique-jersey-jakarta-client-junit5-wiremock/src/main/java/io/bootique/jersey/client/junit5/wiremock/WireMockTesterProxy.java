@@ -33,15 +33,15 @@ import static com.github.tomakehurst.wiremock.client.WireMock.proxyAllTo;
 
 class WireMockTesterProxy {
 
-    private final String proxyToUrl;
+    private final String originUrl;
     private final boolean takeLocalSnapshots;
     private final RecordSpec snapshotSpec;
 
-    public WireMockTesterProxy(String proxyToUrl, boolean takeLocalSnapshots) {
-        this.proxyToUrl = Objects.requireNonNull(proxyToUrl);
+    public WireMockTesterProxy(String originUrl, boolean takeLocalSnapshots) {
+        this.originUrl = Objects.requireNonNull(originUrl);
         this.takeLocalSnapshots = takeLocalSnapshots;
         this.snapshotSpec = new RecordSpecBuilder()
-                .forTarget(proxyToUrl)
+                .forTarget(originUrl)
                 .extractTextBodiesOver(9_999_999)
                 .extractBinaryBodiesOver(9_999_999)
                 .ignoreRepeatRequests()
@@ -61,7 +61,7 @@ class WireMockTesterProxy {
             }
         }
 
-        return proxyAllTo(proxyToUrl).atPriority(maxPriority + 1).build();
+        return proxyAllTo(originUrl).atPriority(maxPriority + 1).build();
     }
 
     PostServeAction createSnapshotRecorder() {

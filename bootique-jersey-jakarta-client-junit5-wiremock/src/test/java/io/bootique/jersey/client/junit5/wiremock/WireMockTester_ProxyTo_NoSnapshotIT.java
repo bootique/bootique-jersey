@@ -34,12 +34,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockTester_ProxyTo_NoSwnapshotIT extends TestWithEmulatedBackend {
+public class WireMockTester_ProxyTo_NoSnapshotIT extends TestWithEmulatedBackend {
 
     @BQTestTool
     static final WireMockTester tester = WireMockTester
             .create()
-            .proxyTo(SERVER_URL, false);
+            .proxy(SERVER_URL, false);
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()

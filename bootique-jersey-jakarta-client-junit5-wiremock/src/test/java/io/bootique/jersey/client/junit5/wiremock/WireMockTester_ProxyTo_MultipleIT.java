@@ -58,13 +58,13 @@ public class WireMockTester_ProxyTo_MultipleIT extends TestWithEmulatedBackend {
     static final WireMockTester tester1 = WireMockTester
             .create()
             .filesRoot("src/test/resources/wm16348")
-            .proxyTo(SERVER_URL, true);
+            .proxy(SERVER_URL, true);
 
     @BQTestTool
     static final WireMockTester tester2 = WireMockTester
             .create()
             .filesRoot("src/test/resources/wm16349")
-            .proxyTo(SERVER_URL2, true);
+            .proxy(SERVER_URL2, true);
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
