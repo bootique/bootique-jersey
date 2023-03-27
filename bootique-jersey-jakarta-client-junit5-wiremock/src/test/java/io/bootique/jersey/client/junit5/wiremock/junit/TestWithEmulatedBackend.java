@@ -33,8 +33,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.*;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.io.IOException;
@@ -67,6 +66,17 @@ public abstract class TestWithEmulatedBackend {
     @Path("")
     @Produces(MediaType.TEXT_PLAIN)
     public static class Resource {
+
+        @GET
+        @Path("redirect")
+        public Response redirect(@Context UriInfo uriInfo, @QueryParam("q") String q) {
+            UriBuilder uriBuilder = uriInfo.getBaseUriBuilder().path("p1");
+            if (q != null) {
+                uriBuilder.queryParam("q", q);
+            }
+            
+            return Response.temporaryRedirect(uriBuilder.build()).build();
+        }
 
         @GET
         public Response get(@QueryParam("q") String q) {

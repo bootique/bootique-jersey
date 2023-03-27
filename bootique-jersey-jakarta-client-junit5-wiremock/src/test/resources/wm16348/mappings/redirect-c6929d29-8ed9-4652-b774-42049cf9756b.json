@@ -1,0 +1,18 @@
+{
+  "id" : "c6929d29-8ed9-4652-b774-42049cf9756b",
+  "name" : "redirect",
+  "request" : {
+    "url" : "/redirect?q=redirect-test",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 307,
+    "headers" : {
+      "Date" : "Mon, 27 Mar 2023 11:49:00 GMT",
+      "Location" : "http://localhost:16348/p1?q=redirect-test"
+    }
+  },
+  "uuid" : "c6929d29-8ed9-4652-b774-42049cf9756b",
+  "persistent" : true,
+  "insertionIndex" : 4
+}
