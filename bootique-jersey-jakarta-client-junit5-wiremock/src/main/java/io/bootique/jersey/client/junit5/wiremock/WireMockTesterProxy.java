@@ -34,25 +34,15 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 class WireMockTesterProxy {
 
     private final String originUrl;
-    private final boolean takeLocalSnapshots;
-    private final RecordSpec snapshotSpec;
 
-    public WireMockTesterProxy(String originUrl, boolean takeLocalSnapshots) {
+    public WireMockTesterProxy(String originUrl) {
         this.originUrl = Objects.requireNonNull(originUrl);
-        this.takeLocalSnapshots = takeLocalSnapshots;
-        this.snapshotSpec = new RecordSpecBuilder()
-                .forTarget(originUrl)
-                .extractTextBodiesOver(9_999_999)
-                .extractBinaryBodiesOver(9_999_999)
-                .ignoreRepeatRequests()
-                .makeStubsPersistent(true)
-                .build();
     }
 
     StubMapping createStub(List<StubMapping> afterStubs) {
 
-        // proxy stub is a "catch all" stub. So its priority value must be higher (i.e. lower priority)
-        // than all the explicit stubs
+        // proxy stub is a "catch all" stub. So its priority number must be higher (i.e. lower priority)
+        // than that of the other stubs
 
         int maxPriority = StubMapping.DEFAULT_PRIORITY;
         for (StubMapping s : afterStubs) {
@@ -67,8 +57,21 @@ class WireMockTesterProxy {
                 .build();
     }
 
+    RecordSpec createSnapshotSpec() {
+        return new RecordSpecBuilder()
+                .forTarget(originUrl)
+                .extractTextBodiesOver(9_999_999)
+                .extractBinaryBodiesOver(9_999_999)
+                .ignoreRepeatRequests()
+                .makeStubsPersistent(true)
+                .build();
+    }
+
     PostServeAction createSnapshotRecorder() {
         return new PostServeAction() {
+
+            final RecordSpec snapshotSpec = createSnapshotSpec();
+
             @Override
             public String getName() {
                 return "bq-snapshot-recorder";
@@ -76,18 +79,13 @@ class WireMockTesterProxy {
 
             @Override
             public void doGlobalAction(ServeEvent serveEvent, Admin admin) {
-                saveSnapshotIfNeeded(admin);
+                admin.getOptions().filesRoot().child(WireMockApp.MAPPINGS_ROOT).createIfNecessary();
+                admin.snapshotRecord(snapshotSpec);
+
+                // without a reset "admin" would accumulate already saved snapshots, so save #2,3, etc. would result in
+                // duplicates
+                admin.resetRequests();
             }
         };
-    }
-
-    private void saveSnapshotIfNeeded(Admin admin) {
-        if (takeLocalSnapshots) {
-            admin.getOptions().filesRoot().child(WireMockApp.MAPPINGS_ROOT).createIfNecessary();
-            admin.snapshotRecord(snapshotSpec);
-
-            // this will allow
-            admin.resetRequests();
-        }
     }
 }

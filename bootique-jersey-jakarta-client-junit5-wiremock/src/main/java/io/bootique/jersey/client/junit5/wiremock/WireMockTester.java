@@ -95,8 +95,8 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
      */
     // TODO: see the limitation above ... devise a WireMock or Bootique fix for it
     public WireMockTester proxy(String originUrl, boolean takeLocalSnapshots) {
-        this.proxy = new WireMockTesterProxy(originUrl, takeLocalSnapshots);
-        return extension(proxy.createSnapshotRecorder());
+        this.proxy = new WireMockTesterProxy(originUrl);
+        return takeLocalSnapshots ? extension(proxy.createSnapshotRecorder()) : this;
     }
 
     /**
