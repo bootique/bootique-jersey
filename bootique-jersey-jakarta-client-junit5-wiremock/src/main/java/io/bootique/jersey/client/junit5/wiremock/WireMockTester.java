@@ -146,10 +146,12 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
     }
 
     /**
-     * Returns a Bootique module that can be used to configure a named Jersey client "target" in test {@link io.bootique.BQRuntime}.
-     * This method can be used to initialize one or more BQRuntimes in a test class, so that they can share the Wiremock instance.
+     * Returns a Bootique module that forces a named Jersey client "target" in a test {@link io.bootique.BQRuntime}
+     * to read data from WireMock instead of a real URL. Multiple test BQRuntimes can be initialized from a single
+     * WireMockTester instance if needed.
      *
-     * @param targetName the name of the mapped target in {@link io.bootique.jersey.client.HttpTargets}.
+     * @param targetName the name of the mapped target in {@link io.bootique.jersey.client.HttpTargets} that should be
+     *                   routed to WireMock
      */
     public BQModule moduleWithTestTarget(String targetName) {
         String propName = "bq.jerseyclient.targets." + targetName + ".url";
