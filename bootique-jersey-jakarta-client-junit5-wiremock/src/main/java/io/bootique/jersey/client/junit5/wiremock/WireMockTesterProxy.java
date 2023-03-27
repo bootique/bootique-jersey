@@ -81,7 +81,7 @@ class WireMockTesterProxy {
         };
     }
 
-    void saveSnapshotIfNeeded(Admin admin) {
+    private void saveSnapshotIfNeeded(Admin admin) {
         if (takeLocalSnapshots) {
             admin.getOptions().filesRoot().child(WireMockApp.MAPPINGS_ROOT).createIfNecessary();
             admin.snapshotRecord(snapshotSpec);

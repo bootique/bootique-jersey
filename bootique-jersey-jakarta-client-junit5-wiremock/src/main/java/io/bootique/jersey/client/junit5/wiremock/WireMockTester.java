@@ -22,6 +22,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.common.Slf4jNotifier;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.extension.Extension;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import io.bootique.BQCoreModule;
 import io.bootique.di.BQModule;
@@ -49,6 +50,7 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
     private static final Logger LOGGER = LoggerFactory.getLogger(WireMockTester.class);
 
     private final List<StubMapping> stubs;
+    private final List<Extension> extensions;
     private boolean verbose;
     private WireMockTesterProxy proxy;
     private String filesRoot;
@@ -62,10 +64,19 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
 
     protected WireMockTester() {
         this.stubs = new ArrayList<>();
+        this.extensions = new ArrayList<>();
     }
 
     public WireMockTester stub(MappingBuilder mappingBuilder) {
         this.stubs.add(mappingBuilder.build());
+        return this;
+    }
+
+    /**
+     * Adds a WireMock extension to the tester allowing the user to customize responses, react to WireMock events, etc.
+     */
+    public WireMockTester extension(Extension extension) {
+        this.extensions.add(extension);
         return this;
     }
 
@@ -85,7 +96,7 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
     // TODO: see the limitation above ... devise a WireMock or Bootique fix for it
     public WireMockTester proxy(String originUrl, boolean takeLocalSnapshots) {
         this.proxy = new WireMockTesterProxy(originUrl, takeLocalSnapshots);
-        return this;
+        return extension(proxy.createSnapshotRecorder());
     }
 
     /**
@@ -184,9 +195,8 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
             config.usingFilesUnderDirectory(filesRoot);
         }
 
-        if (proxy != null) {
-            // this will result in snapshot recording after every request
-            config.extensions(proxy.createSnapshotRecorder());
+        if (!extensions.isEmpty()) {
+            config.extensions(extensions.toArray(new Extension[0]));
         }
 
         return configCustomizer != null ? configCustomizer.apply(config) : config;
@@ -201,6 +211,8 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
     protected void installStubs(WireMockServer server) {
         stubs.forEach(server::addStubMapping);
 
+        // this should be done only after all user-provided stubs are known to the tester, as the proxy stub must
+        // have the lowest priority to act as a "catch-all" rule
         if (proxy != null) {
             server.addStubMapping(proxy.createStub(stubs));
         }
