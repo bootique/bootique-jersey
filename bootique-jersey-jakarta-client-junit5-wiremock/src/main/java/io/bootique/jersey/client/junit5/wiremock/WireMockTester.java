@@ -173,11 +173,8 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
         if (server == null) {
             synchronized (this) {
                 if (server == null) {
-
-                    WireMockConfiguration config = createServerConfig();
-                    WireMockServer server = createServer(config);
+                    WireMockServer server = createServer(createServerConfig(), createStubs());
                     startServer(server);
-
                     this.server = server;
                 }
             }
@@ -204,20 +201,26 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
         return configCustomizer != null ? configCustomizer.apply(config) : config;
     }
 
-    protected WireMockServer createServer(WireMockConfiguration config) {
-        WireMockServer server = new WireMockServer(config);
-        installStubs(server);
-        return server;
+    protected List<StubMapping> createStubs() {
+
+        if (proxy == null) {
+            return this.stubs;
+        }
+
+        List<StubMapping> allStubs = new ArrayList<>(stubs.size() + 1);
+        allStubs.addAll(this.stubs);
+
+        // A proxy stub should be added only after all user-provided stubs are known to the Tester,
+        // as the proxy stub must have the lowest priority to act as a "catch-all" rule
+        allStubs.add(proxy.createStub(stubs));
+
+        return allStubs;
     }
 
-    protected void installStubs(WireMockServer server) {
+    protected WireMockServer createServer(WireMockConfiguration config, List<StubMapping> stubs) {
+        WireMockServer server = new WireMockServer(config);
         stubs.forEach(server::addStubMapping);
-
-        // this should be done only after all user-provided stubs are known to the tester, as the proxy stub must
-        // have the lowest priority to act as a "catch-all" rule
-        if (proxy != null) {
-            server.addStubMapping(proxy.createStub(stubs));
-        }
+        return server;
     }
 
     protected void startServer(WireMockServer server) {
