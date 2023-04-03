@@ -146,14 +146,14 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
      * <p>1st request went to wiremock proxy, as expected:
      * <p>GET http://{wiremock_host}:{wiremock_port}/path1/?q=a --&gt; 307 "headers" : {"Location": "http://example.org/path2/?q=a"}
      * <p>2nd request was executed based on url from "Location" header, bypassing proxy:
-     * <p>GET http://example.org/path2/?q=a --> 404
+     * <p>GET http://example.org/path2/?q=a --&gt; 404
      *
      * <p> <strong>Rewrite redirect example:</strong>
      * <p>WireMockTester.create().proxy("http://example.org", true).rewriteRedirectLocation();
      * <p>1st request went to wiremock proxy:
-     * <p>GET http://{wiremock_host}:{wiremock_port}/path1/?q=a --&gt 307 "headers" : {"Location": "http://example.org/path2/?q=a"}
+     * <p>GET http://{wiremock_host}:{wiremock_port}/path1/?q=a --&gt; 307 "headers" : {"Location": "http://example.org/path2/?q=a"}
      * <p>2nd request went to proxy as well, because "Location" header value was rewritten
-     * <p>GET http://{wiremock_host}:{wiremock_port}/path2/?q=a --&gt ... (matches proxy)
+     * <p>GET http://{wiremock_host}:{wiremock_port}/path2/?q=a --&gt; ... (matches proxy)
      */
     public WireMockTester rewriteRedirectLocation() {
         if (originUrl == null) {
