@@ -136,9 +136,10 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
     }
 
     /**
-     * A builder method that allows to support (take snapshots and execute stubs) scenarios when origin responds with 3xx redirect that points to same origin.
-     * It's basically a workaround caused by wiremock bug. Because, due to the current wiremock implementation (version=3.0.0-beta-5) client will be redirected to url from "Location" header, instead of proxy.
-     * In general, this method rewrites "Location" header with url that points to proxy, but it keeps original "Location" header in snapshot files.
+     * A builder method that enables proper handling of redirects within the same origin when taking snapshots. It's a
+     * workaround for a WireMock proxy limitation. With the current version of WireMock the client will be redirected
+     * to the url from the original "Location" header, instead of the proxy URL. This method causes rewriting "Location"
+     * header with a URL that points to the proxy, but keeps the original "Location" header in snapshot files.
      *
      * <p> <strong>Wiremock default behaviour example:</strong>
      * <p>WireMockTester.create().proxy("http://example.org", true);
@@ -153,7 +154,7 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
      * <p>GET http://{wiremock_host}:{wiremock_port}/path1/?q=a --> 307 "headers" : {"Location": "http://example.org/path2/?q=a"}
      * <p>2nd request went to proxy as well, because "Location" header value was rewritten
      * <p>GET http://{wiremock_host}:{wiremock_port}/path2/?q=a --> ... (matches proxy)
-     * */
+     */
     public WireMockTester rewriteRedirectLocation() {
         if (originUrl == null) {
             return this;

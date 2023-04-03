@@ -1,25 +1,39 @@
+/*
+ * Licensed to ObjectStyle LLC under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ObjectStyle LLC licenses
+ * this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package io.bootique.jersey.client.junit5.wiremock;
 
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.extension.ResponseTransformer;
 import com.github.tomakehurst.wiremock.extension.StubMappingTransformer;
-import com.github.tomakehurst.wiremock.http.Body;
-import com.github.tomakehurst.wiremock.http.HttpHeader;
-import com.github.tomakehurst.wiremock.http.HttpHeaders;
-import com.github.tomakehurst.wiremock.http.Request;
-import com.github.tomakehurst.wiremock.http.Response;
-import com.github.tomakehurst.wiremock.http.ResponseDefinition;
+import com.github.tomakehurst.wiremock.http.*;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.github.tomakehurst.wiremock.http.HttpHeader.httpHeader;
 import static com.github.tomakehurst.wiremock.http.HttpStatus.isRedirection;
 
-public class WireMockRedirectRewriter {
+class WireMockRedirectRewriter {
     private static final String LOCATION_HEADER_KEY = "Location";
     private static final String BOUTIQUE_ORIGINAL_LOCATION_HEADER_KEY = "BQ-Original-Location";
 
@@ -29,12 +43,11 @@ public class WireMockRedirectRewriter {
         this.targetUrl = targetUrl;
     }
 
-
     /**
-     *  1. Saves value from the "Location" header to the temporary header "BQ-Original-Location".
-     *  2. Builds a new redirect location that points to wiremock proxy, and saves it to "Location" header.
-     *  Is executed on every response.
-     * */
+     * 1. Saves value from the "Location" header to the temporary header "BQ-Original-Location".
+     * 2. Builds a new redirect location that points to wiremock proxy, and saves it to "Location" header.
+     * Is executed on every response.
+     */
     public ResponseTransformer injector() {
         return new ResponseTransformer() {
 
@@ -47,22 +60,10 @@ public class WireMockRedirectRewriter {
                 HttpHeaders headers = response.getHeaders();
                 HttpHeader locationHeader = headers.getHeader(LOCATION_HEADER_KEY);
 
-                //checking that redirect belongs to target resource
-                if (locationHeader.isPresent() && locationHeader.firstValue().startsWith(targetUrl)) {
-
-                    URI requestUri = URI.create(request.getAbsoluteUrl());
-
-                    URI proxiedRedirectUrl = replaceSchemeAndAuthority(
-                            URI.create(locationHeader.firstValue()), requestUri.getScheme(), requestUri.getRawAuthority());
-
-                    var newHeaders = overrideLocationHeaders(headers, proxiedRedirectUrl.toString())
-                            .plus(httpHeader(BOUTIQUE_ORIGINAL_LOCATION_HEADER_KEY, locationHeader.firstValue()));
-
-                    return Response.Builder.like(response)
-                            .but().headers(newHeaders)
-                            .build();
-                }
-                return response;
+                // checking that redirect belongs to target resource
+                return locationHeader.isPresent() && locationHeader.firstValue().startsWith(targetUrl)
+                        ? rewriteRedirectResponse(request, response)
+                        : response;
             }
 
             @Override
@@ -70,6 +71,24 @@ public class WireMockRedirectRewriter {
                 return "bq-original-location-injector";
             }
 
+            private Response rewriteRedirectResponse(Request request, Response response) {
+
+                HttpHeaders headers = response.getHeaders();
+                HttpHeader locationHeader = headers.getHeader(LOCATION_HEADER_KEY);
+
+                URI requestUri = URI.create(request.getAbsoluteUrl());
+
+                URI proxiedRedirectUrl = replaceSchemeAndAuthority(
+                        URI.create(locationHeader.firstValue()), requestUri.getScheme(), requestUri.getRawAuthority());
+
+                HttpHeaders newHeaders = overrideLocationHeaders(headers, proxiedRedirectUrl.toString())
+                        .plus(httpHeader(BOUTIQUE_ORIGINAL_LOCATION_HEADER_KEY, locationHeader.firstValue()));
+
+                return Response.Builder.like(response)
+                        .but()
+                        .headers(newHeaders)
+                        .build();
+            }
 
             private URI replaceSchemeAndAuthority(URI source, String newScheme, String newAuthority) {
                 try {
@@ -83,9 +102,9 @@ public class WireMockRedirectRewriter {
 
 
     /**
-     *  Reverts the "Location" redirect URL back to original and removes temporary "BQ-Original-Location" header.
-     *  Is executed after {@link #injector()} right before saving snapshot to file. It isn't executed when reading from cached files.
-     * */
+     * Reverts the "Location" redirect URL back to original and removes temporary "BQ-Original-Location" header.
+     * Is executed after {@link #injector()} right before saving snapshot to file. It isn't executed when reading from cached files.
+     */
     public StubMappingTransformer replacer() {
 
         return new StubMappingTransformer() {
@@ -136,7 +155,9 @@ public class WireMockRedirectRewriter {
 
 
     private static HttpHeaders overrideLocationHeaders(HttpHeaders headers, String newLocation) {
-        var filtered = headers.all().stream()
+        List<HttpHeader> filtered = headers
+                .all()
+                .stream()
                 .filter(it -> !(LOCATION_HEADER_KEY.equals(it.key()) || BOUTIQUE_ORIGINAL_LOCATION_HEADER_KEY.equals(it.key())))
                 .collect(Collectors.toList());
 

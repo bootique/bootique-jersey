@@ -8,6 +8,7 @@
 * #71 Stubbing support in WireMockTester
 * #72 WireMockTester - explicit method to turn on verbose logging 
 * #73 Replace "recording" WireMockTester with proxy/snapshot
+* #74 WireMock: support http redirects to same origin
 
 ## 3.0.M1
 
