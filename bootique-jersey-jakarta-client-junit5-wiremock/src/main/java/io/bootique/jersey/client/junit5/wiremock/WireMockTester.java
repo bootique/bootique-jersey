@@ -52,6 +52,7 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
     private final List<StubMapping> stubs;
     private final List<Extension> extensions;
     private boolean verbose;
+    private String originUrl;
     private WireMockTesterProxy proxy;
     private String filesRoot;
     private UnaryOperator<WireMockConfiguration> configCustomizer;
@@ -95,6 +96,7 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
      */
     // TODO: see the limitation above ... devise a WireMock or Bootique fix for it
     public WireMockTester proxy(String originUrl, boolean takeLocalSnapshots) {
+        this.originUrl = originUrl;
         this.proxy = new WireMockTesterProxy(originUrl);
         return takeLocalSnapshots ? extension(proxy.createSnapshotRecorder()) : this;
     }
@@ -131,6 +133,34 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
     public WireMockTester verbose() {
         this.verbose = true;
         return this;
+    }
+
+    /**
+     * A builder method that allows to support (take snapshots and execute stubs) scenarios when origin responds with 3xx redirect that points to same origin.
+     * It's basically a workaround caused by wiremock bug. Because, due to the current wiremock implementation (version=3.0.0-beta-5) client will be redirected to url from "Location" header, instead of proxy.
+     * In general, this method rewrites "Location" header with url that points to proxy, but it keeps original "Location" header in snapshot files.
+     *
+     * <p> <strong>Wiremock default behaviour example:</strong>
+     * <p>WireMockTester.create().proxy("http://example.org", true);
+     * <p>1st request went to wiremock proxy, as expected:
+     * <p>GET http://{wiremock_host}:{wiremock_port}/path1/?q=a --> 307 "headers" : {"Location": "http://example.org/path2/?q=a"}
+     * <p>2nd request was executed based on url from "Location" header, bypassing proxy:
+     * <p>GET http://example.org/path2/?q=a --> 404
+     *
+     * <p> <strong>Rewrite redirect example:</strong>
+     * <p>WireMockTester.create().proxy("http://example.org", true).rewriteRedirectLocation();
+     * <p>1st request went to wiremock proxy:
+     * <p>GET http://{wiremock_host}:{wiremock_port}/path1/?q=a --> 307 "headers" : {"Location": "http://example.org/path2/?q=a"}
+     * <p>2nd request went to proxy as well, because "Location" header value was rewritten
+     * <p>GET http://{wiremock_host}:{wiremock_port}/path2/?q=a --> ... (matches proxy)
+     * */
+    public WireMockTester rewriteRedirectLocation() {
+        if (originUrl == null) {
+            return this;
+        }
+
+        var rewriter = new WireMockRedirectRewriter(originUrl);
+        return extension(rewriter.injector()).extension(rewriter.replacer());
     }
 
     @Override

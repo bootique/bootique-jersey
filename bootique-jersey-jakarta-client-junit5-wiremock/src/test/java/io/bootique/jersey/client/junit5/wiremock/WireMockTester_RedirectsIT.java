@@ -27,7 +27,6 @@ import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTestTool;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,7 +37,8 @@ public class WireMockTester_RedirectsIT extends TestWithEmulatedBackend {
     static final WireMockTester tester = WireMockTester
             .create()
             .filesRoot("src/test/resources/wm16348")
-            .proxy(SERVER_URL, true);
+            .proxy(SERVER_URL, true)
+            .rewriteRedirectLocation();
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
@@ -46,7 +46,6 @@ public class WireMockTester_RedirectsIT extends TestWithEmulatedBackend {
             .module(tester.moduleWithTestTarget("tester"))
             .createRuntime();
 
-    @Disabled
     @Test
     public void testRedirect() {
         WebTarget target = app.getInstance(HttpTargets.class)
