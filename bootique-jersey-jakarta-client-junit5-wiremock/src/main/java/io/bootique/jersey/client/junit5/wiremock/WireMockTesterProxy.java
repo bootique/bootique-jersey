@@ -18,12 +18,10 @@
  */
 package io.bootique.jersey.client.junit5.wiremock;
 
-import com.github.tomakehurst.wiremock.core.Admin;
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockApp;
-import com.github.tomakehurst.wiremock.extension.PostServeAction;
 import com.github.tomakehurst.wiremock.recording.RecordSpec;
 import com.github.tomakehurst.wiremock.recording.RecordSpecBuilder;
-import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 import java.util.List;
@@ -67,25 +65,11 @@ class WireMockTesterProxy {
                 .build();
     }
 
-    PostServeAction createSnapshotRecorder() {
-        return new PostServeAction() {
+    final RecordSpec snapshotSpec = createSnapshotSpec();
 
-            final RecordSpec snapshotSpec = createSnapshotSpec();
-
-            @Override
-            public String getName() {
-                return "bq-snapshot-recorder";
-            }
-
-            @Override
-            public void doGlobalAction(ServeEvent serveEvent, Admin admin) {
-                admin.getOptions().filesRoot().child(WireMockApp.MAPPINGS_ROOT).createIfNecessary();
-                admin.snapshotRecord(snapshotSpec);
-
-                // without a reset "admin" would accumulate already saved snapshots, so save #2,3, etc. would result in
-                // duplicates
-                admin.resetRequests();
-            }
-        };
+    void snapshotRecords(WireMockServer server) {
+        server.getOptions().filesRoot().child(WireMockApp.MAPPINGS_ROOT).createIfNecessary();
+        server.snapshotRecord(snapshotSpec);
+        server.resetRequests();
     }
 }

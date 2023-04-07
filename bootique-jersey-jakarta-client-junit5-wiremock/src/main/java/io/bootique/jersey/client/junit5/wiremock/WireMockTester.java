@@ -27,6 +27,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import io.bootique.BQCoreModule;
 import io.bootique.di.BQModule;
 import io.bootique.junit5.BQTestScope;
+import io.bootique.junit5.scope.BQAfterMethodCallback;
 import io.bootique.junit5.scope.BQAfterScopeCallback;
 import io.bootique.junit5.scope.BQBeforeScopeCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -45,14 +46,14 @@ import java.util.function.UnaryOperator;
  *
  * @since 3.0
  */
-public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallback {
+public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallback, BQAfterMethodCallback {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WireMockTester.class);
 
     private final List<StubMapping> stubs;
     private final List<Extension> extensions;
     private boolean verbose;
-    private String originUrl;
+    private boolean takeLocalSnapshots = true;
     private WireMockTesterProxy proxy;
     private String filesRoot;
     private UnaryOperator<WireMockConfiguration> configCustomizer;
@@ -96,9 +97,39 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
      */
     // TODO: see the limitation above ... devise a WireMock or Bootique fix for it
     public WireMockTester proxy(String originUrl, boolean takeLocalSnapshots) {
-        this.originUrl = originUrl;
+        this.takeLocalSnapshots = takeLocalSnapshots;
+        return proxy(originUrl, takeLocalSnapshots, true);
+    }
+
+    /**
+     * @param rewriteRedirectLocation enables proper handling of redirects within the same origin when taking snapshots. It's a
+     * workaround for a WireMock proxy limitation. With the current version of WireMock the client will be redirected
+     * to the url from the original "Location" header, instead of the proxy URL. This method causes rewriting "Location"
+     * header with a URL that points to the proxy, but keeps the original "Location" header in snapshot files.
+     *
+     * <p> <strong>Wiremock default behaviour example:</strong>
+     * <p>WireMockTester.create().proxy("http://example.org", true);
+     * <p>1st request went to wiremock proxy, as expected:
+     * <p>GET http://{wiremock_host}:{wiremock_port}/path1/?q=a --&gt; 307 "headers" : {"Location": "http://example.org/path2/?q=a"}
+     * <p>2nd request was executed based on url from "Location" header, bypassing proxy:
+     * <p>GET http://example.org/path2/?q=a --&gt; 404
+     *
+     * <p> <strong>Rewrite redirect example:</strong>
+     * <p>WireMockTester.create().proxy("http://example.org", true).rewriteRedirectLocation();
+     * <p>1st request went to wiremock proxy:
+     * <p>GET http://{wiremock_host}:{wiremock_port}/path1/?q=a --&gt; 307 "headers" : {"Location": "http://example.org/path2/?q=a"}
+     * <p>2nd request went to proxy as well, because "Location" header value was rewritten
+     * <p>GET http://{wiremock_host}:{wiremock_port}/path2/?q=a --&gt; ... (matches proxy)
+     */
+    public WireMockTester proxy(String originUrl, boolean takeLocalSnapshots, boolean rewriteRedirectLocation) {
         this.proxy = new WireMockTesterProxy(originUrl);
-        return takeLocalSnapshots ? extension(proxy.createSnapshotRecorder()) : this;
+        this.takeLocalSnapshots = takeLocalSnapshots;
+
+        if (takeLocalSnapshots && rewriteRedirectLocation) {
+            var rewriter = new WireMockRedirectRewriter(originUrl);
+            extension(rewriter.injector()).extension(rewriter.replacer());
+        }
+        return this;
     }
 
     /**
@@ -135,35 +166,6 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
         return this;
     }
 
-    /**
-     * A builder method that enables proper handling of redirects within the same origin when taking snapshots. It's a
-     * workaround for a WireMock proxy limitation. With the current version of WireMock the client will be redirected
-     * to the url from the original "Location" header, instead of the proxy URL. This method causes rewriting "Location"
-     * header with a URL that points to the proxy, but keeps the original "Location" header in snapshot files.
-     *
-     * <p> <strong>Wiremock default behaviour example:</strong>
-     * <p>WireMockTester.create().proxy("http://example.org", true);
-     * <p>1st request went to wiremock proxy, as expected:
-     * <p>GET http://{wiremock_host}:{wiremock_port}/path1/?q=a --&gt; 307 "headers" : {"Location": "http://example.org/path2/?q=a"}
-     * <p>2nd request was executed based on url from "Location" header, bypassing proxy:
-     * <p>GET http://example.org/path2/?q=a --&gt; 404
-     *
-     * <p> <strong>Rewrite redirect example:</strong>
-     * <p>WireMockTester.create().proxy("http://example.org", true).rewriteRedirectLocation();
-     * <p>1st request went to wiremock proxy:
-     * <p>GET http://{wiremock_host}:{wiremock_port}/path1/?q=a --&gt; 307 "headers" : {"Location": "http://example.org/path2/?q=a"}
-     * <p>2nd request went to proxy as well, because "Location" header value was rewritten
-     * <p>GET http://{wiremock_host}:{wiremock_port}/path2/?q=a --&gt; ... (matches proxy)
-     */
-    public WireMockTester rewriteRedirectLocation() {
-        if (originUrl == null) {
-            return this;
-        }
-
-        var rewriter = new WireMockRedirectRewriter(originUrl);
-        return extension(rewriter.injector()).extension(rewriter.replacer());
-    }
-
     @Override
     public void beforeScope(BQTestScope scope, ExtensionContext context) {
         ensureRunning();
@@ -173,6 +175,13 @@ public class WireMockTester implements BQBeforeScopeCallback, BQAfterScopeCallba
     public void afterScope(BQTestScope scope, ExtensionContext context) {
         if (server != null) {
             server.shutdown();
+        }
+    }
+
+    @Override
+    public void afterMethod(BQTestScope bqTestScope, ExtensionContext extensionContext) throws Exception {
+        if (server != null && proxy != null && takeLocalSnapshots) {
+            proxy.snapshotRecords(server);
         }
     }
 

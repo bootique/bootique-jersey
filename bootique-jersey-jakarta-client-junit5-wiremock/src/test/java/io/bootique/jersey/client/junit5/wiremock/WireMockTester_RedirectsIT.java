@@ -37,8 +37,7 @@ public class WireMockTester_RedirectsIT extends TestWithEmulatedBackend {
     static final WireMockTester tester = WireMockTester
             .create()
             .filesRoot("src/test/resources/wm16348")
-            .proxy(SERVER_URL, true)
-            .rewriteRedirectLocation();
+            .proxy(SERVER_URL, true);
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
