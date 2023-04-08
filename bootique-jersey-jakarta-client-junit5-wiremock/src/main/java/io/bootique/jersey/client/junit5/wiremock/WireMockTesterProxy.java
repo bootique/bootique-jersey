@@ -32,9 +32,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 class WireMockTesterProxy {
 
     private final String originUrl;
+    private final RecordSpec snapshotSpec;
 
     public WireMockTesterProxy(String originUrl) {
         this.originUrl = Objects.requireNonNull(originUrl);
+        this.snapshotSpec = createSnapshotSpec();
     }
 
     StubMapping createStub(List<StubMapping> afterStubs) {
@@ -65,11 +67,12 @@ class WireMockTesterProxy {
                 .build();
     }
 
-    final RecordSpec snapshotSpec = createSnapshotSpec();
-
     void snapshotRecords(WireMockServer server) {
         server.getOptions().filesRoot().child(WireMockApp.MAPPINGS_ROOT).createIfNecessary();
         server.snapshotRecord(snapshotSpec);
+
+        // without a reset "admin" would accumulate already saved snapshots,
+        // so save #2,3, etc. would result in duplicates
         server.resetRequests();
     }
 }

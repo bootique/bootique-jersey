@@ -9,6 +9,7 @@
 * #72 WireMockTester - explicit method to turn on verbose logging 
 * #73 Replace "recording" WireMockTester with proxy/snapshot
 * #74 WireMock: support http redirects to same origin
+* #75 WireMock: avoid snapshots duplication
 
 ## 3.0.M1
 
