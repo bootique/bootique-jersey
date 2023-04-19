@@ -24,7 +24,7 @@ import io.bootique.annotation.BQConfigProperty;
 import io.bootique.di.BQInject;
 import io.bootique.di.Injector;
 import io.bootique.jersey.client.auth.AuthenticatorFactory;
-import io.bootique.jersey.client.log.RequestLoggingFilter;
+import io.bootique.jersey.client.log.RequestLogger;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Feature;
@@ -188,7 +188,7 @@ public class HttpClientFactoryFactory {
     }
 
     protected void configRequestLogging(ClientConfig config) {
-        config.register(new RequestLoggingFilter());
+        config.register(new RequestLogger());
     }
 
     protected Map<String, Supplier<WebTarget>> createNamedTargets(HttpClientFactory clientFactory) {

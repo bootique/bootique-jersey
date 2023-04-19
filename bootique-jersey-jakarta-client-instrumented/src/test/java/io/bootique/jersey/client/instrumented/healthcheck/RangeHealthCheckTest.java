@@ -2,7 +2,7 @@ package io.bootique.jersey.client.instrumented.healthcheck;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import io.bootique.jersey.client.instrumented.ClientTimingFilter;
+import io.bootique.jersey.client.instrumented.RequestTimer;
 import io.bootique.jersey.client.instrumented.threshold.JerseyHealthChecks;
 import io.bootique.jersey.client.instrumented.threshold.ThresholdHealthCheckFactory;
 import io.bootique.metrics.health.HealthCheckOutcome;
@@ -31,7 +31,7 @@ public class RangeHealthCheckTest {
 
         healthCheckFactory.setTimeRequestsThresholds(timeRequestsThresholds);
 
-        Mockito.when(registry.timer(ClientTimingFilter.TIMER_NAME)).thenReturn(Mockito.mock(Timer.class));
+        Mockito.when(registry.timer(RequestTimer.TIMER_NAME)).thenReturn(Mockito.mock(Timer.class));
 
         JerseyHealthChecks rangeHealthCheck = healthCheckFactory.createThresholdHealthCheck(registry);
         this.healthCheckRegistry = new HealthCheckRegistry(rangeHealthCheck.getHealthChecks());
@@ -39,7 +39,7 @@ public class RangeHealthCheckTest {
 
     @Test
     public void testRange_1() {
-        Timer timer = registry.timer(ClientTimingFilter.TIMER_NAME);
+        Timer timer = registry.timer(RequestTimer.TIMER_NAME);
         
         Mockito.when(timer.getOneMinuteRate()).thenReturn(0.009);
         HealthCheckOutcome outcome = healthCheckRegistry.runHealthCheck(THRESHOLD_REQUESTS_CHECK);
@@ -50,7 +50,7 @@ public class RangeHealthCheckTest {
 
     @Test
     public void testRange_2() {
-        Timer timer = registry.timer(ClientTimingFilter.TIMER_NAME);
+        Timer timer = registry.timer(RequestTimer.TIMER_NAME);
 
         Mockito.when(timer.getOneMinuteRate()).thenReturn(0.03);
         HealthCheckOutcome range = healthCheckRegistry.runHealthCheck(THRESHOLD_REQUESTS_CHECK);
@@ -60,7 +60,7 @@ public class RangeHealthCheckTest {
 
     @Test
     public void testRange_3() {
-        Timer timer = registry.timer(ClientTimingFilter.TIMER_NAME);
+        Timer timer = registry.timer(RequestTimer.TIMER_NAME);
 
         Mockito.when(timer.getOneMinuteRate()).thenReturn(0.06);
         HealthCheckOutcome range = healthCheckRegistry.runHealthCheck(THRESHOLD_REQUESTS_CHECK);

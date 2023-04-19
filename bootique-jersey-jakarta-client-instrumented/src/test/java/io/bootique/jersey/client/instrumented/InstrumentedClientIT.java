@@ -25,7 +25,6 @@ import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jersey.client.HttpClientFactory;
-import io.bootique.jersey.client.instrumented.ClientTimingFilter;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.connector.PortFinder;
 import io.bootique.jetty.junit5.JettyTester;
@@ -85,7 +84,7 @@ public class InstrumentedClientIT {
     @Test
     public void testMetrics() {
         // fault filter to init metrics
-        client.getInstance(ClientTimingFilter.class);
+        client.getInstance(RequestTimer.class);
         MetricRegistry metricRegistry = client.getInstance(MetricRegistry.class);
         Set<String> expectedTimers = new HashSet<>(asList("bq.JerseyClient.Client.RequestTimer"));
         assertEquals(expectedTimers, metricRegistry.getTimers().keySet());

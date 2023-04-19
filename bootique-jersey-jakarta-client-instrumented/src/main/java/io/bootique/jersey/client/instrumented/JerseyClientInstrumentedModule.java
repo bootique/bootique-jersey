@@ -46,14 +46,14 @@ public class JerseyClientInstrumentedModule extends ConfigModule {
 
     @Provides
     @Singleton
-    InstrumentedFeature provideTimingFeature(ClientTimingFilter filter) {
+    InstrumentedFeature provideTimingFeature(RequestTimer filter) {
         return new InstrumentedFeature(filter);
     }
 
     @Provides
     @Singleton
-    ClientTimingFilter provideTimingFilter(MetricRegistry metricRegistry) {
-        return new ClientTimingFilter(metricRegistry);
+    RequestTimer provideTimingFilter(MetricRegistry metricRegistry) {
+        return new RequestTimer(metricRegistry);
     }
 
     @Provides

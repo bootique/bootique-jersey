@@ -24,9 +24,9 @@ import jakarta.ws.rs.core.FeatureContext;
 
 public class InstrumentedFeature implements Feature {
 
-    private ClientTimingFilter filter;
+    private final RequestTimer filter;
 
-    public InstrumentedFeature(ClientTimingFilter filter) {
+    public InstrumentedFeature(RequestTimer filter) {
         this.filter = filter;
     }
 
