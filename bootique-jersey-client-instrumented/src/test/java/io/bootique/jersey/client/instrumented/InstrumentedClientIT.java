@@ -85,7 +85,7 @@ public class InstrumentedClientIT {
     @Test
     public void testMetrics() {
         // fault filter to init metrics
-        client.getInstance(ClientTimingFilter.class);
+        client.getInstance(RequestTimer.class);
         MetricRegistry metricRegistry = client.getInstance(MetricRegistry.class);
         Set<String> expectedTimers = new HashSet<>(asList("bq.JerseyClient.Client.RequestTimer"));
         assertEquals(expectedTimers, metricRegistry.getTimers().keySet());

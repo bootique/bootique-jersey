@@ -21,42 +21,32 @@ package io.bootique.jersey.client.log;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Priority;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 
-public class RequestLoggingFilter implements  ClientRequestFilter, ClientResponseFilter {
+/**
+ * @since 3.0
+ */
+@Priority(100)
+public class RequestLogger implements ClientRequestFilter, ClientResponseFilter {
 
-    private static final String REQUEST_PREFIX = "> ";
-    private static final Logger LOGGER = LoggerFactory.getLogger(RequestLoggingFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestLogger.class);
 
     @Override
     public void filter(ClientRequestContext requestContext) {
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info(getRequestMessage(requestContext).toString());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("\"{} {}\"", requestContext.getMethod(), requestContext.getUri());
         }
     }
 
     @Override
     public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) {
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info(getResponseMessage(requestContext, responseContext).toString());
+            LOGGER.info("\"{} {}\" {}", requestContext.getMethod(), requestContext.getUri(), responseContext.getStatus());
         }
-    }
-
-    protected StringBuilder getRequestMessage(ClientRequestContext requestContext) {
-        return new StringBuilder()
-                .append("Sending client request.")
-                .append("\n").append(REQUEST_PREFIX).append(requestContext.getMethod()).append(" ")
-                .append(requestContext.getUri().toASCIIString());
-    }
-
-    protected StringBuilder getResponseMessage(ClientRequestContext requestContext, ClientResponseContext responseContext) {
-        return new StringBuilder()
-                .append(" Client response received.")
-                .append(" \"").append(requestContext.getMethod()).append(" ")
-                .append(requestContext.getUri().getAuthority()).append(requestContext.getUri().getPath())
-                .append("\" ").append(" Status: ").append(responseContext.getStatus());
     }
 }

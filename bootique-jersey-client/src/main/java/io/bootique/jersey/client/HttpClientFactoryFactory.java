@@ -24,7 +24,7 @@ import io.bootique.annotation.BQConfigProperty;
 import io.bootique.di.BQInject;
 import io.bootique.di.Injector;
 import io.bootique.jersey.client.auth.AuthenticatorFactory;
-import io.bootique.jersey.client.log.RequestLoggingFilter;
+import io.bootique.jersey.client.log.RequestLogger;
 import org.glassfish.hk2.api.InjectionResolver;
 import org.glassfish.hk2.api.JustInTimeInjectionResolver;
 import org.glassfish.jersey.client.ClientConfig;
@@ -193,7 +193,7 @@ public class HttpClientFactoryFactory {
     }
 
     protected void configRequestLogging(ClientConfig config) {
-        config.register(new RequestLoggingFilter());
+        config.register(new RequestLogger());
     }
 
     protected Map<String, Supplier<WebTarget>> createNamedTargets(HttpClientFactory clientFactory) {

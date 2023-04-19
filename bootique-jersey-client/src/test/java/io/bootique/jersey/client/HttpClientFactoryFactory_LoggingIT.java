@@ -109,7 +109,7 @@ public class HttpClientFactoryFactory_LoggingIT {
 
         File log = new File(logsDir, "debug.log");
         List<String> lines = Files.readAllLines(log.toPath());
-        assertEquals(3, lines.size(), lines.stream().collect(joining("\n")));
+        assertEquals(2, lines.size(), lines.stream().collect(joining("\n")));
         assertTrue(lines.get(1).contains("GET http://127.0.0.1:8080/get"));
     }
 

@@ -10,6 +10,7 @@
 * #73 Replace "recording" WireMockTester with proxy/snapshot
 * #74 WireMock: support http redirects to same origin
 * #75 WireMock: avoid snapshots duplication
+* #76 Reduce client logging noise
 
 ## 3.0.M1
 

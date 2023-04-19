@@ -3,7 +3,7 @@ package io.bootique.jersey.client.instrumented.threshold;
 import com.codahale.metrics.MetricRegistry;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
-import io.bootique.jersey.client.instrumented.ClientTimingFilter;
+import io.bootique.jersey.client.instrumented.RequestTimer;
 import io.bootique.jersey.client.instrumented.JerseyClientInstrumentedModule;
 import io.bootique.metrics.health.HealthCheck;
 import io.bootique.metrics.health.check.DoubleRangeFactory;
@@ -41,7 +41,7 @@ public class ThresholdHealthCheckFactory {
     private HealthCheck createTimeRequestsCheck(MetricRegistry registry) {
         ValueRange<Double> range = getTimeRequestsThresholds();
         Supplier<Double> deferredGauge = ()
-                -> registry.timer(ClientTimingFilter.TIMER_NAME).getOneMinuteRate();
+                -> registry.timer(RequestTimer.TIMER_NAME).getOneMinuteRate();
 
         return new ValueRangeCheck<>(range, deferredGauge);
     }
