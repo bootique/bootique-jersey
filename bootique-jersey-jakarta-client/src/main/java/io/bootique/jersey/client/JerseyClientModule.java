@@ -23,8 +23,11 @@ import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
 import io.bootique.di.Injector;
+import io.bootique.di.Key;
 import io.bootique.di.Provides;
 import jakarta.ws.rs.core.Feature;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
+import org.glassfish.jersey.client.spi.ConnectorProvider;
 
 import javax.inject.Singleton;
 import java.util.Set;
@@ -49,6 +52,14 @@ public class JerseyClientModule extends ConfigModule {
 
     @Provides
     @Singleton
+    ConnectorProvider provideConnectorProvider(Injector injector) {
+        // the provider binding is optional. The default in Jersey is HttpUrlConnectorProvider
+        Key<ConnectorProvider> key = Key.get(ConnectorProvider.class, CustomConnectorProvider.class);
+        return injector.hasProvider(key) ? injector.getProvider(key).get() : new HttpUrlConnectorProvider();
+    }
+
+    @Provides
+    @Singleton
     HttpClientFactoryFactory provideClientFactoryFactory(ConfigurationFactory configFactory) {
         return config(HttpClientFactoryFactory.class, configFactory);
     }
@@ -58,9 +69,10 @@ public class JerseyClientModule extends ConfigModule {
     HttpClientFactory provideClientFactory(
             HttpClientFactoryFactory factoryFactory,
             Injector injector,
-            @JerseyClientFeatures Set<Feature> features) {
-        
-        return factoryFactory.createClientFactory(injector, features);
+            @JerseyClientFeatures Set<Feature> features,
+            ConnectorProvider connectorProvider) {
+
+        return factoryFactory.createClientFactory(injector, features, connectorProvider);
     }
 
     @Provides

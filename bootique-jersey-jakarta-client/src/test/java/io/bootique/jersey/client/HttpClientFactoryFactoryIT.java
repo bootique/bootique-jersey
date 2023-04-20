@@ -22,10 +22,9 @@ package io.bootique.jersey.client;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.di.Injector;
-import io.bootique.jersey.client.HttpClientFactoryFactory;
+import io.bootique.jersey.JerseyModule;
 import io.bootique.jersey.client.auth.AuthenticatorFactory;
 import io.bootique.jersey.client.auth.BasicAuthenticatorFactory;
-import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
@@ -35,6 +34,7 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -65,7 +65,7 @@ public class HttpClientFactoryFactoryIT {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setFollowRedirects(true);
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
+        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
 
         Response r = client.target(jetty.getUrl()).path("/302").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
@@ -77,7 +77,7 @@ public class HttpClientFactoryFactoryIT {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setFollowRedirects(false);
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
+        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
 
         Response r = client.target(jetty.getUrl()).path("/302").request().get();
         JettyTester.assertStatus(r, 307).assertHeader("location", jetty.getUrl() + "/get");
@@ -87,7 +87,7 @@ public class HttpClientFactoryFactoryIT {
     public void testCreateClientFactory_DefaultRedirect_Follow() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
+        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
 
         Response r = client.target(jetty.getUrl()).path("/302").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
@@ -99,7 +99,7 @@ public class HttpClientFactoryFactoryIT {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setCompression(true);
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
+        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
 
         Response r = client.target(jetty.getUrl()).path("/getbig").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
@@ -111,7 +111,7 @@ public class HttpClientFactoryFactoryIT {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setCompression(false);
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
+        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
 
         Response r = client.target(jetty.getUrl()).path("/getbig").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
@@ -123,7 +123,7 @@ public class HttpClientFactoryFactoryIT {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setCompression(true);
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
+        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
 
         Response r = client.target(jetty.getUrl()).path("/getbig").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
@@ -134,7 +134,7 @@ public class HttpClientFactoryFactoryIT {
     public void testCreateClientFactory_NoTimeout() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
+        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
 
         Response r = client.target(jetty.getUrl()).path("/slowget").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
@@ -146,7 +146,7 @@ public class HttpClientFactoryFactoryIT {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setReadTimeoutMs(2000);
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
+        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
 
         Response r = client.target(jetty.getUrl()).path("/slowget").request().get();
         assertEquals(Status.OK.getStatusCode(), r.getStatus());
@@ -158,7 +158,7 @@ public class HttpClientFactoryFactoryIT {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setReadTimeoutMs(50);
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
+        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
 
         assertThrows(ProcessingException.class,
                 () -> client.target(jetty.getUrl()).path("/slowget").request().get());
@@ -178,7 +178,7 @@ public class HttpClientFactoryFactoryIT {
         factoryFactory.setAuth(auth);
 
         Client client = factoryFactory
-                .createClientFactory(mockInjector, Collections.emptySet())
+                .createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider())
                 .newBuilder().auth("a1")
                 .build();
 

@@ -34,6 +34,7 @@ import org.glassfish.hk2.api.JustInTimeInjectionResolver;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.filter.EncodingFeature;
+import org.glassfish.jersey.client.spi.ConnectorProvider;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.message.GZipEncoder;
 
@@ -129,16 +130,22 @@ public class HttpClientFactoryFactory {
         return new DefaultHttpTargets(createNamedTargets(clientFactory));
     }
 
-    public HttpClientFactory createClientFactory(Injector injector, Set<Feature> features) {
-        ClientConfig config = createConfig(features);
+    public HttpClientFactory createClientFactory(
+            Injector injector,
+            Set<Feature> features,
+            ConnectorProvider connectorProvider) {
+
+        ClientConfig config = createConfig(features, connectorProvider);
 
         config.register(new AbstractBinder() {
             @Override
             protected void configure() {
                 bind(injector).to(Injector.class).in(jakarta.inject.Singleton.class);
                 bind(ClientBqInjectorBridge.class).to(JustInTimeInjectionResolver.class).in(jakarta.inject.Singleton.class);
-                bind(ClientJavaxInjectInjector.class).to(new GenericType<InjectionResolver<javax.inject.Inject>>(){}).in(jakarta.inject.Singleton.class);
-                bind(ClientBqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>(){}).in(jakarta.inject.Singleton.class);
+                bind(ClientJavaxInjectInjector.class).to(new GenericType<InjectionResolver<javax.inject.Inject>>() {
+                }).in(jakarta.inject.Singleton.class);
+                bind(ClientBqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>() {
+                }).in(jakarta.inject.Singleton.class);
             }
         });
 
@@ -169,12 +176,14 @@ public class HttpClientFactoryFactory {
         return filters;
     }
 
-    protected ClientConfig createConfig(Set<Feature> features) {
+    protected ClientConfig createConfig(Set<Feature> features, ConnectorProvider connectorProvider) {
         ClientConfig config = new ClientConfig();
         config.property(ClientProperties.FOLLOW_REDIRECTS, followRedirects);
         config.property(ClientProperties.READ_TIMEOUT, readTimeoutMs);
         config.property(ClientProperties.CONNECT_TIMEOUT, connectTimeoutMs);
         config.property(ClientProperties.ASYNC_THREADPOOL_SIZE, asyncThreadPoolSize);
+
+        config.connectorProvider(connectorProvider);
 
         features.forEach(config::register);
 

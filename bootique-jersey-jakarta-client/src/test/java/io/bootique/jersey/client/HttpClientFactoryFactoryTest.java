@@ -20,10 +20,9 @@
 package io.bootique.jersey.client;
 
 import io.bootique.di.Injector;
-import io.bootique.jersey.client.HttpClientFactory;
-import io.bootique.jersey.client.HttpClientFactoryFactory;
 import jakarta.ws.rs.client.Client;
 import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.spi.ConnectorProvider;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -45,7 +44,7 @@ public class HttpClientFactoryFactoryTest {
 		factoryFactory.setFollowRedirects(true);
 		factoryFactory.setReadTimeoutMs(203);
 
-		HttpClientFactory factory = factoryFactory.createClientFactory(mockInjector, Collections.emptySet());
+		HttpClientFactory factory = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), mock(ConnectorProvider.class));
 		assertNotNull(factory);
 
 		Client client = factory.newClient();

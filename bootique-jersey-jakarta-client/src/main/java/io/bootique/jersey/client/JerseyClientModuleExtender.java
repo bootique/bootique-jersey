@@ -22,6 +22,7 @@ package io.bootique.jersey.client;
 import io.bootique.di.Binder;
 import io.bootique.di.SetBuilder;
 import jakarta.ws.rs.core.Feature;
+import org.glassfish.jersey.client.spi.ConnectorProvider;
 
 
 public class JerseyClientModuleExtender {
@@ -38,6 +39,21 @@ public class JerseyClientModuleExtender {
         return this;
     }
 
+    /**
+     * @since 3.0
+     */
+    public JerseyClientModuleExtender setConnectorProvider(Class<? extends ConnectorProvider> type) {
+        binder.bind(ConnectorProvider.class, CustomConnectorProvider.class).to(type);
+        return this;
+    }
+
+    /**
+     * @since 3.0
+     */
+    public JerseyClientModuleExtender setConnectorProvider(ConnectorProvider connectorProvider) {
+        binder.bind(ConnectorProvider.class, CustomConnectorProvider.class).toInstance(connectorProvider);
+        return this;
+    }
 
     public JerseyClientModuleExtender addFeature(Feature feature) {
         contributeFeatures().addInstance(feature);

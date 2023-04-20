@@ -34,6 +34,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -95,7 +96,7 @@ public class HttpClientFactoryFactory_LoggingIT {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setFollowRedirects(true);
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
+        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
 
         Response r = client.target("http://127.0.0.1:8080/get").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
@@ -119,7 +120,7 @@ public class HttpClientFactoryFactory_LoggingIT {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setFollowRedirects(true);
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
+        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
 
         Response r = client.target("http://127.0.0.1:8080/get").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
