@@ -11,6 +11,7 @@
 * #74 WireMock: support http redirects to same origin
 * #75 WireMock: avoid snapshots duplication
 * #76 Reduce client logging noise
+* #77 RequestTimer to log response headers at DEBUG level
 
 ## 3.0.M1
 

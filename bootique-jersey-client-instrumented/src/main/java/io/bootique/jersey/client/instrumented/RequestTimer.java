@@ -22,13 +22,16 @@ package io.bootique.jersey.client.instrumented;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import io.bootique.metrics.MetricNaming;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.Priority;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.Map;
 
 // The priority must be higher than that of RequestLogger, so that the Timer could print its output inside the Logger
 @Priority(200)
@@ -60,10 +63,19 @@ public class RequestTimer implements ClientRequestFilter, ClientResponseFilter {
 
     @Override
     public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) {
+
+        if (LOGGER.isDebugEnabled()) {
+            for (Map.Entry<String, List<String>> e : responseContext.getHeaders().entrySet()) {
+                for (String header : e.getValue()) {
+                    LOGGER.debug("< " + e.getKey() + ": " + header);
+                }
+            }
+        }
+
         Timer.Context requestTimerContext = (Timer.Context) requestContext.getProperty(TIMER_PROPERTY);
 
-        // TODO: this timing does not take into account reading response
-        // content... May need to add additional interceptor for that.
+        // TODO: this timing does not take into account reading response content...
+        //  May need to add additional interceptor for that.
         long timeNanos = requestTimerContext.stop();
         LOGGER.info("finished in {} ms", timeNanos / 1000000);
     }
