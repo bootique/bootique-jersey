@@ -16,12 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.client.jetty;
+package io.bootique.jersey.client;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.jersey.client.HttpClientFactory;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
@@ -35,17 +34,13 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.glassfish.jersey.client.spi.ConnectorProvider;
-import org.glassfish.jersey.jetty.connector.JettyConnectorProvider;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @BQTest
-public class JerseyClientJettyModuleIT {
+public class JerseyClientModuleIT {
     static final JettyTester jetty = JettyTester.create();
 
     @BQApp
@@ -57,15 +52,6 @@ public class JerseyClientJettyModuleIT {
 
     @BQTestTool
     final BQTestFactory clientFactory = new BQTestFactory();
-
-    @Test
-    public void testProviderRegistered() {
-        BQRuntime clientApp = clientFactory.app()
-                .autoLoadModules()
-                .createRuntime();
-
-        assertTrue(clientApp.getInstance(ConnectorProvider.class) instanceof JettyConnectorProvider);
-    }
 
     @Test
     public void testGet() {
@@ -89,7 +75,6 @@ public class JerseyClientJettyModuleIT {
         JettyTester.assertOk(r1).assertContent("got");
     }
 
-    @Disabled("rx/thenApply causes a deadlock and timeout with Jetty")
     @Test
     public void testGetRxThenApply() throws ExecutionException, InterruptedException {
         BQRuntime clientApp = clientFactory.app()
@@ -119,7 +104,7 @@ public class JerseyClientJettyModuleIT {
         Response r1 = client.target(jetty.getUrl()).path("get-large").request().get();
         JettyTester.assertOk(r1)
                 .assertHeader("Content-Encoding", "gzip")
-                .assertContent(c -> assertTrue(c.startsWith("got-large")));
+                .assertContent(c -> Assertions.assertTrue(c.startsWith("got-large")));
     }
 
 
