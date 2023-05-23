@@ -21,6 +21,8 @@ package io.bootique.jersey.client;
 
 import jakarta.ws.rs.client.WebTarget;
 
+import java.util.Set;
+
 /**
  * An injectable manager of preconfigured JAX RS {@link WebTarget} objects.
  */
@@ -37,4 +39,11 @@ public interface HttpTargets {
      * given HTTP endpoint.
      */
     WebTarget newTarget(String targetName);
+
+    /**
+     * Returns all known target names.
+     *
+     * @since 3.0
+     */
+    Set<String> getTargetNames();
 }
