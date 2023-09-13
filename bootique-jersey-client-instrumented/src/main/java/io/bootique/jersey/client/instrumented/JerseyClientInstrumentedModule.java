@@ -24,9 +24,9 @@ import io.bootique.ConfigModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
 import io.bootique.di.Provides;
+import io.bootique.jersey.client.HttpClientFactoryFactory;
 import io.bootique.jersey.client.JerseyClientModule;
-import io.bootique.jersey.client.instrumented.threshold.JerseyHealthChecks;
-import io.bootique.jersey.client.instrumented.threshold.ThresholdHealthCheckFactory;
+import io.bootique.jersey.client.instrumented.threshold.JerseyClientHealthChecks;
 import io.bootique.metrics.MetricNaming;
 import io.bootique.metrics.health.HealthCheckModule;
 
@@ -37,11 +37,15 @@ public class JerseyClientInstrumentedModule extends ConfigModule {
     public static final MetricNaming METRIC_NAMING = MetricNaming.forModule(JerseyClientInstrumentedModule.class);
 
     @Override
+    protected String defaultConfigPrefix() {
+        // reusing overridden module prefix
+        return "jerseyclient";
+    }
+
+    @Override
     public void configure(Binder binder) {
-
         JerseyClientModule.extend(binder).addFeature(InstrumentedFeature.class);
-        HealthCheckModule.extend(binder).addHealthCheckGroup(JerseyHealthChecks.class);
-
+        HealthCheckModule.extend(binder).addHealthCheckGroup(JerseyClientHealthChecks.class);
     }
 
     @Provides
@@ -56,11 +60,22 @@ public class JerseyClientInstrumentedModule extends ConfigModule {
         return new RequestTimer(metricRegistry);
     }
 
-    @Provides
+    // overriding non-instrumented module's service
     @Singleton
-    JerseyHealthChecks provideThresholdHealthCheck(ConfigurationFactory configFactory, MetricRegistry metricRegistry) {
-        return config(ThresholdHealthCheckFactory.class, configFactory)
-                .createThresholdHealthCheck(metricRegistry);
+    @Provides
+    HttpClientFactoryFactory providerClientFactoryFactory(InstrumentedHttpClientFactoryFactory serverFactory) {
+        return serverFactory;
     }
 
+    @Singleton
+    @Provides
+    InstrumentedHttpClientFactoryFactory providerInstrumentedHttpClientFactoryFactory(ConfigurationFactory configFactory) {
+        return config(InstrumentedHttpClientFactoryFactory.class, configFactory);
+    }
+
+    @Provides
+    @Singleton
+    JerseyClientHealthChecks provideThresholdHealthCheck(InstrumentedHttpClientFactoryFactory factory, MetricRegistry metricRegistry) {
+        return factory.createHealthChecks(metricRegistry);
+    }
 }

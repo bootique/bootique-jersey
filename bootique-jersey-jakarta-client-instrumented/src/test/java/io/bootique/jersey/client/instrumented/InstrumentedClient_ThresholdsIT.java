@@ -24,7 +24,7 @@ import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jersey.client.HttpClientFactory;
 import io.bootique.jersey.client.JerseyClientModuleProvider;
-import io.bootique.jersey.client.instrumented.threshold.ThresholdHealthCheckFactory;
+import io.bootique.jersey.client.instrumented.threshold.JerseyClientHealthChecksFactory;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
@@ -62,8 +62,8 @@ public class InstrumentedClient_ThresholdsIT {
         return clientFactory.app()
                 .moduleProvider(new JerseyClientModuleProvider())
                 .moduleProvider(new JerseyClientInstrumentedModuleProvider())
-                .property("bq.jerseyclientinstrumented.timeRequestsThresholds.warning", "0.3")
-                .property("bq.jerseyclientinstrumented.timeRequestsThresholds.critical", "0.6")
+                .property("bq.jerseyclient.health.requestsPerMin.warning", "0.3")
+                .property("bq.jerseyclient.health.requestsPerMin.critical", "0.6")
                 .createRuntime();
     }
 
@@ -92,11 +92,11 @@ public class InstrumentedClient_ThresholdsIT {
         WebTarget target = createTarget(client);
 
         // no requests
-        assertEquals(HealthCheckStatus.OK, runCheck(client, ThresholdHealthCheckFactory.THRESHOLD_REQUESTS_CHECK).getStatus());
+        assertEquals(HealthCheckStatus.OK, runCheck(client, JerseyClientHealthChecksFactory.REQUESTS_RATE_CHECK).getStatus());
 
         // 1 request
         JettyTester.assertOk(target.request().get());
-        assertEquals(HealthCheckStatus.OK, tickAndRunCheck(client, ThresholdHealthCheckFactory.THRESHOLD_REQUESTS_CHECK).getStatus());
+        assertEquals(HealthCheckStatus.OK, tickAndRunCheck(client, JerseyClientHealthChecksFactory.REQUESTS_RATE_CHECK).getStatus());
 
         // more requests
         // with exponentially decaying Meter, we need to load the system to trigger the thresholds
@@ -104,7 +104,7 @@ public class InstrumentedClient_ThresholdsIT {
             JettyTester.assertOk(target.request().get());
         }
 
-        HealthCheckOutcome o1 = tickAndRunCheck(client, ThresholdHealthCheckFactory.THRESHOLD_REQUESTS_CHECK);
+        HealthCheckOutcome o1 = tickAndRunCheck(client, JerseyClientHealthChecksFactory.REQUESTS_RATE_CHECK);
         assertEquals(HealthCheckStatus.WARNING, o1.getStatus(), () -> o1.toString());
 
         // even more requests
@@ -112,7 +112,7 @@ public class InstrumentedClient_ThresholdsIT {
             JettyTester.assertOk(target.request().get());
         }
 
-        HealthCheckOutcome o2 = tickAndRunCheck(client, ThresholdHealthCheckFactory.THRESHOLD_REQUESTS_CHECK);
+        HealthCheckOutcome o2 = tickAndRunCheck(client, JerseyClientHealthChecksFactory.REQUESTS_RATE_CHECK);
         assertEquals(HealthCheckStatus.CRITICAL, o2.getStatus(), () -> o2.toString());
     }
 

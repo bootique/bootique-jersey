@@ -14,6 +14,7 @@
 * #77 RequestTimer to log response headers at DEBUG level
 * #78 Jakarta Client - set custom ConnectorProvider via the extender
 * #79 Jakarta Client - support for Jetty HttpClient
+* #80 JerseyClientInstrumentedModule - better names for healthchecks, consistent config
 
 ## 3.0.M1
 

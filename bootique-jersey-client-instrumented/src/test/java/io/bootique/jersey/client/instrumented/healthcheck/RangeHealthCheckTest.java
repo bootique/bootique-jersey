@@ -3,8 +3,8 @@ package io.bootique.jersey.client.instrumented.healthcheck;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import io.bootique.jersey.client.instrumented.RequestTimer;
-import io.bootique.jersey.client.instrumented.threshold.JerseyHealthChecks;
-import io.bootique.jersey.client.instrumented.threshold.ThresholdHealthCheckFactory;
+import io.bootique.jersey.client.instrumented.threshold.JerseyClientHealthChecks;
+import io.bootique.jersey.client.instrumented.threshold.JerseyClientHealthChecksFactory;
 import io.bootique.metrics.health.HealthCheckOutcome;
 import io.bootique.metrics.health.HealthCheckRegistry;
 import io.bootique.metrics.health.check.DoubleRangeFactory;
@@ -12,28 +12,28 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static io.bootique.jersey.client.instrumented.threshold.ThresholdHealthCheckFactory.THRESHOLD_REQUESTS_CHECK;
+import static io.bootique.jersey.client.instrumented.threshold.JerseyClientHealthChecksFactory.REQUESTS_RATE_CHECK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RangeHealthCheckTest {
 
     private MetricRegistry registry;
-    private ThresholdHealthCheckFactory healthCheckFactory;
+    private JerseyClientHealthChecksFactory healthCheckFactory;
     private HealthCheckRegistry healthCheckRegistry;
 
     @BeforeEach
     public void before() {
         this.registry = Mockito.mock(MetricRegistry.class);
-        this.healthCheckFactory = new ThresholdHealthCheckFactory();
+        this.healthCheckFactory = new JerseyClientHealthChecksFactory();
         DoubleRangeFactory timeRequestsThresholds = new DoubleRangeFactory();
         timeRequestsThresholds.setCritical(0.05);
         timeRequestsThresholds.setWarning(0.01);
 
-        healthCheckFactory.setTimeRequestsThresholds(timeRequestsThresholds);
+        healthCheckFactory.setRequestsPerMin(timeRequestsThresholds);
 
         Mockito.when(registry.timer(RequestTimer.TIMER_NAME)).thenReturn(Mockito.mock(Timer.class));
 
-        JerseyHealthChecks rangeHealthCheck = healthCheckFactory.createThresholdHealthCheck(registry);
+        JerseyClientHealthChecks rangeHealthCheck = healthCheckFactory.createHealthChecks(registry);
         this.healthCheckRegistry = new HealthCheckRegistry(rangeHealthCheck.getHealthChecks());
     }
 
@@ -42,7 +42,7 @@ public class RangeHealthCheckTest {
         Timer timer = registry.timer(RequestTimer.TIMER_NAME);
         
         Mockito.when(timer.getOneMinuteRate()).thenReturn(0.009);
-        HealthCheckOutcome outcome = healthCheckRegistry.runHealthCheck(THRESHOLD_REQUESTS_CHECK);
+        HealthCheckOutcome outcome = healthCheckRegistry.runHealthCheck(REQUESTS_RATE_CHECK);
 
         assertEquals(HealthCheckOutcome.ok().getStatus(), outcome.getStatus());
     }
@@ -53,7 +53,7 @@ public class RangeHealthCheckTest {
         Timer timer = registry.timer(RequestTimer.TIMER_NAME);
 
         Mockito.when(timer.getOneMinuteRate()).thenReturn(0.03);
-        HealthCheckOutcome range = healthCheckRegistry.runHealthCheck(THRESHOLD_REQUESTS_CHECK);
+        HealthCheckOutcome range = healthCheckRegistry.runHealthCheck(REQUESTS_RATE_CHECK);
 
         assertEquals(HealthCheckOutcome.warning().getStatus(), range.getStatus());
     }
@@ -63,7 +63,7 @@ public class RangeHealthCheckTest {
         Timer timer = registry.timer(RequestTimer.TIMER_NAME);
 
         Mockito.when(timer.getOneMinuteRate()).thenReturn(0.06);
-        HealthCheckOutcome range = healthCheckRegistry.runHealthCheck(THRESHOLD_REQUESTS_CHECK);
+        HealthCheckOutcome range = healthCheckRegistry.runHealthCheck(REQUESTS_RATE_CHECK);
 
         assertEquals(HealthCheckOutcome.critical().getStatus(), range.getStatus());
     }
