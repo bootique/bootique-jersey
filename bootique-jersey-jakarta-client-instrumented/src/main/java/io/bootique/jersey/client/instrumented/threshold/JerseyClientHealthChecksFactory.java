@@ -17,9 +17,9 @@ import java.util.function.Supplier;
 @BQConfig
 public class JerseyClientHealthChecksFactory {
 
-    public static final String REQUESTS_RATE_CHECK =  JerseyClientInstrumentedModule
+    public static final String REQUESTS_PER_MIN_CHECK =  JerseyClientInstrumentedModule
             .METRIC_NAMING
-            .name("Requests", "Rate");
+            .name("Requests", "PerMin");
 
     private DoubleRangeFactory requestsPerMin;
 
@@ -34,7 +34,7 @@ public class JerseyClientHealthChecksFactory {
 
     protected Map<String, HealthCheck> createHealthChecksMap(MetricRegistry registry) {
         Map<String, HealthCheck> checks = new HashMap<>(3);
-        checks.put(REQUESTS_RATE_CHECK, createTimeRequestsCheck(registry));
+        checks.put(REQUESTS_PER_MIN_CHECK, createTimeRequestsCheck(registry));
         return checks;
     }
 

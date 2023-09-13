@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static io.bootique.jersey.client.instrumented.threshold.JerseyClientHealthChecksFactory.REQUESTS_RATE_CHECK;
+import static io.bootique.jersey.client.instrumented.threshold.JerseyClientHealthChecksFactory.REQUESTS_PER_MIN_CHECK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RangeHealthCheckTest {
@@ -42,7 +42,7 @@ public class RangeHealthCheckTest {
         Timer timer = registry.timer(RequestTimer.TIMER_NAME);
         
         Mockito.when(timer.getOneMinuteRate()).thenReturn(0.009);
-        HealthCheckOutcome outcome = healthCheckRegistry.runHealthCheck(REQUESTS_RATE_CHECK);
+        HealthCheckOutcome outcome = healthCheckRegistry.runHealthCheck(REQUESTS_PER_MIN_CHECK);
 
         assertEquals(HealthCheckOutcome.ok().getStatus(), outcome.getStatus());
     }
@@ -53,7 +53,7 @@ public class RangeHealthCheckTest {
         Timer timer = registry.timer(RequestTimer.TIMER_NAME);
 
         Mockito.when(timer.getOneMinuteRate()).thenReturn(0.03);
-        HealthCheckOutcome range = healthCheckRegistry.runHealthCheck(REQUESTS_RATE_CHECK);
+        HealthCheckOutcome range = healthCheckRegistry.runHealthCheck(REQUESTS_PER_MIN_CHECK);
 
         assertEquals(HealthCheckOutcome.warning().getStatus(), range.getStatus());
     }
@@ -63,7 +63,7 @@ public class RangeHealthCheckTest {
         Timer timer = registry.timer(RequestTimer.TIMER_NAME);
 
         Mockito.when(timer.getOneMinuteRate()).thenReturn(0.06);
-        HealthCheckOutcome range = healthCheckRegistry.runHealthCheck(REQUESTS_RATE_CHECK);
+        HealthCheckOutcome range = healthCheckRegistry.runHealthCheck(REQUESTS_PER_MIN_CHECK);
 
         assertEquals(HealthCheckOutcome.critical().getStatus(), range.getStatus());
     }

@@ -92,11 +92,11 @@ public class InstrumentedClient_ThresholdsIT {
         WebTarget target = createTarget(client);
 
         // no requests
-        assertEquals(HealthCheckStatus.OK, runCheck(client, JerseyClientHealthChecksFactory.REQUESTS_RATE_CHECK).getStatus());
+        assertEquals(HealthCheckStatus.OK, runCheck(client, JerseyClientHealthChecksFactory.REQUESTS_PER_MIN_CHECK).getStatus());
 
         // 1 request
         JettyTester.assertOk(target.request().get());
-        assertEquals(HealthCheckStatus.OK, tickAndRunCheck(client, JerseyClientHealthChecksFactory.REQUESTS_RATE_CHECK).getStatus());
+        assertEquals(HealthCheckStatus.OK, tickAndRunCheck(client, JerseyClientHealthChecksFactory.REQUESTS_PER_MIN_CHECK).getStatus());
 
         // more requests
         // with exponentially decaying Meter, we need to load the system to trigger the thresholds
@@ -104,7 +104,7 @@ public class InstrumentedClient_ThresholdsIT {
             JettyTester.assertOk(target.request().get());
         }
 
-        HealthCheckOutcome o1 = tickAndRunCheck(client, JerseyClientHealthChecksFactory.REQUESTS_RATE_CHECK);
+        HealthCheckOutcome o1 = tickAndRunCheck(client, JerseyClientHealthChecksFactory.REQUESTS_PER_MIN_CHECK);
         assertEquals(HealthCheckStatus.WARNING, o1.getStatus(), () -> o1.toString());
 
         // even more requests
@@ -112,7 +112,7 @@ public class InstrumentedClient_ThresholdsIT {
             JettyTester.assertOk(target.request().get());
         }
 
-        HealthCheckOutcome o2 = tickAndRunCheck(client, JerseyClientHealthChecksFactory.REQUESTS_RATE_CHECK);
+        HealthCheckOutcome o2 = tickAndRunCheck(client, JerseyClientHealthChecksFactory.REQUESTS_PER_MIN_CHECK);
         assertEquals(HealthCheckStatus.CRITICAL, o2.getStatus(), () -> o2.toString());
     }
 
