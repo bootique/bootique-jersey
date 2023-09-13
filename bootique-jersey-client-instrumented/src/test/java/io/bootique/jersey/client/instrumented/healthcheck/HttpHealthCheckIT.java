@@ -53,7 +53,7 @@ public class HttpHealthCheckIT {
 
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
-            .modules(JettyModule.class, JerseyClientInstrumentedModule.class, JerseyModule.class)
+            .autoLoadModules()
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
