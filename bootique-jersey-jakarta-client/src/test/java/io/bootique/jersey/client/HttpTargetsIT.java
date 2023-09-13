@@ -22,8 +22,6 @@ package io.bootique.jersey.client;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.jersey.client.HttpTargets;
-import io.bootique.jersey.client.JerseyClientModuleProvider;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.*;

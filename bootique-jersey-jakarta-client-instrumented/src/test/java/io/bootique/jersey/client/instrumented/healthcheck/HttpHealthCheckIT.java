@@ -21,10 +21,7 @@ package io.bootique.jersey.client.instrumented.healthcheck;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.jersey.client.instrumented.JerseyClientInstrumentedModule;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.jersey.client.instrumented.healthcheck.HttpHealthCheck;
-import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.connector.PortFinder;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
@@ -54,7 +51,7 @@ public class HttpHealthCheckIT {
 
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
-            .modules(JettyModule.class, JerseyClientInstrumentedModule.class, JerseyModule.class)
+            .autoLoadModules()
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();

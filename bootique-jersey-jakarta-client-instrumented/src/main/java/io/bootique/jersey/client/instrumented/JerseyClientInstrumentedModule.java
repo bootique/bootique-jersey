@@ -57,14 +57,10 @@ public class JerseyClientInstrumentedModule extends ConfigModule {
     }
 
     @Provides
-    ThresholdHealthCheckFactory providerThresholdHealthCheckFactory(ConfigurationFactory configFactory) {
-        return config(ThresholdHealthCheckFactory.class, configFactory);
-    }
-
-    @Provides
     @Singleton
-    JerseyHealthChecks provideThresholdHealthCheck(ThresholdHealthCheckFactory health, MetricRegistry metricRegistry) {
-        return health.createThresholdHealthCheck(metricRegistry);
+    JerseyHealthChecks provideThresholdHealthCheck(ConfigurationFactory configFactory, MetricRegistry metricRegistry) {
+        return config(ThresholdHealthCheckFactory.class, configFactory)
+                .createThresholdHealthCheck(metricRegistry);
     }
 
 }

@@ -40,7 +40,6 @@ public class RequestTimer implements ClientRequestFilter, ClientResponseFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestTimer.class);
     private static final String TIMER_PROPERTY = RequestTimer.class.getName() + ".timer";
     public static final String TIMER_NAME = MetricNaming.forModule(JerseyClientInstrumentedModule.class).name("Client", "RequestTimer");
-    ;
 
     private final Timer requestTimer;
 
