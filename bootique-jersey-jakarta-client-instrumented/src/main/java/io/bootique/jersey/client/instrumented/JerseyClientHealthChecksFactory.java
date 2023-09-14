@@ -1,10 +1,8 @@
-package io.bootique.jersey.client.instrumented.threshold;
+package io.bootique.jersey.client.instrumented;
 
 import com.codahale.metrics.MetricRegistry;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
-import io.bootique.jersey.client.instrumented.RequestTimer;
-import io.bootique.jersey.client.instrumented.JerseyClientInstrumentedModule;
 import io.bootique.metrics.health.HealthCheck;
 import io.bootique.metrics.health.check.DoubleRangeFactory;
 import io.bootique.metrics.health.check.ValueRange;
@@ -57,7 +55,10 @@ public class JerseyClientHealthChecksFactory {
             return requestsPerMin.createRange();
         }
 
-        return ValueRange.builder(Double.class).min(0.0).warning(3.0).critical(15.0).build();
+        return ValueRange.builder(Double.class).min(0.0)
+                .warning(60.0)
+                .critical(120.0)
+                .build();
     }
 
 }

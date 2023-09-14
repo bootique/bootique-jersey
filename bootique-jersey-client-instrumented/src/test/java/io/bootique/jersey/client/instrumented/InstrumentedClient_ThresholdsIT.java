@@ -24,7 +24,6 @@ import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jersey.client.HttpClientFactory;
 import io.bootique.jersey.client.JerseyClientModuleProvider;
-import io.bootique.jersey.client.instrumented.threshold.JerseyClientHealthChecksFactory;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;

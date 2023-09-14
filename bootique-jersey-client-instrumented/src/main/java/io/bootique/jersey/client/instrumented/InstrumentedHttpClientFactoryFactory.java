@@ -22,8 +22,6 @@ import com.codahale.metrics.MetricRegistry;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
 import io.bootique.jersey.client.HttpClientFactoryFactory;
-import io.bootique.jersey.client.instrumented.threshold.JerseyClientHealthChecks;
-import io.bootique.jersey.client.instrumented.threshold.JerseyClientHealthChecksFactory;
 
 /**
  * @since 3.0

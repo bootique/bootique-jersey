@@ -1,4 +1,4 @@
-package io.bootique.jersey.client.instrumented.threshold;
+package io.bootique.jersey.client.instrumented;
 
 import io.bootique.metrics.health.HealthCheck;
 import io.bootique.metrics.health.HealthCheckGroup;
