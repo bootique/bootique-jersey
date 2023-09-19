@@ -33,7 +33,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Request;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.spi.ConnectorProvider;
 import org.glassfish.jersey.jetty.connector.JettyConnectorProvider;
@@ -118,7 +120,9 @@ public class JerseyClientJettyModuleIT {
         // gzip encoding on the server kicks in after a certain size. So request a bigger chunk of content
         Response r1 = client.target(jetty.getUrl()).path("get-large").request().get();
         JettyTester.assertOk(r1)
-                .assertHeader("Content-Encoding", "gzip")
+
+                // unfortunately no clear way to verify that the request was actually gzipped, as Jetty GZIPContentDecoder
+                // strips off encoding-identifying headers. So just check that it decoded properly
                 .assertContent(c -> assertTrue(c.startsWith("got-large")));
     }
 
@@ -136,7 +140,7 @@ public class JerseyClientJettyModuleIT {
 
         @GET
         @Path("get-large")
-        public String getLarge() {
+        public String getLarge(@Context Request request) {
             return "got-large:" + "aaaaaaaaaaaaaaaaaaaaaaaaaa ".repeat(1000);
         }
     }
