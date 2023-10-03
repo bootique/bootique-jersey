@@ -21,7 +21,6 @@ package io.bootique.jersey;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.di.BQInject;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
@@ -40,6 +39,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @BQTest
@@ -57,7 +57,7 @@ public class ResourceInjectionIT {
             .autoLoadModules()
             .module(b -> b.bind(InjectedService.class).toInstance(service))
             .module(b -> b.bind(InjectedServiceInterface.class, "A").toInstance(serviceA))
-            .module(b -> b.bind(InjectedServiceInterface.class, "B").toInstance(serviceB))
+            .module(b -> b.bind(InjectedServiceInterface.class, ServiceBQualifier.class).toInstance(serviceB))
             .module(b -> b.bind(UnInjectedResource.class).toProviderInstance(() -> new UnInjectedResource(service)))
             .module(b -> JerseyModule.extend(b)
                     .addFeature(ctx -> {
@@ -157,7 +157,7 @@ public class ResourceInjectionIT {
         private InjectedServiceInterface serviceA;
 
         @Inject
-        @Named("B")
+        @ServiceBQualifier
         private InjectedServiceInterface serviceB;
 
         @Context
@@ -250,5 +250,11 @@ public class ResourceInjectionIT {
         public int getNext() {
             return atomicInt.incrementAndGet();
         }
+    }
+
+    @java.lang.annotation.Documented
+    @java.lang.annotation.Retention(RUNTIME)
+    @javax.inject.Qualifier
+    public @interface ServiceBQualifier {
     }
 }
