@@ -96,7 +96,7 @@ public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjec
 			super(
 					Collections.singleton(implType),
 					jakarta.inject.Singleton.class,
-					null,
+					name(qualifiers),
 					qualifiers,
 					DescriptorType.CLASS,
 					DescriptorVisibility.NORMAL,
@@ -110,6 +110,18 @@ public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjec
 			this.implType = implType;
 			this.implClass = implClass;
 			setImplementation(implClass.getName());
+		}
+
+		// special case for @Named annotation
+		private static String name (Set<Annotation> qualifiers){
+			for (Annotation qualifier : qualifiers) {
+				if(qualifier instanceof jakarta.inject.Named) {
+					return ((jakarta.inject.Named) qualifier).value();
+				} else if(qualifier instanceof javax.inject.Named) {
+					return ((javax.inject.Named) qualifier).value();
+				}
+			}
+			return null;
 		}
 
 		public BqBindingActiveDescriptor() {

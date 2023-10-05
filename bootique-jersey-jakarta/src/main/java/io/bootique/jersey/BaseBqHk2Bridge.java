@@ -4,6 +4,7 @@ import io.bootique.BootiqueException;
 import io.bootique.di.Injector;
 import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
+import jakarta.inject.Named;
 import org.glassfish.hk2.api.Injectee;
 
 import javax.inject.Provider;
@@ -35,15 +36,22 @@ abstract class BaseBqHk2Bridge {
         Annotation bindingAnnotation = injectee.getRequiredQualifiers().isEmpty()
                 ? null
                 : injectee.getRequiredQualifiers().iterator().next();
-        Key<?> key = bindingAnnotation == null
-                ? Key.get(typeLiteral)
-                : Key.get(typeLiteral, bindingAnnotation);
-
+        Key<?> key = getKey(typeLiteral, bindingAnnotation);
         if(!injector.hasProvider(key) && !allowDynamicInjectionForKey(injectee, key)) {
             return null;
         }
 
-        return injector.getProvider(key);
+        return injector. getProvider(key);
+    }
+
+    private Key<?> getKey(TypeLiteral<?> typeLiteral, Annotation bindingAnnotation) {
+        if (bindingAnnotation instanceof Named) {
+           return Key.get(typeLiteral, ((Named) bindingAnnotation).value());
+        } else {
+            return bindingAnnotation == null
+                    ? Key.get(typeLiteral)
+                    : Key.get(typeLiteral, bindingAnnotation);
+        }
     }
 
     /**
