@@ -40,8 +40,7 @@ public class ClientAsyncExecutorProvider extends ThreadPoolExecutorProvider {
     @Inject
     public ClientAsyncExecutorProvider(@Named("ClientAsyncThreadPoolSize") final int poolSize) {
 
-        // TODO: for now following Jersey thread naming, but should use a Bootique name
-        super("jersey-client-async-executor");
+        super("bootique-http-client-async");
 
         this.asyncThreadPoolSize = Values.lazy(new Value<Integer>() {
             @Override

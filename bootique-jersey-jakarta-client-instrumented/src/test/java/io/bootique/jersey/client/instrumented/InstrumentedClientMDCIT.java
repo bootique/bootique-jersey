@@ -64,7 +64,7 @@ public class InstrumentedClientMDCIT {
     @BQApp(skipRun = true)
     final BQRuntime clientApp = Bootique.app()
             .autoLoadModules()
-            .module(b -> BQCoreModule.extend(b).setProperty("bq.log.logFormat", "[%date{\"dd/MMM/yyyy:HH:mm:ss,SSS\"}] %thread %level %mdc %logger{1}: %msg%n%ex"))
+            .module(b -> BQCoreModule.extend(b).setProperty("bq.log.logFormat", "[%date{\"dd/MMM/yyyy:HH:mm:ss,SSS\"}] %thread %level %mdc{txid:-?} %logger{1}: %msg%n%ex"))
             .createRuntime();
 
     @AfterEach
