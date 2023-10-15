@@ -22,42 +22,56 @@ package io.bootique.jersey.client;
 import io.bootique.di.Injector;
 import jakarta.ws.rs.client.Client;
 import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 import org.glassfish.jersey.client.spi.ConnectorProvider;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class HttpClientFactoryFactoryTest {
 
-	private Injector mockInjector = mock(Injector.class);
+    private Injector mockInjector = mock(Injector.class);
 
-	@Test
-	public void testCreateClientFactory() {
+    @Test
+    public void testCreateClientFactory_AsyncThreadPool() {
 
-		HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
-		factoryFactory.setAsyncThreadPoolSize(5);
-		factoryFactory.setConnectTimeoutMs(101);
-		factoryFactory.setFollowRedirects(true);
-		factoryFactory.setReadTimeoutMs(203);
+        Client client = new HttpClientFactoryFactory()
+                .createClientFactory(mockInjector, Set.of(), new HttpUrlConnectorProvider()).newClient();
 
-		HttpClientFactory factory = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), mock(ConnectorProvider.class));
-		assertNotNull(factory);
+        try {
+            assertTrue(client.getConfiguration().isRegistered(ClientAsyncExecutorProvider.class));
+        } finally {
+            client.close();
+        }
+    }
 
-		Client client = factory.newClient();
+    @Test
+    public void testCreateClientFactory() {
 
-		try {
+        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
+        factoryFactory.setAsyncThreadPoolSize(5);
+        factoryFactory.setConnectTimeoutMs(101);
+        factoryFactory.setFollowRedirects(true);
+        factoryFactory.setReadTimeoutMs(203);
 
-			assertEquals(5, client.getConfiguration().getProperty(ClientProperties.ASYNC_THREADPOOL_SIZE));
-			assertEquals(101, client.getConfiguration().getProperty(ClientProperties.CONNECT_TIMEOUT));
-			assertEquals(true, client.getConfiguration().getProperty(ClientProperties.FOLLOW_REDIRECTS));
-			assertEquals(203, client.getConfiguration().getProperty(ClientProperties.READ_TIMEOUT));
+        HttpClientFactory factory = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), mock(ConnectorProvider.class));
+        assertNotNull(factory);
 
-		} finally {
-			client.close();
-		}
-	}
+        Client client = factory.newClient();
+
+        try {
+
+            assertEquals(5, client.getConfiguration().getProperty(ClientProperties.ASYNC_THREADPOOL_SIZE));
+            assertEquals(101, client.getConfiguration().getProperty(ClientProperties.CONNECT_TIMEOUT));
+            assertEquals(true, client.getConfiguration().getProperty(ClientProperties.FOLLOW_REDIRECTS));
+            assertEquals(203, client.getConfiguration().getProperty(ClientProperties.READ_TIMEOUT));
+
+        } finally {
+            client.close();
+        }
+    }
 }

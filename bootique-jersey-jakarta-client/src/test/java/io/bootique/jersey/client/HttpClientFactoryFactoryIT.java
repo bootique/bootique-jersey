@@ -58,7 +58,7 @@ public class HttpClientFactoryFactoryIT {
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    private Injector mockInjector = mock(Injector.class);
+    private final Injector mockInjector = mock(Injector.class);
 
     @Test
     public void testCreateClientFactory_FollowRedirect() {

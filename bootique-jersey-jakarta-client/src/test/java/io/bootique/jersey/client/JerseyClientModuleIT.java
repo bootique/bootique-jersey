@@ -31,13 +31,22 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.glassfish.jersey.client.ClientConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @BQTest
 public class JerseyClientModuleIT {
@@ -93,6 +102,45 @@ public class JerseyClientModuleIT {
     }
 
     @Test
+    public void testGetRx_ExecutorDefaultParams() {
+        BQRuntime clientApp = clientFactory.app()
+                .autoLoadModules()
+                .createRuntime();
+
+        Client client = clientApp.getInstance(HttpClientFactory.class).newClient();
+        ExecutorServiceCapture esc = new ExecutorServiceCapture();
+        client.target(jetty.getUrl()).path("get").register(esc).request().rx().get().toCompletableFuture().join();
+
+        assertNotNull(esc.executorService);
+        assertTrue(esc.executorService instanceof ThreadPoolExecutor);
+
+        ThreadPoolExecutor tpe = (ThreadPoolExecutor) esc.executorService;
+        assertEquals(0, tpe.getCorePoolSize());
+        assertEquals(Integer.MAX_VALUE, tpe.getMaximumPoolSize());
+        assertEquals(60, tpe.getKeepAliveTime(TimeUnit.SECONDS));
+    }
+
+    @Test
+    public void testGetRx_ExecutorCustomParams() {
+        BQRuntime clientApp = clientFactory.app()
+                .autoLoadModules()
+                .property("bq.jerseyclient.asyncThreadPoolSize", "20")
+                .createRuntime();
+
+        Client client = clientApp.getInstance(HttpClientFactory.class).newClient();
+        ExecutorServiceCapture esc = new ExecutorServiceCapture();
+        client.target(jetty.getUrl()).path("get").register(esc).request().rx().get().toCompletableFuture().join();
+
+        assertNotNull(esc.executorService);
+        assertTrue(esc.executorService instanceof ThreadPoolExecutor);
+
+        ThreadPoolExecutor tpe = (ThreadPoolExecutor) esc.executorService;
+        assertEquals(20, tpe.getCorePoolSize());
+        assertEquals(20, tpe.getMaximumPoolSize());
+        assertEquals(60, tpe.getKeepAliveTime(TimeUnit.SECONDS));
+    }
+
+    @Test
     public void testGet_Gzip() {
         BQRuntime clientApp = clientFactory.app()
                 .autoLoadModules()
@@ -123,6 +171,16 @@ public class JerseyClientModuleIT {
         @Path("get-large")
         public String getLarge() {
             return "got-large:" + "aaaaaaaaaaaaaaaaaaaaaaaaaa ".repeat(1000);
+        }
+    }
+
+    static class ExecutorServiceCapture implements ClientRequestFilter {
+
+        ExecutorService executorService;
+
+        @Override
+        public void filter(ClientRequestContext c) throws IOException {
+            this.executorService = ((ClientConfig) c.getConfiguration()).getExecutorService();
         }
     }
 }

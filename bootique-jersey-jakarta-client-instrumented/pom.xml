@@ -52,6 +52,11 @@
 				<artifactId>bootique-metrics-healthchecks</artifactId>
 				<version>${bootique.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>io.bootique.logback</groupId>
+				<artifactId>bootique-logback</artifactId>
+				<version>${bootique.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -91,9 +96,10 @@
 			<artifactId>bootique-jetty-jakarta-junit5</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Using logback instead of slf4j-simple to visually check MDC output -->
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
+			<groupId>io.bootique.logback</groupId>
+			<artifactId>bootique-logback</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
