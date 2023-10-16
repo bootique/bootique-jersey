@@ -25,14 +25,26 @@ import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.client.Client;
 import java.util.Collections;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class HttpClientFactoryFactoryTest {
 
 	private Injector mockInjector = mock(Injector.class);
+
+	@Test
+	public void testCreateClientFactory_AsyncThreadPool() {
+
+		Client client = new HttpClientFactoryFactory().createClientFactory(mockInjector, Set.of()).newClient();
+
+		try {
+			assertTrue(client.getConfiguration().isRegistered(ClientAsyncExecutorProvider.class));
+		} finally {
+			client.close();
+		}
+	}
 
 	@Test
 	public void testCreateClientFactory() {

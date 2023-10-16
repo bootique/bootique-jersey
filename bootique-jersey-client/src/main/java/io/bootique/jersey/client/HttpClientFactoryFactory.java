@@ -48,14 +48,14 @@ import java.util.function.Supplier;
 @BQConfig("Configures HttpClientFactory, including named authenticators, timeouts, SSL certificates, etc.")
 public class HttpClientFactoryFactory {
 
-    boolean followRedirects;
-    boolean compression;
-    int readTimeoutMs;
-    int connectTimeoutMs;
-    int asyncThreadPoolSize;
-    Map<String, AuthenticatorFactory> auth;
-    Map<String, TrustStoreFactory> trustStores;
-    Map<String, WebTargetFactory> targets;
+    protected boolean followRedirects;
+    protected boolean compression;
+    protected int readTimeoutMs;
+    protected int connectTimeoutMs;
+    protected int asyncThreadPoolSize;
+    protected Map<String, AuthenticatorFactory> auth;
+    protected Map<String, TrustStoreFactory> trustStores;
+    protected Map<String, WebTargetFactory> targets;
 
     public HttpClientFactoryFactory() {
         this.followRedirects = true;
@@ -187,9 +187,13 @@ public class HttpClientFactoryFactory {
             config.register(new EncodingFeature(GZipEncoder.class));
         }
 
+        configAsyncExecutor(config);
         configRequestLogging(config);
-
         return config;
+    }
+
+    protected void configAsyncExecutor(ClientConfig config) {
+        config.register(ClientAsyncExecutorProvider.class);
     }
 
     protected void configRequestLogging(ClientConfig config) {

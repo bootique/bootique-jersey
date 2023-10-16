@@ -22,6 +22,8 @@ import com.codahale.metrics.MetricRegistry;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
 import io.bootique.jersey.client.HttpClientFactoryFactory;
+import io.bootique.jersey.client.instrumented.mdc.MDCAwareClientAsyncExecutorProvider;
+import org.glassfish.jersey.client.ClientConfig;
 
 /**
  * @since 3.0
@@ -44,4 +46,8 @@ public class InstrumentedHttpClientFactoryFactory extends HttpClientFactoryFacto
         return health != null ? health : new JerseyClientHealthChecksFactory();
     }
 
+    @Override
+    protected void configAsyncExecutor(ClientConfig config) {
+        config.register(MDCAwareClientAsyncExecutorProvider.class);
+    }
 }
