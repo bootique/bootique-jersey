@@ -16,6 +16,7 @@
 * #79 Jakarta Client - support for Jetty HttpClient
 * #80 JerseyClientInstrumentedModule - better names for healthchecks, consistent config
 * #81 Upgrade Jersey 3 to 3.0.11
+* #83 Client: propagate transaction ID to async execution threads
 
 ## 3.0.M1
 
