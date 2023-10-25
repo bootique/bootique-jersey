@@ -27,6 +27,7 @@ import org.glassfish.hk2.utilities.AbstractActiveDescriptor;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
@@ -98,7 +99,7 @@ public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjec
 			super(
 					Collections.singleton(implType),
 					Singleton.class,
-					null,
+					name(qualifiers),
 					qualifiers,
 					DescriptorType.CLASS,
 					DescriptorVisibility.NORMAL,
@@ -112,6 +113,16 @@ public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjec
 			this.implType = implType;
 			this.implClass = implClass;
 			setImplementation(implClass.getName());
+		}
+
+		private static String name (Set<Annotation> qualifiers){
+			for (Annotation qualifier : qualifiers) {
+				if(qualifier instanceof Named) {
+					// special case for @Named annotation
+					return ((Named) qualifier).value();
+				}
+			}
+			return null;
 		}
 
 		public BqBindingActiveDescriptor() {
