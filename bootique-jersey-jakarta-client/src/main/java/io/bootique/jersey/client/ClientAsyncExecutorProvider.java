@@ -42,16 +42,13 @@ public class ClientAsyncExecutorProvider extends ThreadPoolExecutorProvider {
 
         super("bootique-http-client-async");
 
-        this.asyncThreadPoolSize = Values.lazy(new Value<Integer>() {
-            @Override
-            public Integer get() {
-                if (poolSize <= 0) {
-                    LOGGER.config(LocalizationMessages.IGNORED_ASYNC_THREADPOOL_SIZE(poolSize));
-                    return Integer.MAX_VALUE;
-                } else {
-                    LOGGER.config(LocalizationMessages.USING_FIXED_ASYNC_THREADPOOL(poolSize));
-                    return poolSize;
-                }
+        this.asyncThreadPoolSize = Values.lazy((Value<Integer>) () -> {
+            if (poolSize <= 0) {
+                LOGGER.config(LocalizationMessages.IGNORED_ASYNC_THREADPOOL_SIZE(poolSize));
+                return Integer.MAX_VALUE;
+            } else {
+                LOGGER.config(LocalizationMessages.USING_FIXED_ASYNC_THREADPOOL(poolSize));
+                return poolSize;
             }
         });
     }

@@ -18,8 +18,6 @@
  */
 package io.bootique.jersey.client;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.glassfish.jersey.client.ClientAsyncExecutor;
 import org.glassfish.jersey.client.internal.LocalizationMessages;
 import org.glassfish.jersey.internal.util.collection.LazyValue;
@@ -27,6 +25,8 @@ import org.glassfish.jersey.internal.util.collection.Value;
 import org.glassfish.jersey.internal.util.collection.Values;
 import org.glassfish.jersey.spi.ThreadPoolExecutorProvider;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.logging.Logger;
 
 // a copy of non-public Jersey DefaultClientAsyncExecutorProvider that allows us to customize async pool parameters
@@ -42,16 +42,13 @@ public class ClientAsyncExecutorProvider extends ThreadPoolExecutorProvider {
 
         super("bootique-http-client-async");
 
-        this.asyncThreadPoolSize = Values.lazy(new Value<Integer>() {
-            @Override
-            public Integer get() {
-                if (poolSize <= 0) {
-                    LOGGER.config(LocalizationMessages.IGNORED_ASYNC_THREADPOOL_SIZE(poolSize));
-                    return Integer.MAX_VALUE;
-                } else {
-                    LOGGER.config(LocalizationMessages.USING_FIXED_ASYNC_THREADPOOL(poolSize));
-                    return poolSize;
-                }
+        this.asyncThreadPoolSize = Values.lazy((Value<Integer>) () -> {
+            if (poolSize <= 0) {
+                LOGGER.config(LocalizationMessages.IGNORED_ASYNC_THREADPOOL_SIZE(poolSize));
+                return Integer.MAX_VALUE;
+            } else {
+                LOGGER.config(LocalizationMessages.USING_FIXED_ASYNC_THREADPOOL(poolSize));
+                return poolSize;
             }
         });
     }
