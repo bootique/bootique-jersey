@@ -39,17 +39,12 @@ public class MDCAwareThreadPoolExecutor extends ThreadPoolExecutor {
     }
 
     @Override
-    public ThreadFactory getThreadFactory() {
-        return super.getThreadFactory();
-    }
-
-    @Override
     protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
         // propagate tx id to the execution threads if it exists on the calling thread
         String txId = TransactionIdMDC.getId();
         return txId != null
                 ? new TxFutureTask<>(callable, txId)
-                : new FutureTask<T>(callable);
+                : new FutureTask<>(callable);
     }
 
     @Override
@@ -58,13 +53,13 @@ public class MDCAwareThreadPoolExecutor extends ThreadPoolExecutor {
         String txId = TransactionIdMDC.getId();
         return txId != null
                 ? new TxFutureTask<>(runnable, value, txId)
-                : new FutureTask<T>(runnable, value);
+                : new FutureTask<>(runnable, value);
     }
 
     @Override
     protected void beforeExecute(Thread t, Runnable r) {
         if (r instanceof TxFutureTask) {
-            TransactionIdMDC.setId(((TxFutureTask) r).txId);
+            TransactionIdMDC.setId(((TxFutureTask<?>) r).txId);
         }
     }
 
