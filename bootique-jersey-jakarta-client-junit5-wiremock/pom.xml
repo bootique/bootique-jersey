@@ -107,7 +107,7 @@
 		<dependency>
 			<groupId>io.bootique</groupId>
 			<artifactId>bootique-junit5</artifactId>
-			<version>${project.version}</version>
+			<version>${bootique.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.bootique.jersey</groupId>
@@ -151,7 +151,7 @@
 		<dependency>
 			<groupId>io.bootique.jetty</groupId>
 			<artifactId>bootique-jetty-jakarta-junit5</artifactId>
-			<version>${project.version}</version>
+			<version>${bootique.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
