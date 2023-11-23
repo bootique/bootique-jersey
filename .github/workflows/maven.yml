@@ -25,7 +25,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-build-v2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-build-v3
           restore-keys: ${{ runner.os }}-maven-v2
 
       - name: Build and test...
