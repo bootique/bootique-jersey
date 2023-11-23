@@ -58,7 +58,7 @@ public class HttpTargetsIT {
     public BQTestFactory clientFactory = new BQTestFactory();
 
     @Test
-    public void testNewTarget() {
+    public void newTarget() {
         HttpTargets targets = clientFactory.app()
                 .moduleProvider(new JerseyClientModuleProvider())
                 .moduleProvider(new LogbackModuleProvider())
@@ -78,7 +78,7 @@ public class HttpTargetsIT {
     }
 
     @Test
-    public void testNewTarget_Auth() {
+    public void newTarget_Auth() {
         HttpTargets targets =
                 clientFactory.app()
                         .moduleProvider(new JerseyClientModuleProvider())
@@ -99,37 +99,37 @@ public class HttpTargetsIT {
     }
 
     @Test
-    public void testNewTarget_Redirects_Default_Follow() {
+    public void newTarget_Redirects_Default_Follow() {
         new FollowRedirectsTester(null, null).expectFollow();
     }
 
     @Test
-    public void testNewTarget_Redirects_ClientNoFollow_TargetDefault() {
+    public void newTarget_Redirects_ClientNoFollow_TargetDefault() {
         new FollowRedirectsTester(false, null).expectNoFollow();
     }
 
     @Test
-    public void testNewTarget_Redirects_ClientNoFollow_TargetFollow() {
+    public void newTarget_Redirects_ClientNoFollow_TargetFollow() {
         new FollowRedirectsTester(false, true).expectFollow();
     }
 
     @Test
-    public void testNewTarget_Compression_Default_Compressed() {
+    public void newTarget_Compression_Default_Compressed() {
         new CompressionTester(null, null).expectCompressed();
     }
 
     @Test
-    public void testNewTarget_Compression_ClientNotCompressed_TargetDefault() {
+    public void newTarget_Compression_ClientNotCompressed_TargetDefault() {
         new CompressionTester(false, null).expectUncompressed();
     }
 
     @Test
-    public void testNewTarget_Compression_ClientNotCompressed_TargetCompressed() {
+    public void newTarget_Compression_ClientNotCompressed_TargetCompressed() {
         new CompressionTester(false, true).expectCompressed();
     }
 
     @Test
-    public void testNewTarget_Compression_ClientCompressed_TargetCompressed() {
+    public void newTarget_Compression_ClientCompressed_TargetCompressed() {
         new CompressionTester(true, true).expectCompressed();
     }
 

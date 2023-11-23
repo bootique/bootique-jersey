@@ -49,7 +49,7 @@ public class WireMockTester_Proxy_wPathIT extends TestWithEmulatedBackend {
             .createRuntime();
 
     @Test
-    public void testTarget() {
+    public void target() {
         WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester");
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
@@ -59,7 +59,7 @@ public class WireMockTester_Proxy_wPathIT extends TestWithEmulatedBackend {
     }
 
     @Test
-    public void testSubTarget() {
+    public void subTarget() {
         WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").path("p11");
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
@@ -69,7 +69,7 @@ public class WireMockTester_Proxy_wPathIT extends TestWithEmulatedBackend {
     }
 
     @Test
-    public void testTarget_wQuery() {
+    public void target_wQuery() {
         WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").queryParam("q", "x");
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)

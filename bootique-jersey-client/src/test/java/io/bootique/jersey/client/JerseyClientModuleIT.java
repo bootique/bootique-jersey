@@ -63,7 +63,7 @@ public class JerseyClientModuleIT {
     final BQTestFactory clientFactory = new BQTestFactory();
 
     @Test
-    public void testGet() {
+    public void get() {
         BQRuntime clientApp = clientFactory.app()
                 .autoLoadModules()
                 .createRuntime();
@@ -74,7 +74,7 @@ public class JerseyClientModuleIT {
     }
 
     @Test
-    public void testGetRx() throws ExecutionException, InterruptedException {
+    public void getRx() throws ExecutionException, InterruptedException {
         BQRuntime clientApp = clientFactory.app()
                 .autoLoadModules()
                 .createRuntime();
@@ -85,7 +85,7 @@ public class JerseyClientModuleIT {
     }
 
     @Test
-    public void testGetRxThenApply() throws ExecutionException, InterruptedException {
+    public void getRxThenApply() throws ExecutionException, InterruptedException {
         BQRuntime clientApp = clientFactory.app()
                 .autoLoadModules()
                 .createRuntime();
@@ -102,7 +102,7 @@ public class JerseyClientModuleIT {
     }
 
     @Test
-    public void testGetRx_ExecutorDefaultParams() {
+    public void getRx_ExecutorDefaultParams() {
         BQRuntime clientApp = clientFactory.app()
                 .autoLoadModules()
                 .createRuntime();
@@ -121,7 +121,7 @@ public class JerseyClientModuleIT {
     }
 
     @Test
-    public void testGetRx_ExecutorCustomParams() {
+    public void getRx_ExecutorCustomParams() {
         BQRuntime clientApp = clientFactory.app()
                 .autoLoadModules()
                 .property("bq.jerseyclient.asyncThreadPoolSize", "20")
@@ -141,7 +141,7 @@ public class JerseyClientModuleIT {
     }
 
     @Test
-    public void testGet_Gzip() {
+    public void get_Gzip() {
         BQRuntime clientApp = clientFactory.app()
                 .autoLoadModules()
                 .createRuntime();

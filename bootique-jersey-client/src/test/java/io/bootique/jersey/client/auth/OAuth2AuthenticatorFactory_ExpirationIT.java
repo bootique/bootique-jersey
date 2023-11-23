@@ -64,7 +64,7 @@ public class OAuth2AuthenticatorFactory_ExpirationIT {
     }
 
     @Test
-    public void testGetWithToken() throws InterruptedException {
+    public void getWithToken() throws InterruptedException {
 
         OAuth2AuthenticatorFactory factory = new OAuth2AuthenticatorFactory();
         factory.setPassword("p");

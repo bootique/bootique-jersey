@@ -58,7 +58,7 @@ public class ValidationNoErrorsInResponseIT {
     }
 
     @Test
-    public void testParamValidation_NotNull() {
+    public void paramValidation_NotNull() {
         Response ok = jetty.getTarget().path("notNull").queryParam("q", "A").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(ok).assertContent("_A_");
 

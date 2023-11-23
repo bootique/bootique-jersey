@@ -62,7 +62,7 @@ public class HttpClientFactory_CustomConnectorIT {
     final BQTestFactory clientFactory = new BQTestFactory();
 
     @Test
-    public void testCustomConnector() {
+    public void customConnector() {
 
         assertEquals(0, TestConnectorProvider.counter.get());
 

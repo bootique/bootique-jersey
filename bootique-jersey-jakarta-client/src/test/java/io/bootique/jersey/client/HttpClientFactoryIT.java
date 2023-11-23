@@ -59,7 +59,7 @@ public class HttpClientFactoryIT {
     final BQTestFactory clientFactory = new BQTestFactory();
 
     @Test
-    public void testNewClient() {
+    public void newClient() {
         HttpClientFactory factory =
                 clientFactory.app()
                         .moduleProvider(new JerseyClientModuleProvider())
@@ -75,7 +75,7 @@ public class HttpClientFactoryIT {
     }
 
     @Test
-    public void testNewClientAuth() {
+    public void newClientAuth() {
         HttpClientFactory factory =
                 clientFactory.app()
                         .moduleProvider(new JerseyClientModuleProvider())

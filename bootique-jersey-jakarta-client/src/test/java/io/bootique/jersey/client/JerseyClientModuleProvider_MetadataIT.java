@@ -41,7 +41,7 @@ public class JerseyClientModuleProvider_MetadataIT {
     static final BQRuntime app = Bootique.app().autoLoadModules().createRuntime();
 
     @Test
-    public void testMetadata() {
+    public void metadata() {
 
         ModulesMetadata modulesMetadata = app.getInstance(ModulesMetadata.class);
         Optional<ModuleMetadata> jerseyClientOpt = modulesMetadata.getModules()

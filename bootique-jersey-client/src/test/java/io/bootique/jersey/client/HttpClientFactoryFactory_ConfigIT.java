@@ -68,7 +68,7 @@ public class HttpClientFactoryFactory_ConfigIT {
     }
 
     @Test
-    public void testClientFlags() {
+    public void clientFlags() {
         HttpClientFactoryFactory factory = factory(
                 "r:\n  followRedirects: true\n  connectTimeoutMs: 78\n  readTimeoutMs: 66\n  asyncThreadPoolSize: 44\n")
                 .config(HttpClientFactoryFactory.class, "r");
@@ -80,7 +80,7 @@ public class HttpClientFactoryFactory_ConfigIT {
     }
 
     @Test
-    public void testAuthTypes() {
+    public void authTypes() {
         HttpClientFactoryFactory factory = factory(
                 "r:\n  auth:\n    a1:\n      type: basic\n      username: u1\n      password: p1\n")
                 .config(HttpClientFactoryFactory.class, "r");

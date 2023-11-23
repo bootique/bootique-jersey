@@ -61,7 +61,7 @@ public class HttpClientFactoryFactoryIT {
     private final Injector mockInjector = mock(Injector.class);
 
     @Test
-    public void testCreateClientFactory_FollowRedirect() {
+    public void createClientFactory_FollowRedirect() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setFollowRedirects(true);
@@ -73,7 +73,7 @@ public class HttpClientFactoryFactoryIT {
     }
 
     @Test
-    public void testCreateClientFactory_NoFollowRedirect() {
+    public void createClientFactory_NoFollowRedirect() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setFollowRedirects(false);
@@ -84,7 +84,7 @@ public class HttpClientFactoryFactoryIT {
     }
 
     @Test
-    public void testCreateClientFactory_DefaultRedirect_Follow() {
+    public void createClientFactory_DefaultRedirect_Follow() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
@@ -95,7 +95,7 @@ public class HttpClientFactoryFactoryIT {
     }
 
     @Test
-    public void testCreateClientFactory_Compression() {
+    public void createClientFactory_Compression() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setCompression(true);
@@ -107,7 +107,7 @@ public class HttpClientFactoryFactoryIT {
     }
 
     @Test
-    public void testCreateClientFactory_NoCompression() {
+    public void createClientFactory_NoCompression() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setCompression(false);
@@ -119,7 +119,7 @@ public class HttpClientFactoryFactoryIT {
     }
 
     @Test
-    public void testCreateClientFactory_CompressionDefault() {
+    public void createClientFactory_CompressionDefault() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setCompression(true);
@@ -131,7 +131,7 @@ public class HttpClientFactoryFactoryIT {
     }
 
     @Test
-    public void testCreateClientFactory_NoTimeout() {
+    public void createClientFactory_NoTimeout() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
@@ -142,7 +142,7 @@ public class HttpClientFactoryFactoryIT {
     }
 
     @Test
-    public void testCreateClientFactory_LongTimeout() {
+    public void createClientFactory_LongTimeout() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setReadTimeoutMs(2000);
@@ -154,7 +154,7 @@ public class HttpClientFactoryFactoryIT {
     }
 
     @Test
-    public void testCreateClientFactory_ReadTimeout() {
+    public void createClientFactory_ReadTimeout() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
         factoryFactory.setReadTimeoutMs(50);
@@ -165,7 +165,7 @@ public class HttpClientFactoryFactoryIT {
     }
 
     @Test
-    public void testCreateClientFactory_BasicAuth() {
+    public void createClientFactory_BasicAuth() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
 

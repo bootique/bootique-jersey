@@ -59,7 +59,7 @@ public class HttpClientFactory_TrustStoresIT {
     }
 
     @Test
-    public void testNamedTrustStore() {
+    public void namedTrustStore() {
 
         HttpClientFactory factory = clientFactory
                 .app("-c", "classpath:io/bootique/jersey/client/TrustStoresIT_client.yml")
@@ -89,7 +89,7 @@ public class HttpClientFactory_TrustStoresIT {
     }
 
     @Test
-    public void testNamedTrustStore_Invalid() {
+    public void namedTrustStore_Invalid() {
 
         HttpClientFactory factory = clientFactory
                 .app("-c", "classpath:io/bootique/jersey/client/TrustStoresIT_client.yml")

@@ -65,7 +65,7 @@ public class ApiKeyParameterAuthenticatorIT {
     }
 
     @Test
-    public void testValidAuth() {
+    public void validAuth() {
         Response response = startClient("valid")
                 .request()
                 .get();
@@ -74,7 +74,7 @@ public class ApiKeyParameterAuthenticatorIT {
     }
 
     @Test
-    public void testValidAuthWithParams() {
+    public void validAuthWithParams() {
         Response response = startClient("valid")
                 .queryParam("x", "y")
                 .request()
@@ -84,7 +84,7 @@ public class ApiKeyParameterAuthenticatorIT {
     }
 
     @Test
-    public void testInvalidAuth() {
+    public void invalidAuth() {
         Response response = startClient("invalid")
                 .request()
                 .get();
@@ -93,7 +93,7 @@ public class ApiKeyParameterAuthenticatorIT {
     }
 
     @Test
-    public void testCustomParameter() {
+    public void customParameter() {
 
         Response response = startClient("customValid")
                 .request()

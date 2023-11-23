@@ -40,7 +40,7 @@ public class CustomDynamicFeaturesIT {
     final BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
 
     @Test
-    public void testFeaturesLoaded() {
+    public void featuresLoaded() {
 
         testFactory.app("-s")
                 .module(b -> JerseyModule

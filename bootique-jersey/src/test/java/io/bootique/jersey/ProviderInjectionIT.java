@@ -58,7 +58,7 @@ public class ProviderInjectionIT {
             .createRuntime();
 
     @Test
-    public void testResponse() {
+    public void response() {
 
         WebTarget client = jetty.getTarget();
 

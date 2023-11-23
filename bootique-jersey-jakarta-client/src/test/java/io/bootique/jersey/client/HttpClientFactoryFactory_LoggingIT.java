@@ -90,7 +90,7 @@ public class HttpClientFactoryFactory_LoggingIT {
     }
 
     @Test
-    public void testCreateClientFactory_Debug() throws IOException, InterruptedException {
+    public void createClientFactory_Debug() throws IOException, InterruptedException {
 
         startApp("debug.yml");
 
@@ -114,7 +114,7 @@ public class HttpClientFactoryFactory_LoggingIT {
     }
 
     @Test
-    public void testCreateClientFactory_Warn() throws IOException, InterruptedException {
+    public void createClientFactory_Warn() throws IOException, InterruptedException {
 
         startApp("warn.yml");
 

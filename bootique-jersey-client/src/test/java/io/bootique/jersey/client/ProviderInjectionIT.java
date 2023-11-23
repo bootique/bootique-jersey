@@ -71,7 +71,7 @@ public class ProviderInjectionIT {
             .createRuntime();
 
     @Test
-    public void testResponse() {
+    public void response() {
 
         WebTarget target = client
                 .getInstance(HttpClientFactory.class)

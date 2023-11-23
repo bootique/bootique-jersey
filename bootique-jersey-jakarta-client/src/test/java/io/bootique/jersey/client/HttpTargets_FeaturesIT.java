@@ -59,7 +59,7 @@ public class HttpTargets_FeaturesIT {
     final BQTestFactory clientFactory = new BQTestFactory();
 
     @Test
-    public void testFeatures() {
+    public void features() {
         HttpTargets targets = clientFactory.app()
                 .moduleProvider(new JerseyClientModuleProvider())
                 .moduleProvider(new LogbackModuleProvider())

@@ -46,13 +46,13 @@ public class BQJerseyJacksonIT {
             .createRuntime();
 
     @Test
-    public void testJacksonSerialization() {
+    public void jacksonSerialization() {
         Response r = jetty.getTarget().request().get();
         JettyTester.assertOk(r).assertContent("{\"p1\":\"s\",\"p2\":45,\"ts\":\"2020-01-02T03:04:05\"}");
     }
 
     @Test
-    public void testJacksonDeserialization() {
+    public void jacksonDeserialization() {
         String entity = "{\"p1\":\"xx\",\"p2\":55,\"ts\":\"2021-01-02T01:04:05\"}";
         Response r = jetty.getTarget().request().put(Entity.entity(entity, MediaType.APPLICATION_JSON_TYPE));
         JettyTester.assertOk(r).assertContent(entity);

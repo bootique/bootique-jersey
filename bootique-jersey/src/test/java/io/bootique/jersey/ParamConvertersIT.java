@@ -47,31 +47,31 @@ public class ParamConvertersIT {
             .createRuntime();
 
     @Test
-    public void testYearConverter() {
+    public void yearConverter() {
         Response r = jetty.getTarget().path("year/2019").request().get();
         JettyTester.assertOk(r).assertContent("[2019]");
     }
 
     @Test
-    public void testYearMonthConverter() {
+    public void yearMonthConverter() {
         Response r = jetty.getTarget().path("year-month/2019-05").request().get();
         JettyTester.assertOk(r).assertContent("[2019-05]");
     }
 
     @Test
-    public void testDateConverter() {
+    public void dateConverter() {
         Response r = jetty.getTarget().path("date/2020-02-03").request().get();
         JettyTester.assertOk(r).assertContent("[2020-02-03]");
     }
 
     @Test
-    public void testTimeConverter() {
+    public void timeConverter() {
         Response r = jetty.getTarget().path("time/12:00:01").request().get();
         JettyTester.assertOk(r).assertContent("[12:00:01]");
     }
 
     @Test
-    public void testDateTimeConverter() {
+    public void dateTimeConverter() {
         Response r = jetty.getTarget().path("datetime/2020-02-03T12:00:01").request().get();
         JettyTester.assertOk(r).assertContent("[2020-02-03T12:00:01]");
     }

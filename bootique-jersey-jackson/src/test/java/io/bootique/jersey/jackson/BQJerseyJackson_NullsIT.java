@@ -62,7 +62,7 @@ public class BQJerseyJackson_NullsIT {
     }
 
     @Test
-    public void testPrintNulls() {
+    public void printNulls() {
 
         WebTarget target = startServer(b -> JerseyModule.extend(b).addResource(JsonResource.class));
 
@@ -72,7 +72,7 @@ public class BQJerseyJackson_NullsIT {
     }
 
     @Test
-    public void testIgnoreNulls() {
+    public void ignoreNulls() {
 
         WebTarget target = startServer(
                 b -> JerseyModule.extend(b).addResource(JsonResource.class),

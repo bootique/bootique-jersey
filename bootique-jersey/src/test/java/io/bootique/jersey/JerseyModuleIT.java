@@ -40,7 +40,7 @@ public class JerseyModuleIT {
     final BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
 
     @Test
-    public void testDefaultContents() {
+    public void defaultContents() {
         BQRuntime runtime = testFactory.app().createRuntime();
 
         assertNotNull(runtime.getInstance(ResourceConfig.class));
@@ -52,7 +52,7 @@ public class JerseyModuleIT {
     }
 
     @Test
-    public void testProperties() {
+    public void properties() {
 
         BQRuntime runtime = testFactory.app()
                 .autoLoadModules()
@@ -64,7 +64,7 @@ public class JerseyModuleIT {
     }
 
     @Test
-    public void testNoResourcesModule() {
+    public void noResourcesModule() {
         BQRuntime runtime = testFactory.app().module(JerseyModule.class).createRuntime();
         assertNotNull(runtime.getInstance(ResourceConfig.class));
     }

@@ -65,7 +65,7 @@ public class ApiKeyHeaderAuthenticatorIT {
     }
 
     @Test
-    public void testValidAuth() {
+    public void validAuth() {
 
         Response response = clientTarget("valid")
                 .request()
@@ -75,7 +75,7 @@ public class ApiKeyHeaderAuthenticatorIT {
     }
 
     @Test
-    public void testInvalidAuth() {
+    public void invalidAuth() {
 
         Response response = clientTarget("invalid")
                 .request()
@@ -85,7 +85,7 @@ public class ApiKeyHeaderAuthenticatorIT {
     }
 
     @Test
-    public void testCustomHeader() {
+    public void customHeader() {
 
         Response response = clientTarget("customValid")
                 .request()

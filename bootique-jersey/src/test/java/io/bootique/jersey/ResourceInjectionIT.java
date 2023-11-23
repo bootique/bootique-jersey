@@ -70,7 +70,7 @@ public class ResourceInjectionIT {
     }
 
     @Test
-    public void testFieldInjected() {
+    public void fieldInjected() {
 
         Response r1 = jetty.getTarget().path("f").request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());
@@ -84,7 +84,7 @@ public class ResourceInjectionIT {
     }
 
     @Test
-    public void testConstructorInjected() {
+    public void constructorInjected() {
 
         Response r1 = jetty.getTarget().path("c").request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());
@@ -98,7 +98,7 @@ public class ResourceInjectionIT {
     }
 
     @Test
-    public void testProviderForResource() {
+    public void providerForResource() {
 
         Response r1 = jetty.getTarget().path("u").request().get();
         assertEquals(Status.OK.getStatusCode(), r1.getStatus());

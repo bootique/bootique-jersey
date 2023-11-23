@@ -31,14 +31,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class OAuth2TokenTest {
 
     @Test
-    public void testExpiredToken() {
+    public void expiredToken() {
         OAuth2Token token = OAuth2Token.expiredToken();
         assertNotNull(token);
         assertTrue(token.needsRefresh());
     }
 
     @Test
-    public void testToken() {
+    public void token() {
         OAuth2Token token = OAuth2Token.token("abcd", LocalDateTime.now().plusDays(1));
         assertNotNull(token);
         assertFalse(token.needsRefresh());

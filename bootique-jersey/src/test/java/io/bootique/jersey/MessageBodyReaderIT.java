@@ -72,7 +72,7 @@ public class MessageBodyReaderIT {
     }
 
     @Test
-    public void testReaderWithContextInjection() {
+    public void readerWithContextInjection() {
 
         WebTarget client = startServer(b -> JerseyModule.extend(b)
                 .addResource(Resource.class)
@@ -87,7 +87,7 @@ public class MessageBodyReaderIT {
     }
 
     @Test
-    public void testReaderWithBqInjection() {
+    public void readerWithBqInjection() {
         WebTarget client = startServer(
                 b -> JerseyModule.extend(b)
                         .addResource(Resource.class)
@@ -99,7 +99,7 @@ public class MessageBodyReaderIT {
     }
 
     @Test
-    public void testReaderWithDynamicBqInjection() {
+    public void readerWithDynamicBqInjection() {
         WebTarget client = startServer(
                 b -> JerseyModule.extend(b)
                         .addResource(Resource.class)
@@ -110,7 +110,7 @@ public class MessageBodyReaderIT {
     }
 
     @Test
-    public void testReaderWithAllInjections() {
+    public void readerWithAllInjections() {
         WebTarget client = startServer(
                 b -> JerseyModule.extend(b)
                         .addResource(Resource.class)

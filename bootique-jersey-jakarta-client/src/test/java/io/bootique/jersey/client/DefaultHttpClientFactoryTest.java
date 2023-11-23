@@ -38,7 +38,7 @@ public class DefaultHttpClientFactoryTest {
     private ClientRequestFilter mockAuth2 = mock(ClientRequestFilter.class);
 
     @Test
-    public void testNewClient() {
+    public void newClient() {
 
         config.property("x", "y");
 
@@ -50,7 +50,7 @@ public class DefaultHttpClientFactoryTest {
     }
 
     @Test
-    public void testNewClient_NewInstanceEveryTime() {
+    public void newClient_NewInstanceEveryTime() {
 
         DefaultHttpClientFactory factory = new DefaultHttpClientFactory(
                 config,
@@ -63,7 +63,7 @@ public class DefaultHttpClientFactoryTest {
     }
 
     @Test
-    public void testNewClientBuilder_Auth() {
+    public void newClientBuilder_Auth() {
 
         config.property("a", "b");
 
@@ -81,7 +81,7 @@ public class DefaultHttpClientFactoryTest {
     }
 
     @Test
-    public void testNewClient_Auth_BadAuth() {
+    public void newClient_Auth_BadAuth() {
 
         config.property("a", "b");
 

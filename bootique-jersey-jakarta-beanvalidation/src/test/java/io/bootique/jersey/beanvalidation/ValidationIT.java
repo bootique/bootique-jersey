@@ -65,7 +65,7 @@ public class ValidationIT {
     }
 
     @Test
-    public void testParamValidation_NotNull() {
+    public void paramValidation_NotNull() {
         Response ok = jetty.getTarget().path("notNull").queryParam("q", "A").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(ok).assertContent("_A_");
 
@@ -75,7 +75,7 @@ public class ValidationIT {
     }
 
     @Test
-    public void testParamValidation_Range() {
+    public void paramValidation_Range() {
         Response ok = jetty.getTarget().path("range").queryParam("q", "3").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(ok).assertContent("_3_");
 
@@ -88,7 +88,7 @@ public class ValidationIT {
     }
 
     @Test
-    public void testParamValidation_ListSize() {
+    public void paramValidation_ListSize() {
         Response ok = jetty.getTarget().path("size")
                 .queryParam("q", "3")
                 .queryParam("q", "1")
@@ -108,7 +108,7 @@ public class ValidationIT {
     }
 
     @Test
-    public void testParamValidation_Valid() {
+    public void paramValidation_Valid() {
         Response ok = jetty.getTarget().path("valid").queryParam("q", "a1").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(ok).assertContent("_{a1}_");
 
@@ -121,7 +121,7 @@ public class ValidationIT {
     }
 
     @Test
-    public void testParamValidation_Custom() {
+    public void paramValidation_Custom() {
         Response ok = jetty.getTarget().path("custom").queryParam("q", "a1").request(MediaType.TEXT_PLAIN).get();
         JettyTester.assertOk(ok).assertContent("_a1_");
 

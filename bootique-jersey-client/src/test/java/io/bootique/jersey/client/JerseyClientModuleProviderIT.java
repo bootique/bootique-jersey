@@ -25,12 +25,12 @@ import org.junit.jupiter.api.Test;
 public class JerseyClientModuleProviderIT {
 
     @Test
-    public void testAutoLoadable() {
+    public void autoLoadable() {
         BQModuleProviderChecker.testAutoLoadable(JerseyClientModuleProvider.class);
     }
 
     @Test
-    public void testMetadata() {
+    public void metadata() {
         BQModuleProviderChecker.testMetadata(JerseyClientModuleProvider.class);
     }
 }

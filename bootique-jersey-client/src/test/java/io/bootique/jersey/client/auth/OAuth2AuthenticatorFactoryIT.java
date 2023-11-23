@@ -62,7 +62,7 @@ public class OAuth2AuthenticatorFactoryIT {
     }
 
     @Test
-    public void testGetToken() {
+    public void getToken() {
 
         OAuth2AuthenticatorFactory factory = new OAuth2AuthenticatorFactory();
         factory.setPassword("p");
@@ -78,7 +78,7 @@ public class OAuth2AuthenticatorFactoryIT {
     }
 
     @Test
-    public void testGetToken_Error() {
+    public void getToken_Error() {
 
         OAuth2AuthenticatorFactory factory = new OAuth2AuthenticatorFactory();
         factory.setPassword("p");
@@ -89,7 +89,7 @@ public class OAuth2AuthenticatorFactoryIT {
     }
 
     @Test
-    public void testGetWithToken() {
+    public void getWithToken() {
 
         OAuth2AuthenticatorFactory factory = new OAuth2AuthenticatorFactory();
         factory.setPassword("p");

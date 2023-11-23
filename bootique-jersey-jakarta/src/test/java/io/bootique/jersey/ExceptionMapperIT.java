@@ -44,13 +44,13 @@ public class ExceptionMapperIT {
             .createRuntime();
 
     @Test
-    public void testCustomExceptionMapper() {
+    public void customExceptionMapper() {
         Response r = jetty.getTarget().path("my-exception").queryParam("q", "p").request().get();
         JettyTester.assertBadRequest(r).assertContent("E:p");
     }
 
     @Test
-    public void testDefaultExceptionMapper() {
+    public void defaultExceptionMapper() {
         Response r = jetty.getTarget().path("web-exception").queryParam("q", "p").request().get();
         JettyTester.assertStatus(r, 500);
     }

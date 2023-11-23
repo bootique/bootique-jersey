@@ -73,7 +73,7 @@ public class InstrumentedClientMDCIT {
     }
 
     @Test
-    public void testNoMDCRx() {
+    public void noMDCRx() {
 
         HttpClientFactory factory = clientApp.getInstance(HttpClientFactory.class);
 
@@ -94,7 +94,7 @@ public class InstrumentedClientMDCIT {
     }
 
     @Test
-    public void testMDCRx() {
+    public void mDCRx() {
 
         HttpClientFactory factory = clientApp.getInstance(HttpClientFactory.class);
 
@@ -115,7 +115,7 @@ public class InstrumentedClientMDCIT {
     }
 
     @Test
-    public void testMDCRxNestedAsync() {
+    public void mDCRxNestedAsync() {
 
         HttpClientFactory factory = clientApp.getInstance(HttpClientFactory.class);
 
@@ -135,7 +135,7 @@ public class InstrumentedClientMDCIT {
     }
 
     @Test
-    public void testMDCRxNestedSync() {
+    public void mDCRxNestedSync() {
 
         HttpClientFactory factory = clientApp.getInstance(HttpClientFactory.class);
 
@@ -155,7 +155,7 @@ public class InstrumentedClientMDCIT {
     }
 
     @Test
-    public void testMDCRxParallel() throws ExecutionException, InterruptedException, TimeoutException {
+    public void mDCRxParallel() throws ExecutionException, InterruptedException, TimeoutException {
 
         HttpClientFactory factory = clientApp.getInstance(HttpClientFactory.class);
 

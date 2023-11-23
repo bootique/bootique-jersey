@@ -36,7 +36,7 @@ public class CustomFeaturesIT {
     final BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
 
     @Test
-    public void testFeaturesLoaded() {
+    public void featuresLoaded() {
 
         testFactory.app("-s")
                 .module(b -> JerseyModule.extend(b).addFeature(Feature1.class).addFeature(Feature2.class))

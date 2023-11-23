@@ -63,7 +63,7 @@ public class MultiPartFeatureIT {
             .target(jetty.getUrl());
 
     @Test
-    public void testResponse() {
+    public void response() {
 
         FormDataBodyPart part = new FormDataBodyPart("upload", "I am a part", MediaType.TEXT_PLAIN_TYPE);
         FormDataMultiPart multipart = new FormDataMultiPart();

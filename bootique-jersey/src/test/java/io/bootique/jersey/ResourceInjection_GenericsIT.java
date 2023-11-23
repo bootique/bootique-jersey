@@ -68,7 +68,7 @@ public class ResourceInjection_GenericsIT {
     }
 
     @Test
-    public void testFieldInjected() {
+    public void fieldInjected() {
 
         WebTarget client = startServer(b -> {
             b.bind(Key.get(new TypeLiteral<S1<String>>() {
@@ -83,7 +83,7 @@ public class ResourceInjection_GenericsIT {
     }
 
     @Test
-    public void testInjectedWildcard() {
+    public void injectedWildcard() {
 
         WebTarget client = startServer(b -> {
             b.bind(Key.get(new TypeLiteral<S1<?>>() {
@@ -96,7 +96,7 @@ public class ResourceInjection_GenericsIT {
     }
 
     @Test
-    public void testInjectedExtendedWildcard() {
+    public void injectedExtendedWildcard() {
 
         WebTarget client = startServer(b -> {
             b.bind(Key.get(new TypeLiteral<S1<? extends Object>>() {
@@ -109,7 +109,7 @@ public class ResourceInjection_GenericsIT {
     }
 
     @Test
-    public void testInjectedArray() {
+    public void injectedArray() {
 
         WebTarget client = startServer(b -> {
             b.bind(String[].class).toInstance(STRING_ARRAY_BOUND);
@@ -123,7 +123,7 @@ public class ResourceInjection_GenericsIT {
     }
 
     @Test
-    public void testUnInjected() {
+    public void unInjected() {
 
         WebTarget client = startServer(
                 new UninjectedModule(),
@@ -140,7 +140,7 @@ public class ResourceInjection_GenericsIT {
     }
 
     @Test
-    public void testUnInjectedWildcard() {
+    public void unInjectedWildcard() {
 
         WebTarget client = startServer(
                 new UninjectedResourceWildcardModule(),
@@ -155,7 +155,7 @@ public class ResourceInjection_GenericsIT {
     }
 
     @Test
-    public void testUnInjectedExtendedWildcard() {
+    public void unInjectedExtendedWildcard() {
 
         WebTarget client = startServer(
                 new UninjectedResourceWildcardModule(),
@@ -170,7 +170,7 @@ public class ResourceInjection_GenericsIT {
     }
 
     @Test
-    public void testUnInjectedArray() {
+    public void unInjectedArray() {
 
         WebTarget client = startServer(
                 new UninjectedResourceArrayModule(),

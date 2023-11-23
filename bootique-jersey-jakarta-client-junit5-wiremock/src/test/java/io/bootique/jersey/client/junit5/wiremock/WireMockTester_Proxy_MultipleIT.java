@@ -74,7 +74,7 @@ public class WireMockTester_Proxy_MultipleIT extends TestWithEmulatedBackend {
             .createRuntime();
 
     @Test
-    public void testTwoTargets() {
+    public void twoTargets() {
         WebTarget t1 = app.getInstance(HttpTargets.class).newTarget("tester1");
         JettyTester.assertOk(t1.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)

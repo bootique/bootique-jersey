@@ -66,25 +66,25 @@ public class ResourceMappingIT {
             .createRuntime();
 
     @Test
-    public void testAsInstance() {
+    public void asInstance() {
         Response r = jetty.getTarget().path("as_instance").request().get();
         JettyTester.assertOk(r).assertContent("as instance resource - xxx");
     }
 
     @Test
-    public void testAsType() {
+    public void asType() {
         Response r = jetty.getTarget().path("as_type").request().get();
         JettyTester.assertOk(r).assertContent("as type resource");
     }
 
     @Test
-    public void testAsType_OverriddenPath() {
+    public void asType_OverriddenPath() {
         Response r = jetty.getTarget().path("as_type_explicit_path").request().get();
         JettyTester.assertOk(r).assertContent("as type path override resource: as_type_explicit_path");
     }
 
     @Test
-    public void testAsType_MultipleOverriddenPaths() {
+    public void asType_MultipleOverriddenPaths() {
         Response r1 = jetty.getTarget().path("as_type_explicit_path1").request().get();
         JettyTester.assertOk(r1).assertContent("as type path override resource multiplied: as_type_explicit_path1");
 
@@ -93,13 +93,13 @@ public class ResourceMappingIT {
     }
 
     @Test
-    public void testDIManaged_OverriddenPath() {
+    public void dIManaged_OverriddenPath() {
         Response r = jetty.getTarget().path("di_managed_explicit_path").request().get();
         JettyTester.assertOk(r).assertContent("di managed path override resource: DILABEL");
     }
 
     @Test
-    public void testMapped_MultipleOverriddenPaths() {
+    public void mapped_MultipleOverriddenPaths() {
         Response r1 = jetty.getTarget().path("mapped_explicit_path1").request().get();
         JettyTester.assertOk(r1).assertContent("mapped path override resource: MAPPEDLABEL");
 
@@ -108,7 +108,7 @@ public class ResourceMappingIT {
     }
 
     @Test
-    public void testAsType_OverriddenPath_AnnotationPathIgnored() {
+    public void asType_OverriddenPath_AnnotationPathIgnored() {
         Response r1 = jetty.getTarget().path("as_type_annotation_path").request().get();
         JettyTester.assertNotFound(r1);
 

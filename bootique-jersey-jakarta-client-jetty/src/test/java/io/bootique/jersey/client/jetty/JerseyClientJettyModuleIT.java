@@ -61,7 +61,7 @@ public class JerseyClientJettyModuleIT {
     final BQTestFactory clientFactory = new BQTestFactory();
 
     @Test
-    public void testProviderRegistered() {
+    public void providerRegistered() {
         BQRuntime clientApp = clientFactory.app()
                 .autoLoadModules()
                 .createRuntime();
@@ -70,7 +70,7 @@ public class JerseyClientJettyModuleIT {
     }
 
     @Test
-    public void testGet() {
+    public void get() {
         BQRuntime clientApp = clientFactory.app()
                 .autoLoadModules()
                 .createRuntime();
@@ -81,7 +81,7 @@ public class JerseyClientJettyModuleIT {
     }
 
     @Test
-    public void testGetRx() throws ExecutionException, InterruptedException {
+    public void getRx() throws ExecutionException, InterruptedException {
         BQRuntime clientApp = clientFactory.app()
                 .autoLoadModules()
                 .createRuntime();
@@ -93,7 +93,7 @@ public class JerseyClientJettyModuleIT {
 
     @Disabled("rx/thenApply causes a deadlock and timeout with Jetty")
     @Test
-    public void testGetRxThenApply() throws ExecutionException, InterruptedException {
+    public void getRxThenApply() throws ExecutionException, InterruptedException {
         BQRuntime clientApp = clientFactory.app()
                 .autoLoadModules()
                 .createRuntime();
@@ -110,7 +110,7 @@ public class JerseyClientJettyModuleIT {
     }
 
     @Test
-    public void testGet_Gzip() {
+    public void get_Gzip() {
         BQRuntime clientApp = clientFactory.app()
                 .autoLoadModules()
                 .createRuntime();

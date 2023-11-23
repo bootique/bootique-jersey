@@ -49,7 +49,7 @@ public class WireMockTester_ProxyIT extends TestWithEmulatedBackend {
             .createRuntime();
 
     @Test
-    public void testRoot() {
+    public void root() {
         WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester");
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
@@ -59,7 +59,7 @@ public class WireMockTester_ProxyIT extends TestWithEmulatedBackend {
     }
 
     @Test
-    public void testPath() {
+    public void path() {
         WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").path("p1");
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
@@ -69,7 +69,7 @@ public class WireMockTester_ProxyIT extends TestWithEmulatedBackend {
     }
 
     @Test
-    public void testTwoRequestsSameMethod() {
+    public void twoRequestsSameMethod() {
         WebTarget t1 = app.getInstance(HttpTargets.class).newTarget("tester").path("p1");
         JettyTester.assertOk(t1.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
@@ -91,7 +91,7 @@ public class WireMockTester_ProxyIT extends TestWithEmulatedBackend {
     }
 
     @Test
-    public void testQuery() {
+    public void query() {
         WebTarget target = app.getInstance(HttpTargets.class)
                 .newTarget("tester")
                 // That's an old Bootique video. Hopefully it stays stable

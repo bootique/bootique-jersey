@@ -46,7 +46,7 @@ public class WireMockTester_RedirectsIT extends TestWithEmulatedBackend {
             .createRuntime();
 
     @Test
-    public void testRedirect() {
+    public void redirect() {
         WebTarget target = app.getInstance(HttpTargets.class)
                 .newTarget("tester")
                 .path("redirect")

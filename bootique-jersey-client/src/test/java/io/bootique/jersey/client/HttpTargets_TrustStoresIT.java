@@ -62,7 +62,7 @@ public class HttpTargets_TrustStoresIT {
     }
 
     @Test
-    public void testNamedTrustStore() {
+    public void namedTrustStore() {
 
         HttpTargets targets = clientFactory.app()
                 .moduleProvider(new JerseyClientModuleProvider())
@@ -78,7 +78,7 @@ public class HttpTargets_TrustStoresIT {
     }
 
     @Test
-    public void testNamedTrustStore_DerivedTarget() {
+    public void namedTrustStore_DerivedTarget() {
 
         HttpTargets targets = clientFactory.app()
                 .moduleProvider(new JerseyClientModuleProvider())
@@ -94,7 +94,7 @@ public class HttpTargets_TrustStoresIT {
     }
 
     @Test
-    public void testNamedTrustStore_InvalidRef() {
+    public void namedTrustStore_InvalidRef() {
 
         assertThrows(DIRuntimeException.class, () ->
                 clientFactory.app()

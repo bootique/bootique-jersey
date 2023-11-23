@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 public class JerseyJacksonModuleTest {
 
     @Test
-    public void testAutoLoad() {
+    public void autoLoad() {
         BQModuleProviderChecker.testAutoLoadable(JerseyJacksonModule.class);
     }
 }

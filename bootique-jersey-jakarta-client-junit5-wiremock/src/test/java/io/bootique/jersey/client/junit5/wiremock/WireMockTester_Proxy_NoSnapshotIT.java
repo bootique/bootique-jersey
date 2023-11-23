@@ -48,7 +48,7 @@ public class WireMockTester_Proxy_NoSnapshotIT extends TestWithEmulatedBackend {
             .createRuntime();
 
     @Test
-    public void testRoot() {
+    public void root() {
         WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester");
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
@@ -58,7 +58,7 @@ public class WireMockTester_Proxy_NoSnapshotIT extends TestWithEmulatedBackend {
     }
 
     @Test
-    public void testPath() {
+    public void path() {
         WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").path("p1");
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)

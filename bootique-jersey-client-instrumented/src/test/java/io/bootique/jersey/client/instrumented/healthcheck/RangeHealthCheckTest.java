@@ -38,7 +38,7 @@ public class RangeHealthCheckTest {
     }
 
     @Test
-    public void testRange_1() {
+    public void range_1() {
         Timer timer = registry.timer(RequestTimer.TIMER_NAME);
         
         Mockito.when(timer.getOneMinuteRate()).thenReturn(0.009);
@@ -49,7 +49,7 @@ public class RangeHealthCheckTest {
 
 
     @Test
-    public void testRange_2() {
+    public void range_2() {
         Timer timer = registry.timer(RequestTimer.TIMER_NAME);
 
         Mockito.when(timer.getOneMinuteRate()).thenReturn(0.03);
@@ -59,7 +59,7 @@ public class RangeHealthCheckTest {
     }
 
     @Test
-    public void testRange_3() {
+    public void range_3() {
         Timer timer = registry.timer(RequestTimer.TIMER_NAME);
 
         Mockito.when(timer.getOneMinuteRate()).thenReturn(0.06);

@@ -49,7 +49,7 @@ public class BQJerseyJackson_JsonSerializerIT {
             .createRuntime();
 
     @Test
-    public void testJacksonSerialization() {
+    public void jacksonSerialization() {
         Response r = jetty.getTarget().request().get();
         JettyTester.assertOk(r).assertContent("{\"p1\":\"s\",\"x\":\"xxxxx\"}");
     }

@@ -35,7 +35,7 @@ public class InstrumentedHttpClientFactoryFactoryTest {
     private final Injector mockInjector = mock(Injector.class);
 
     @Test
-    public void testCreateClientFactory_AsyncThreadPool() {
+    public void createClientFactory_AsyncThreadPool() {
 
         Client client = new InstrumentedHttpClientFactoryFactory().createClientFactory(mockInjector, Set.of()).newClient();
 

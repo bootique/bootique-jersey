@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class JerseyServletFactoryTest {
 
     @Test
-    public void testNormalizeAppPath() {
+    public void normalizeAppPath() {
 
         JerseyServletFactory f = new JerseyServletFactory();
         assertEquals("/*", f.normalizeAppPath(""));

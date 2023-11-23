@@ -63,7 +63,7 @@ public class HttpHealthCheckIT {
     }
 
     @Test
-    public void testSafeCheck_NoConnection() {
+    public void safeCheck_NoConnection() {
         // access a port that is not in use
         int openPort = PortFinder.findAvailablePort("127.0.0.1");
         WebTarget target = ClientBuilder.newClient().target("http://127.0.0.1:" + openPort);
@@ -75,7 +75,7 @@ public class HttpHealthCheckIT {
     }
 
     @Test
-    public void testSafeCheck_ViaGet_TempRedirect() {
+    public void safeCheck_ViaGet_TempRedirect() {
         WebTarget target = target("moved");
         HealthCheckOutcome outcome = HttpHealthCheck.viaGET(target).safeCheck();
         assertEquals(HealthCheckStatus.OK, outcome.getStatus(), outcome.toString());
@@ -83,7 +83,7 @@ public class HttpHealthCheckIT {
     }
 
     @Test
-    public void testSafeCheck_ViaGet_TempRedirect_Overwritten() {
+    public void safeCheck_ViaGet_TempRedirect_Overwritten() {
 
         // testing that while the initial target is setup to not follow redirects, health check still does.
 
@@ -96,7 +96,7 @@ public class HttpHealthCheckIT {
     }
 
     @Test
-    public void testSafeCheck_ViaHead_NotFound() {
+    public void safeCheck_ViaHead_NotFound() {
         WebTarget target = target("no_such_thing");
         HealthCheckOutcome outcome = HttpHealthCheck.viaHEAD(target).safeCheck();
         assertEquals(HealthCheckStatus.WARNING, outcome.getStatus());
@@ -104,7 +104,7 @@ public class HttpHealthCheckIT {
     }
 
     @Test
-    public void testSafeCheck_ViaGet_ServerError() {
+    public void safeCheck_ViaGet_ServerError() {
         WebTarget target = target("get500");
         HealthCheckOutcome outcome = HttpHealthCheck.viaHEAD(target).safeCheck();
         assertEquals(HealthCheckStatus.CRITICAL, outcome.getStatus());
@@ -112,14 +112,14 @@ public class HttpHealthCheckIT {
     }
 
     @Test
-    public void testSafeCheck_ViaGet() {
+    public void safeCheck_ViaGet() {
         WebTarget target = target("get");
         HealthCheckOutcome outcome = HttpHealthCheck.viaGET(target).safeCheck();
         assertEquals(HealthCheckStatus.OK, outcome.getStatus(), outcome.toString());
     }
 
     @Test
-    public void testSafeCheck_ViaHead() {
+    public void safeCheck_ViaHead() {
         // note that we don't need an explicit OPTIONS endpoint ...
         // Jersey server must provide an implicit behavior for a valid resource
 
@@ -129,7 +129,7 @@ public class HttpHealthCheckIT {
     }
 
     @Test
-    public void testSafeCheck_ViaOptions() {
+    public void safeCheck_ViaOptions() {
         // note that we don't need an explicit HEAD endpoint ...
         // Jersey server must provide an implicit behavior for a valid resource
         WebTarget target = target("get");

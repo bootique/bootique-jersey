@@ -59,7 +59,7 @@ public class HttpClientFactory_FeaturesIT {
             .createRuntime();
 
     @Test
-    public void testFeaturesLoaded() {
+    public void featuresLoaded() {
 
         assertFalse(Feature1.LOADED);
         assertFalse(Feature2.LOADED);

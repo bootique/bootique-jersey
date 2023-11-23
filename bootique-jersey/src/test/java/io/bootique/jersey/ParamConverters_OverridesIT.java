@@ -54,19 +54,19 @@ public class ParamConverters_OverridesIT {
             .createRuntime();
 
     @Test
-    public void testDateConverter() {
+    public void dateConverter() {
         Response r = jetty.getTarget().path("date/2020-02-03").request().get();
         JettyTester.assertOk(r).assertContent("[2020-02-02]");
     }
 
     @Test
-    public void testTimeConverter() {
+    public void timeConverter() {
         Response r = jetty.getTarget().path("time/12:00:02").request().get();
         JettyTester.assertOk(r).assertContent("[12:00:01]");
     }
 
     @Test
-    public void testDateTimeConverter() {
+    public void dateTimeConverter() {
         Response r = jetty.getTarget().path("datetime/2020-02-03T12:00:02").request().get();
         JettyTester.assertOk(r).assertContent("[2020-02-02T12:00:01]");
     }

@@ -82,7 +82,7 @@ public class InstrumentedClientIT {
     }
 
     @Test
-    public void testMetrics() {
+    public void metrics() {
         // fault filter to init metrics
         client.getInstance(RequestTimer.class);
         MetricRegistry metricRegistry = client.getInstance(MetricRegistry.class);
@@ -91,7 +91,7 @@ public class InstrumentedClientIT {
     }
 
     @Test
-    public void testTimerInvoked() {
+    public void timerInvoked() {
 
         HttpClientFactory factory = client.getInstance(HttpClientFactory.class);
         MetricRegistry metrics = client.getInstance(MetricRegistry.class);
@@ -109,7 +109,7 @@ public class InstrumentedClientIT {
     }
 
     @Test
-    public void testTimer_ConnectionError() {
+    public void timer_ConnectionError() {
 
         Client jaxrsClient = client.getInstance(HttpClientFactory.class).newClient();
         MetricRegistry metrics = client.getInstance(MetricRegistry.class);
@@ -130,7 +130,7 @@ public class InstrumentedClientIT {
     }
 
     @Test
-    public void testTimer_ServerErrors() {
+    public void timer_ServerErrors() {
 
         Client jaxrsClient = client.getInstance(HttpClientFactory.class).newClient();
         MetricRegistry metrics = client.getInstance(MetricRegistry.class);

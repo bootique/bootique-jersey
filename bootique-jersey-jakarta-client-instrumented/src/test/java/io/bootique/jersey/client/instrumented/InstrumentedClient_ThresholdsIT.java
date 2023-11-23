@@ -85,7 +85,7 @@ public class InstrumentedClient_ThresholdsIT {
     }
 
     @Test
-    public void testRequestsPerMin() throws InterruptedException {
+    public void requestsPerMin() throws InterruptedException {
 
         BQRuntime client = createClient();
         WebTarget target = createTarget(client);
