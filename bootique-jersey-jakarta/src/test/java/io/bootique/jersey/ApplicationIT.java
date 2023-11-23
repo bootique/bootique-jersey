@@ -46,7 +46,7 @@ public class ApplicationIT {
 
     @Test
     @DisplayName("@ApplicationPath annotation must set JAX-RS base path")
-    public void testPathFromAnnotation() {
+    public void pathFromAnnotation() {
 
         JettyTester jetty = JettyTester.create();
         testFactory.app("-s")
@@ -62,7 +62,7 @@ public class ApplicationIT {
 
     @Test
     @DisplayName("Application-provided endpoints must be deployed")
-    public void testAppResources() {
+    public void appResources() {
 
         JettyTester jetty = JettyTester.create();
         testFactory.app("-s")

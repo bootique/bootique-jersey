@@ -28,7 +28,7 @@ import io.bootique.jersey.client.auth.BasicAuthenticatorFactory.BasicAuthenticat
 public class BasicAuthenticatorTest {
 
 	@Test
-	public void testCreateBasicAuth() {
+    public void createBasicAuth() {
 		assertEquals("Basic dTExMTpwMzQ1", BasicAuthenticator.createBasicAuth("u111", "p345"));
 	}
 }

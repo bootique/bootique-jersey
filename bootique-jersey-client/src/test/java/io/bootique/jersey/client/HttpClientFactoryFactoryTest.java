@@ -35,7 +35,7 @@ public class HttpClientFactoryFactoryTest {
 	private Injector mockInjector = mock(Injector.class);
 
 	@Test
-	public void testCreateClientFactory_AsyncThreadPool() {
+    public void createClientFactory_AsyncThreadPool() {
 
 		Client client = new HttpClientFactoryFactory().createClientFactory(mockInjector, Set.of()).newClient();
 
@@ -47,7 +47,7 @@ public class HttpClientFactoryFactoryTest {
 	}
 
 	@Test
-	public void testCreateClientFactory() {
+    public void createClientFactory() {
 
 		HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
 		factoryFactory.setAsyncThreadPoolSize(5);
