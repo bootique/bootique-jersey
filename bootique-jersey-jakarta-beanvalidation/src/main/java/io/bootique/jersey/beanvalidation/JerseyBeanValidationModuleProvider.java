@@ -19,7 +19,7 @@
 package io.bootique.jersey.beanvalidation;
 
 import io.bootique.BQModuleProvider;
-import io.bootique.di.BQModule;
+import io.bootique.bootstrap.BuiltModule;
 
 /**
  * @since 2.0
@@ -27,7 +27,10 @@ import io.bootique.di.BQModule;
 public class JerseyBeanValidationModuleProvider implements BQModuleProvider {
 
     @Override
-    public BQModule module() {
-        return new JerseyBeanValidationModule();
+    public BuiltModule buildModule() {
+        return BuiltModule.of(new JerseyBeanValidationModule())
+                .provider(this)
+                .description("Integrates bean validation to Jersey")
+                .build();
     }
 }

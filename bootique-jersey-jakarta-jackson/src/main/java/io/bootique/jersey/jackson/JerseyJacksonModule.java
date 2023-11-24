@@ -19,30 +19,33 @@
 package io.bootique.jersey.jackson;
 
 import com.fasterxml.jackson.databind.JsonSerializer;
-import io.bootique.BaseModule;
+import io.bootique.BQModuleProvider;
+import io.bootique.ConfigModule;
+import io.bootique.bootstrap.BuiltModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
 import io.bootique.di.Provides;
 import io.bootique.jersey.JerseyModule;
 
 import javax.inject.Singleton;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 /**
  * @since 2.0
  */
-public class JerseyJacksonModule extends BaseModule {
+public class JerseyJacksonModule extends ConfigModule implements BQModuleProvider {
 
     public static JerseyJacksonModuleExtender extend(Binder binder) {
         return new JerseyJacksonModuleExtender(binder);
     }
 
     @Override
-    public Map<String, Type> configs() {
-        return Collections.singletonMap(configPrefix, JerseyJacksonFactory.class);
+    public BuiltModule buildModule() {
+        return BuiltModule.of(this)
+                .provider(this)
+                .description("Integrates Jackson JSON serializers to Jersey JAX-RS engine")
+                .config(configPrefix, JerseyJacksonFactory.class)
+                .build();
     }
 
     @Override

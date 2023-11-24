@@ -19,32 +19,17 @@
 
 package io.bootique.jersey.client;
 
-import io.bootique.BQModuleMetadata;
 import io.bootique.BQModuleProvider;
-import io.bootique.di.BQModule;
-
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Map;
+import io.bootique.bootstrap.BuiltModule;
 
 public class JerseyClientModuleProvider implements BQModuleProvider {
 
     @Override
-    public BQModule module() {
-        return new JerseyClientModule();
-    }
-
-    @Override
-    public Map<String, Type> configs() {
-        // TODO: config prefix is hardcoded. Refactor away from ConfigModule, and make provider
-        // generate config prefix, reusing it in metadata...
-        return Collections.singletonMap("jerseyclient", HttpClientFactoryFactory.class);
-    }
-
-    @Override
-    public BQModuleMetadata.Builder moduleBuilder() {
-        return BQModuleProvider.super
-                .moduleBuilder()
-                .description("Provides configurable JAX-RS HTTP client with pluggable authentication.");
+    public BuiltModule buildModule() {
+        return BuiltModule.of(new JerseyClientModule())
+                .provider(this)
+                .description("Integrates Jersey JAX-RS HTTP client")
+                .config("jerseyclient", HttpClientFactoryFactory.class)
+                .build();
     }
 }

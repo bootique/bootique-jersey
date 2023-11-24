@@ -20,31 +20,22 @@
 package io.bootique.jersey;
 
 import io.bootique.BQModuleProvider;
-import io.bootique.di.BQModule;
+import io.bootique.bootstrap.BuiltModule;
 import io.bootique.jetty.JettyModuleProvider;
 
-import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Map;
 
 import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
 
 public class JerseyModuleProvider implements BQModuleProvider {
 
     @Override
-    public BQModule module() {
-        return new JerseyModule();
-    }
-
-    /**
-     * @return a single-entry map with {@link JerseyServletFactory}.
-     */
-    @Override
-    public Map<String, Type> configs() {
-        // TODO: config prefix is hardcoded. Refactor away from ConfigModule, and make provider
-        // generate config prefix, reusing it in metadata...
-        return singletonMap("jersey", JerseyServletFactory.class);
+    public BuiltModule buildModule() {
+        return BuiltModule.of(new JerseyModule())
+                .provider(this)
+                .description("Integrates Jersey JAX-RS HTTP server")
+                .config("jersey", JerseyServletFactory.class)
+                .build();
     }
 
     @Override

@@ -20,27 +20,25 @@
 package io.bootique.jersey.client.instrumented;
 
 import io.bootique.BQModuleProvider;
-import io.bootique.di.BQModule;
+import io.bootique.bootstrap.BuiltModule;
 import io.bootique.jersey.client.JerseyClientModule;
 import io.bootique.jersey.client.JerseyClientModuleProvider;
 import io.bootique.metrics.MetricsModuleProvider;
 import io.bootique.metrics.health.HealthCheckModuleProvider;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import static java.util.Arrays.asList;
 
 public class JerseyClientInstrumentedModuleProvider implements BQModuleProvider {
 
     @Override
-    public BQModule module() {
-        return new JerseyClientInstrumentedModule();
-    }
-
-    @Override
-    public Collection<Class<? extends BQModule>> overrides() {
-        return Collections.singleton(JerseyClientModule.class);
+    public BuiltModule buildModule() {
+        return BuiltModule.of(new JerseyClientInstrumentedModule())
+                .provider(this)
+                .description("Integrates metrics and extra logging in Jersey HTTP client")
+                .overrides(JerseyClientModule.class)
+                .build();
     }
 
     @Override
