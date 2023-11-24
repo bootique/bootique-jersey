@@ -28,7 +28,7 @@ public class JerseyClientModuleProvider implements BQModuleProvider {
     public BuiltModule buildModule() {
         return BuiltModule.of(new JerseyClientModule())
                 .provider(this)
-                .description("Integrates Jersey JAX-RS HTTP client")
+                .description("Integrates Jersey JAX-RS HTTP client.")
                 .config("jerseyclient", HttpClientFactoryFactory.class)
                 .build();
     }
