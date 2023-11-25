@@ -37,7 +37,7 @@ public class JerseyModuleProvider implements BQModuleProvider {
     public BuiltModule buildModule() {
         return BuiltModule.of(new JerseyModule())
                 .provider(this)
-                .description("Integrates Jersey JAX-RS HTTP server")
+                .description("Deprecated and should be replaced with 'bootique-jersey-jakarta'.")
                 .config("jersey", JerseyServletFactory.class)
                 .build();
     }

@@ -40,7 +40,7 @@ public class JerseyClientInstrumentedModuleProvider implements BQModuleProvider 
     public BuiltModule buildModule() {
         return BuiltModule.of(new JerseyClientInstrumentedModule())
                 .provider(this)
-                .description("Integrates metrics and extra logging in Jersey HTTP client")
+                .description("Deprecated and should be replaced with 'bootique-jersey-jakarta-client-instrumented'.")
                 .overrides(JerseyClientModule.class)
                 .build();
     }

@@ -45,7 +45,7 @@ public class JerseyJacksonModule extends ConfigModule implements BQModuleProvide
     public BuiltModule buildModule() {
         return BuiltModule.of(this)
                 .provider(this)
-                .description("Integrates Jackson JSON serializers to Jersey JAX-RS engine")
+                .description("Deprecated and should be replaced with 'bootique-jersey-jakarta-jackson'.")
                 .config(configPrefix, JerseyJacksonFactory.class)
                 .build();
     }

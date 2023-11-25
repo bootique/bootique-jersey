@@ -32,7 +32,7 @@ public class JerseyBeanValidationModuleProvider implements BQModuleProvider {
     public BuiltModule buildModule() {
         return BuiltModule.of(new JerseyBeanValidationModule())
                 .provider(this)
-                .description("Integrates bean validation to Jersey")
+                .description("Deprecated and should be replaced with 'bootique-jersey-jakarta-beanvalidation'.")
                 .build();
     }
 }
