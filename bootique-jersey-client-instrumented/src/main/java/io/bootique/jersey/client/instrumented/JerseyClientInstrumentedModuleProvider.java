@@ -23,8 +23,8 @@ import io.bootique.BQModuleProvider;
 import io.bootique.bootstrap.BuiltModule;
 import io.bootique.jersey.client.JerseyClientModule;
 import io.bootique.jersey.client.JerseyClientModuleProvider;
-import io.bootique.metrics.MetricsModuleProvider;
-import io.bootique.metrics.health.HealthCheckModuleProvider;
+import io.bootique.metrics.MetricsModule;
+import io.bootique.metrics.health.HealthCheckModule;
 
 import java.util.Collection;
 
@@ -50,8 +50,8 @@ public class JerseyClientInstrumentedModuleProvider implements BQModuleProvider 
     public Collection<BQModuleProvider> dependencies() {
         return asList(
                 new JerseyClientModuleProvider(),
-                new HealthCheckModuleProvider(),
-                new MetricsModuleProvider()
+                new HealthCheckModule(),
+                new MetricsModule()
         );
     }
 }

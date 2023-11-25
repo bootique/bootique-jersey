@@ -19,7 +19,8 @@
 
 package io.bootique.jersey;
 
-import io.bootique.ConfigModule;
+import io.bootique.BQModuleProvider;
+import io.bootique.bootstrap.BuiltModule;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.*;
 import io.bootique.jersey.jaxrs.*;
@@ -37,15 +38,19 @@ import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
+import javax.inject.Singleton;
 import java.time.*;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class JerseyModule extends ConfigModule {
+import static java.util.Collections.singletonList;
 
+public class JerseyModule implements BQModule, BQModuleProvider {
+
+    private static final String CONFIG_PREFIX = "jersey";
     static final String RESOURCES_BY_PATH_BINDING = "io.bootique.jersey.jakarta.resourcesByPath";
-
 
     /**
      * Returns an instance of {@link JerseyModuleExtender} used by downstream modules to load custom extensions of
@@ -56,6 +61,21 @@ public class JerseyModule extends ConfigModule {
      */
     public static JerseyModuleExtender extend(Binder binder) {
         return new JerseyModuleExtender(binder);
+    }
+
+    @Override
+    public BuiltModule buildModule() {
+        return BuiltModule.of(this)
+                .provider(this)
+                .description("Integrates Jersey JAX-RS HTTP server")
+                .config(CONFIG_PREFIX, JerseyServletFactory.class)
+                .build();
+    }
+
+    @Override
+    @Deprecated(since = "3.0", forRemoval = true)
+    public Collection<BQModuleProvider> dependencies() {
+        return singletonList(new JettyModule());
     }
 
     @Override
@@ -149,8 +169,10 @@ public class JerseyModule extends ConfigModule {
     }
 
     @Provides
-    @javax.inject.Singleton
-    private MappedServlet<ServletContainer> provideJerseyServlet(ConfigurationFactory configFactory, ResourceConfig config) {
-        return config(JerseyServletFactory.class, configFactory).createJerseyServlet(config);
+    @Singleton
+    private MappedServlet<ServletContainer> provideJerseyServlet(
+            ConfigurationFactory configFactory,
+            ResourceConfig config) {
+        return configFactory.config(JerseyServletFactory.class, CONFIG_PREFIX).createJerseyServlet(config);
     }
 }

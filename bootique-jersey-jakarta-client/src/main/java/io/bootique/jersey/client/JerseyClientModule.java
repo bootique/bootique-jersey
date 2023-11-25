@@ -19,12 +19,10 @@
 
 package io.bootique.jersey.client;
 
-import io.bootique.ConfigModule;
+import io.bootique.BQModuleProvider;
+import io.bootique.bootstrap.BuiltModule;
 import io.bootique.config.ConfigurationFactory;
-import io.bootique.di.Binder;
-import io.bootique.di.Injector;
-import io.bootique.di.Key;
-import io.bootique.di.Provides;
+import io.bootique.di.*;
 import jakarta.ws.rs.core.Feature;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 import org.glassfish.jersey.client.spi.ConnectorProvider;
@@ -32,7 +30,9 @@ import org.glassfish.jersey.client.spi.ConnectorProvider;
 import javax.inject.Singleton;
 import java.util.Set;
 
-public class JerseyClientModule extends ConfigModule {
+public class JerseyClientModule implements BQModule, BQModuleProvider {
+
+    private static final String CONFIG_PREFIX = "jerseyclient";
 
     /**
      * Returns an instance of {@link JerseyClientModuleExtender} used by downstream modules to load custom extensions of
@@ -43,6 +43,14 @@ public class JerseyClientModule extends ConfigModule {
      */
     public static JerseyClientModuleExtender extend(Binder binder) {
         return new JerseyClientModuleExtender(binder);
+    }
+
+    @Override
+    public BuiltModule buildModule() {
+        return BuiltModule.of(this)
+                .description("Integrates Jersey JAX-RS HTTP client.")
+                .config(CONFIG_PREFIX, HttpClientFactoryFactory.class)
+                .build();
     }
 
     @Override
@@ -61,7 +69,7 @@ public class JerseyClientModule extends ConfigModule {
     @Provides
     @Singleton
     HttpClientFactoryFactory provideClientFactoryFactory(ConfigurationFactory configFactory) {
-        return config(HttpClientFactoryFactory.class, configFactory);
+        return configFactory.config(HttpClientFactoryFactory.class, CONFIG_PREFIX);
     }
 
     @Provides

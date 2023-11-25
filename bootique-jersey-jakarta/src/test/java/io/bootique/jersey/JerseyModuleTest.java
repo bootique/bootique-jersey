@@ -19,30 +19,15 @@
 
 package io.bootique.jersey;
 
-import io.bootique.BQModuleProvider;
-import io.bootique.bootstrap.BuiltModule;
-import io.bootique.jetty.JettyModuleProvider;
+import io.bootique.junit5.BQModuleProviderChecker;
+import io.bootique.junit5.BQTest;
+import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
+@BQTest
+public class JerseyModuleTest {
 
-import static java.util.Collections.singletonList;
-
-public class JerseyModuleProvider implements BQModuleProvider {
-
-    @Override
-    public BuiltModule buildModule() {
-        return BuiltModule.of(new JerseyModule())
-                .provider(this)
-                .description("Integrates Jersey JAX-RS HTTP server")
-                .config("jersey", JerseyServletFactory.class)
-                .build();
-    }
-
-    @Override
-    @Deprecated(since = "3.0", forRemoval = true)
-    public Collection<BQModuleProvider> dependencies() {
-        return singletonList(
-                new JettyModuleProvider()
-        );
+    @Test
+    public void autoLoadable() {
+        BQModuleProviderChecker.testAutoLoadable(JerseyModule.class);
     }
 }

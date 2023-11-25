@@ -62,7 +62,7 @@ public class HttpClientFactory_TrustStoresIT {
 
         HttpClientFactory factory = clientFactory
                 .app("-c", "classpath:io/bootique/jersey/client/TrustStoresIT_client.yml")
-                .moduleProvider(new JerseyClientModuleProvider())
+                .module(new JerseyClientModule())
                 .moduleProvider(new LogbackModuleProvider())
                 .createRuntime()
                 .getInstance(HttpClientFactory.class);
@@ -92,7 +92,7 @@ public class HttpClientFactory_TrustStoresIT {
 
         HttpClientFactory factory = clientFactory
                 .app("-c", "classpath:io/bootique/jersey/client/TrustStoresIT_client.yml")
-                .moduleProvider(new JerseyClientModuleProvider())
+                .moduleProvider(new JerseyClientModule())
                 .moduleProvider(new LogbackModuleProvider())
                 .createRuntime()
                 .getInstance(HttpClientFactory.class);

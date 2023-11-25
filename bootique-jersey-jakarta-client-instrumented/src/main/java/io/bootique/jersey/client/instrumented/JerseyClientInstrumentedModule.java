@@ -20,25 +20,47 @@
 package io.bootique.jersey.client.instrumented;
 
 import com.codahale.metrics.MetricRegistry;
-import io.bootique.ConfigModule;
+import io.bootique.BQModuleProvider;
+import io.bootique.bootstrap.BuiltModule;
 import io.bootique.config.ConfigurationFactory;
+import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.di.Provides;
 import io.bootique.jersey.client.HttpClientFactoryFactory;
 import io.bootique.jersey.client.JerseyClientModule;
 import io.bootique.metrics.MetricNaming;
+import io.bootique.metrics.MetricsModule;
 import io.bootique.metrics.health.HealthCheckModule;
 
 import javax.inject.Singleton;
+import java.util.Collection;
 
-public class JerseyClientInstrumentedModule extends ConfigModule {
+import static java.util.Arrays.asList;
+
+public class JerseyClientInstrumentedModule implements BQModule, BQModuleProvider {
+
+    // reusing overridden module prefix
+    private static final String CONFIG_PREFIX = "jerseyclient";
 
     public static final MetricNaming METRIC_NAMING = MetricNaming.forModule(JerseyClientInstrumentedModule.class);
 
     @Override
-    protected String defaultConfigPrefix() {
-        // reusing overridden module prefix
-        return "jerseyclient";
+    public BuiltModule buildModule() {
+        return BuiltModule.of(new JerseyClientInstrumentedModule())
+                .provider(this)
+                .description("Integrates metrics and extra logging in Jersey HTTP client")
+                .overrides(JerseyClientModule.class)
+                .build();
+    }
+
+    @Override
+    @Deprecated(since = "3.0", forRemoval = true)
+    public Collection<BQModuleProvider> dependencies() {
+        return asList(
+                new JerseyClientModule(),
+                new HealthCheckModule(),
+                new MetricsModule()
+        );
     }
 
     @Override
@@ -69,7 +91,7 @@ public class JerseyClientInstrumentedModule extends ConfigModule {
     @Singleton
     @Provides
     InstrumentedHttpClientFactoryFactory providerInstrumentedHttpClientFactoryFactory(ConfigurationFactory configFactory) {
-        return config(InstrumentedHttpClientFactoryFactory.class, configFactory);
+        return configFactory.config(InstrumentedHttpClientFactoryFactory.class, CONFIG_PREFIX);
     }
 
     @Provides

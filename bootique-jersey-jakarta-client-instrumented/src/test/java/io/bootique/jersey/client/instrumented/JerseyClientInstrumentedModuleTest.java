@@ -17,32 +17,34 @@
  * under the License.
  */
 
-package io.bootique.jersey;
+package io.bootique.jersey.client.instrumented;
 
 import io.bootique.BQRuntime;
-import io.bootique.jersey.JerseyModule;
-import io.bootique.jersey.JerseyModuleProvider;
-import io.bootique.jetty.JettyModule;
+import io.bootique.jersey.client.JerseyClientModule;
 import io.bootique.junit5.*;
+import io.bootique.metrics.MetricsModule;
+import io.bootique.metrics.health.HealthCheckModule;
 import org.junit.jupiter.api.Test;
 
 @BQTest
-public class JerseyModuleProviderIT {
+public class JerseyClientInstrumentedModuleTest {
 
     @BQTestTool
     final BQTestFactory testFactory = new BQTestFactory();
 
     @Test
     public void autoLoadable() {
-        BQModuleProviderChecker.testAutoLoadable(JerseyModuleProvider.class);
+        BQModuleProviderChecker.testAutoLoadable(JerseyClientInstrumentedModule.class);
     }
 
     @Test
     public void moduleDeclaresDependencies() {
-        BQRuntime bqRuntime = testFactory.app().moduleProvider(new JerseyModuleProvider()).createRuntime();
+        final BQRuntime bqRuntime = testFactory.app().moduleProvider(new JerseyClientInstrumentedModule()).createRuntime();
         BQRuntimeChecker.testModulesLoaded(bqRuntime,
-                JettyModule.class,
-                JerseyModule.class
+                JerseyClientModule.class,
+                JerseyClientInstrumentedModule.class,
+                MetricsModule.class,
+                HealthCheckModule.class
         );
     }
 }

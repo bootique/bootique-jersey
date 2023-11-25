@@ -25,6 +25,6 @@ public class JerseyClientJettyModuleTest {
 
     @Test
     public void autoLoadable() {
-        BQModuleProviderChecker.testAutoLoadable(JerseyClientJettyModuleProvider.class);
+        BQModuleProviderChecker.testAutoLoadable(JerseyClientJettyModule.class);
     }
 }

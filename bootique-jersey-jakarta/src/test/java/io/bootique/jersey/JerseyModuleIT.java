@@ -22,8 +22,9 @@ package io.bootique.jersey;
 import io.bootique.BQRuntime;
 import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
-import io.bootique.jersey.JerseyModule;
+import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.MappedServlet;
+import io.bootique.junit5.BQRuntimeChecker;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
@@ -39,6 +40,16 @@ public class JerseyModuleIT {
 
     @BQTestTool
     final BQTestFactory testFactory = new BQTestFactory().autoLoadModules();
+
+    @Deprecated
+    @Test
+    public void moduleDeclaresDependencies() {
+        BQRuntime bqRuntime = testFactory.app().moduleProvider(new JerseyModule()).createRuntime();
+        BQRuntimeChecker.testModulesLoaded(bqRuntime,
+                JettyModule.class,
+                JerseyModule.class
+        );
+    }
 
     @Test
     public void defaultContents() {

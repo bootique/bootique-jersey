@@ -19,19 +19,18 @@
 
 package io.bootique.jersey.client;
 
-import io.bootique.jersey.client.JerseyClientModuleProvider;
 import io.bootique.junit5.BQModuleProviderChecker;
 import org.junit.jupiter.api.Test;
 
-public class JerseyClientModuleProviderIT {
+public class JerseyClientModuleTest {
 
     @Test
     public void autoLoadable() {
-        BQModuleProviderChecker.testAutoLoadable(JerseyClientModuleProvider.class);
+        BQModuleProviderChecker.testAutoLoadable(JerseyClientModule.class);
     }
 
     @Test
     public void metadata() {
-        BQModuleProviderChecker.testMetadata(JerseyClientModuleProvider.class);
+        BQModuleProviderChecker.testMetadata(JerseyClientModule.class);
     }
 }

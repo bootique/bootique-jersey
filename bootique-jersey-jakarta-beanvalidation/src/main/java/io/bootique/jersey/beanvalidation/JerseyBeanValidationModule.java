@@ -18,20 +18,30 @@
  */
 package io.bootique.jersey.beanvalidation;
 
-import io.bootique.ConfigModule;
+import io.bootique.BQModuleProvider;
+import io.bootique.bootstrap.BuiltModule;
+import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 
 /**
  * @since 2.0
  */
-public class JerseyBeanValidationModule extends ConfigModule {
+public class JerseyBeanValidationModule implements BQModule, BQModuleProvider {
 
     public static JerseyBeanValidationModuleExtender extend(Binder binder) {
         return new JerseyBeanValidationModuleExtender(binder);
     }
 
     @Override
+    public BuiltModule buildModule() {
+        return BuiltModule.of(this)
+                .provider(this)
+                .description("Integrates bean validation to Jersey")
+                .build();
+    }
+
+    @Override
     public void configure(Binder binder) {
-        extend(binder);
+        extend(binder).initAllExtensions();
     }
 }

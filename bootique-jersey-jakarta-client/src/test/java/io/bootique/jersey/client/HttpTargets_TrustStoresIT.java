@@ -64,7 +64,7 @@ public class HttpTargets_TrustStoresIT {
     public void namedTrustStore() {
 
         HttpTargets targets = clientFactory.app()
-                .moduleProvider(new JerseyClientModuleProvider())
+                .moduleProvider(new JerseyClientModule())
                 .moduleProvider(new LogbackModuleProvider())
                 .property("bq.jerseyclient.trustStores.ts1.location", CLIENT_TRUST_STORE)
                 .property("bq.jerseyclient.targets.t.url", serviceUrl())
@@ -80,7 +80,7 @@ public class HttpTargets_TrustStoresIT {
     public void namedTrustStore_DerivedTarget() {
 
         HttpTargets targets = clientFactory.app()
-                .moduleProvider(new JerseyClientModuleProvider())
+                .moduleProvider(new JerseyClientModule())
                 .moduleProvider(new LogbackModuleProvider())
                 .property("bq.jerseyclient.trustStores.ts1.location", CLIENT_TRUST_STORE)
                 .property("bq.jerseyclient.targets.t.url", serviceUrl())
@@ -97,7 +97,7 @@ public class HttpTargets_TrustStoresIT {
 
         assertThrows(DIRuntimeException.class, () ->
                 clientFactory.app()
-                        .moduleProvider(new JerseyClientModuleProvider())
+                        .moduleProvider(new JerseyClientModule())
                         .moduleProvider(new LogbackModuleProvider())
                         .property("bq.jerseyclient.targets.t.url", serviceUrl())
                         .property("bq.jerseyclient.targets.t.trustStore", "ts1")

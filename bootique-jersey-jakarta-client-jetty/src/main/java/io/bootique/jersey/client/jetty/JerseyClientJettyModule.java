@@ -19,16 +19,25 @@
 package io.bootique.jersey.client.jetty;
 
 import io.bootique.BQCoreModule;
-import io.bootique.ConfigModule;
+import io.bootique.BQModuleProvider;
+import io.bootique.bootstrap.BuiltModule;
+import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.jersey.client.JerseyClientModule;
 import org.glassfish.jersey.jetty.connector.JettyConnectorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JerseyClientJettyModule extends ConfigModule {
+public class JerseyClientJettyModule implements BQModule, BQModuleProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JerseyClientJettyModule.class);
+
+    @Override
+    public BuiltModule buildModule() {
+        return BuiltModule.of(this)
+                .description("Integrates Jetty transport for Jersey HTTP client")
+                .build();
+    }
 
     @Override
     public void configure(Binder binder) {

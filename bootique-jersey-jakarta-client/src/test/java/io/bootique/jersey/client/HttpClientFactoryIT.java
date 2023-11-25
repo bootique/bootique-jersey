@@ -22,8 +22,6 @@ package io.bootique.jersey.client;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.jersey.client.HttpClientFactory;
-import io.bootique.jersey.client.JerseyClientModuleProvider;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
@@ -62,7 +60,7 @@ public class HttpClientFactoryIT {
     public void newClient() {
         HttpClientFactory factory =
                 clientFactory.app()
-                        .moduleProvider(new JerseyClientModuleProvider())
+                        .moduleProvider(new JerseyClientModule())
                         .moduleProvider(new LogbackModuleProvider())
                         .createRuntime()
                         .getInstance(HttpClientFactory.class);
@@ -78,7 +76,7 @@ public class HttpClientFactoryIT {
     public void newClientAuth() {
         HttpClientFactory factory =
                 clientFactory.app()
-                        .moduleProvider(new JerseyClientModuleProvider())
+                        .moduleProvider(new JerseyClientModule())
                         .moduleProvider(new LogbackModuleProvider())
                         .property("bq.jerseyclient.auth.auth1.type", "basic")
                         .property("bq.jerseyclient.auth.auth1.username", "u")

@@ -60,7 +60,7 @@ public class HttpTargetsIT {
     @Test
     public void newTarget() {
         HttpTargets targets = clientFactory.app()
-                .moduleProvider(new JerseyClientModuleProvider())
+                .moduleProvider(new JerseyClientModule())
                 .moduleProvider(new LogbackModuleProvider())
                 .property("bq.jerseyclient.targets.t1.url", JettyTester.getUrl(server) + "/get")
                 .createRuntime()
@@ -81,7 +81,7 @@ public class HttpTargetsIT {
     public void newTarget_Auth() {
         HttpTargets targets =
                 clientFactory.app()
-                        .moduleProvider(new JerseyClientModuleProvider())
+                        .moduleProvider(new JerseyClientModule())
                         .moduleProvider(new LogbackModuleProvider())
                         .property("bq.jerseyclient.auth.a1.type", "basic")
                         .property("bq.jerseyclient.auth.a1.username", "u")
@@ -194,7 +194,7 @@ public class HttpTargetsIT {
         private WebTarget createTarget() {
 
             TestRuntumeBuilder builder = clientFactory.app()
-                    .moduleProvider(new JerseyClientModuleProvider())
+                    .module(new JerseyClientModule())
                     .moduleProvider(new LogbackModuleProvider())
                     .property("bq.jerseyclient.targets.t.url", JettyTester.getUrl(server) + "/302");
 
@@ -234,7 +234,7 @@ public class HttpTargetsIT {
         private WebTarget createTarget() {
 
             TestRuntumeBuilder builder = clientFactory.app()
-                    .moduleProvider(new JerseyClientModuleProvider())
+                    .module(new JerseyClientModule())
                     .moduleProvider(new LogbackModuleProvider())
                     .property("bq.jerseyclient.targets.t.url", JettyTester.getUrl(server) + "/getbig");
 

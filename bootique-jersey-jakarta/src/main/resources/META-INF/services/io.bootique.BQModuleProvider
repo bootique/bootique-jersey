@@ -1,1 +1,1 @@
-io.bootique.jersey.JerseyModuleProvider
+io.bootique.jersey.JerseyModule

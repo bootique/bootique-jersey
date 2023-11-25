@@ -1,1 +1,1 @@
-io.bootique.jersey.beanvalidation.JerseyBeanValidationModuleProvider
+io.bootique.jersey.beanvalidation.JerseyBeanValidationModule
