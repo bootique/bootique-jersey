@@ -28,7 +28,7 @@ import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
-import io.bootique.logback.LogbackModuleProvider;
+import io.bootique.logback.LogbackModule;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
@@ -53,7 +53,7 @@ public class HttpClientFactory_CustomConnectorIT {
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
             .modules(JettyModule.class, JerseyModule.class)
-            .moduleProvider(new LogbackModuleProvider())
+            .moduleProvider(new LogbackModule())
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();

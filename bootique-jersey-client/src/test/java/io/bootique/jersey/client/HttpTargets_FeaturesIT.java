@@ -28,7 +28,7 @@ import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
-import io.bootique.logback.LogbackModuleProvider;
+import io.bootique.logback.LogbackModule;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.GET;
@@ -49,7 +49,7 @@ public class HttpTargets_FeaturesIT {
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
             .modules(JettyModule.class, JerseyModule.class)
-            .moduleProvider(new LogbackModuleProvider())
+            .moduleProvider(new LogbackModule())
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
@@ -61,7 +61,7 @@ public class HttpTargets_FeaturesIT {
     public void features() {
         HttpTargets targets = clientFactory.app()
                 .moduleProvider(new JerseyClientModuleProvider())
-                .moduleProvider(new LogbackModuleProvider())
+                .moduleProvider(new LogbackModule())
                 .property("bq.jerseyclient.targets.t.url", JettyTester.getUrl(server) + "/get")
                 .createRuntime()
                 .getInstance(HttpTargets.class);

@@ -28,7 +28,7 @@ import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
-import io.bootique.logback.LogbackModuleProvider;
+import io.bootique.logback.LogbackModule;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -45,8 +45,7 @@ public class HttpClientFactory_TrustStoresIT {
     @BQApp
     static final BQRuntime server = Bootique
             .app("-s", "-c", "classpath:io/bootique/jersey/client/TrustStoresIT_server.yml")
-            .modules(JettyModule.class, JerseyModule.class)
-            .moduleProvider(new LogbackModuleProvider())
+            .modules(JettyModule.class, JerseyModule.class, LogbackModule.class)
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
             .createRuntime();
 
@@ -62,8 +61,7 @@ public class HttpClientFactory_TrustStoresIT {
 
         HttpClientFactory factory = clientFactory
                 .app("-c", "classpath:io/bootique/jersey/client/TrustStoresIT_client.yml")
-                .module(new JerseyClientModule())
-                .moduleProvider(new LogbackModuleProvider())
+                .modules(JerseyClientModule.class, LogbackModule.class)
                 .createRuntime()
                 .getInstance(HttpClientFactory.class);
 
@@ -92,8 +90,7 @@ public class HttpClientFactory_TrustStoresIT {
 
         HttpClientFactory factory = clientFactory
                 .app("-c", "classpath:io/bootique/jersey/client/TrustStoresIT_client.yml")
-                .moduleProvider(new JerseyClientModule())
-                .moduleProvider(new LogbackModuleProvider())
+                .modules(JerseyClientModule.class, LogbackModule.class)
                 .createRuntime()
                 .getInstance(HttpClientFactory.class);
 

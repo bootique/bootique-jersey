@@ -29,7 +29,7 @@ import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
-import io.bootique.logback.LogbackModuleProvider;
+import io.bootique.logback.LogbackModule;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -48,8 +48,7 @@ public class HttpTargets_TrustStoresIT {
     @BQApp
     static final BQRuntime app = Bootique
             .app("-s", "-c", "classpath:io/bootique/jersey/client/TrustStoresIT_server.yml")
-            .modules(JettyModule.class, JerseyModule.class)
-            .moduleProvider(new LogbackModuleProvider())
+            .modules(JettyModule.class, JerseyModule.class, LogbackModule.class)
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
             .createRuntime();
 
@@ -64,8 +63,7 @@ public class HttpTargets_TrustStoresIT {
     public void namedTrustStore() {
 
         HttpTargets targets = clientFactory.app()
-                .moduleProvider(new JerseyClientModule())
-                .moduleProvider(new LogbackModuleProvider())
+                .modules(JerseyClientModule.class, LogbackModule.class)
                 .property("bq.jerseyclient.trustStores.ts1.location", CLIENT_TRUST_STORE)
                 .property("bq.jerseyclient.targets.t.url", serviceUrl())
                 .property("bq.jerseyclient.targets.t.trustStore", "ts1")
@@ -80,8 +78,7 @@ public class HttpTargets_TrustStoresIT {
     public void namedTrustStore_DerivedTarget() {
 
         HttpTargets targets = clientFactory.app()
-                .moduleProvider(new JerseyClientModule())
-                .moduleProvider(new LogbackModuleProvider())
+                .modules(JerseyClientModule.class, LogbackModule.class)
                 .property("bq.jerseyclient.trustStores.ts1.location", CLIENT_TRUST_STORE)
                 .property("bq.jerseyclient.targets.t.url", serviceUrl())
                 .property("bq.jerseyclient.targets.t.trustStore", "ts1")
@@ -97,8 +94,7 @@ public class HttpTargets_TrustStoresIT {
 
         assertThrows(DIRuntimeException.class, () ->
                 clientFactory.app()
-                        .moduleProvider(new JerseyClientModule())
-                        .moduleProvider(new LogbackModuleProvider())
+                        .modules(JerseyClientModule.class, LogbackModule.class)
                         .property("bq.jerseyclient.targets.t.url", serviceUrl())
                         .property("bq.jerseyclient.targets.t.trustStore", "ts1")
                         .createRuntime()

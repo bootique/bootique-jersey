@@ -25,7 +25,7 @@ import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.*;
-import io.bootique.logback.LogbackModuleProvider;
+import io.bootique.logback.LogbackModule;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.GET;
@@ -49,7 +49,7 @@ public class HttpTargetsIT {
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
             .modules(JettyModule.class, JerseyModule.class)
-            .moduleProvider(new LogbackModuleProvider())
+            .moduleProvider(new LogbackModule())
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
@@ -61,7 +61,7 @@ public class HttpTargetsIT {
     public void newTarget() {
         HttpTargets targets = clientFactory.app()
                 .moduleProvider(new JerseyClientModuleProvider())
-                .moduleProvider(new LogbackModuleProvider())
+                .moduleProvider(new LogbackModule())
                 .property("bq.jerseyclient.targets.t1.url", JettyTester.getUrl(server) + "/get")
                 .createRuntime()
                 .getInstance(HttpTargets.class);
@@ -82,7 +82,7 @@ public class HttpTargetsIT {
         HttpTargets targets =
                 clientFactory.app()
                         .moduleProvider(new JerseyClientModuleProvider())
-                        .moduleProvider(new LogbackModuleProvider())
+                        .moduleProvider(new LogbackModule())
                         .property("bq.jerseyclient.auth.a1.type", "basic")
                         .property("bq.jerseyclient.auth.a1.username", "u")
                         .property("bq.jerseyclient.auth.a1.password", "p")
@@ -195,7 +195,7 @@ public class HttpTargetsIT {
 
             TestRuntumeBuilder builder = clientFactory.app()
                     .moduleProvider(new JerseyClientModuleProvider())
-                    .moduleProvider(new LogbackModuleProvider())
+                    .moduleProvider(new LogbackModule())
                     .property("bq.jerseyclient.targets.t.url", JettyTester.getUrl(server) + "/302");
 
             if (clientRedirects != null) {
@@ -235,7 +235,7 @@ public class HttpTargetsIT {
 
             TestRuntumeBuilder builder = clientFactory.app()
                     .moduleProvider(new JerseyClientModuleProvider())
-                    .moduleProvider(new LogbackModuleProvider())
+                    .moduleProvider(new LogbackModule())
                     .property("bq.jerseyclient.targets.t.url", JettyTester.getUrl(server) + "/getbig");
 
             if (clientCompression != null) {

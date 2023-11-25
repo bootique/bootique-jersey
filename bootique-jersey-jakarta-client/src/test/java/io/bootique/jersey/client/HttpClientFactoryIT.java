@@ -28,7 +28,7 @@ import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
-import io.bootique.logback.LogbackModuleProvider;
+import io.bootique.logback.LogbackModule;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
@@ -47,8 +47,7 @@ public class HttpClientFactoryIT {
 
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
-            .modules(JettyModule.class, JerseyModule.class)
-            .moduleProvider(new LogbackModuleProvider())
+            .modules(JettyModule.class, JerseyModule.class, LogbackModule.class)
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
@@ -60,8 +59,7 @@ public class HttpClientFactoryIT {
     public void newClient() {
         HttpClientFactory factory =
                 clientFactory.app()
-                        .moduleProvider(new JerseyClientModule())
-                        .moduleProvider(new LogbackModuleProvider())
+                        .modules(JerseyClientModule.class, LogbackModule.class)
                         .createRuntime()
                         .getInstance(HttpClientFactory.class);
 
@@ -76,8 +74,7 @@ public class HttpClientFactoryIT {
     public void newClientAuth() {
         HttpClientFactory factory =
                 clientFactory.app()
-                        .moduleProvider(new JerseyClientModule())
-                        .moduleProvider(new LogbackModuleProvider())
+                        .modules(JerseyClientModule.class, LogbackModule.class)
                         .property("bq.jerseyclient.auth.auth1.type", "basic")
                         .property("bq.jerseyclient.auth.auth1.username", "u")
                         .property("bq.jerseyclient.auth.auth1.password", "p")

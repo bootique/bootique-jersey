@@ -29,7 +29,7 @@ import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
-import io.bootique.logback.LogbackModuleProvider;
+import io.bootique.logback.LogbackModule;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.GET;
@@ -49,8 +49,7 @@ public class HttpTargets_TrustStoresIT {
     @BQApp
     static final BQRuntime app = Bootique
             .app("-s", "-c", "classpath:io/bootique/jersey/client/TrustStoresIT_server.yml")
-            .modules(JettyModule.class, JerseyModule.class)
-            .moduleProvider(new LogbackModuleProvider())
+            .modules(JettyModule.class, JerseyModule.class, LogbackModule.class)
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
             .createRuntime();
 
@@ -66,7 +65,7 @@ public class HttpTargets_TrustStoresIT {
 
         HttpTargets targets = clientFactory.app()
                 .moduleProvider(new JerseyClientModuleProvider())
-                .moduleProvider(new LogbackModuleProvider())
+                .moduleProvider(new LogbackModule())
                 .property("bq.jerseyclient.trustStores.ts1.location", CLIENT_TRUST_STORE)
                 .property("bq.jerseyclient.targets.t.url", serviceUrl())
                 .property("bq.jerseyclient.targets.t.trustStore", "ts1")
@@ -82,7 +81,7 @@ public class HttpTargets_TrustStoresIT {
 
         HttpTargets targets = clientFactory.app()
                 .moduleProvider(new JerseyClientModuleProvider())
-                .moduleProvider(new LogbackModuleProvider())
+                .moduleProvider(new LogbackModule())
                 .property("bq.jerseyclient.trustStores.ts1.location", CLIENT_TRUST_STORE)
                 .property("bq.jerseyclient.targets.t.url", serviceUrl())
                 .property("bq.jerseyclient.targets.t.trustStore", "ts1")
@@ -99,7 +98,7 @@ public class HttpTargets_TrustStoresIT {
         assertThrows(DIRuntimeException.class, () ->
                 clientFactory.app()
                         .moduleProvider(new JerseyClientModuleProvider())
-                        .moduleProvider(new LogbackModuleProvider())
+                        .moduleProvider(new LogbackModule())
                         .property("bq.jerseyclient.targets.t.url", serviceUrl())
                         .property("bq.jerseyclient.targets.t.trustStore", "ts1")
                         .createRuntime()
