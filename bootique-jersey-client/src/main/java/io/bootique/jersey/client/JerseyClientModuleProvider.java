@@ -32,7 +32,7 @@ public class JerseyClientModuleProvider implements BQModuleProvider {
     public BuiltModule buildModule() {
         return BuiltModule.of(new JerseyClientModule())
                 .provider(this)
-                .description("Deprecated and should be replaced with 'bootique-jersey-jakarta-client'.")
+                .description("Deprecated and can be replaced with 'bootique-jersey-jakarta-client'.")
                 .config("jerseyclient", HttpClientFactoryFactory.class)
                 .build();
     }
