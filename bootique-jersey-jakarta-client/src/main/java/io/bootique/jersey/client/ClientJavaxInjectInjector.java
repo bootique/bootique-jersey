@@ -28,7 +28,7 @@ import org.glassfish.hk2.api.ServiceHandle;
 import javax.inject.Provider;
 
 /**
- * @since 3.0.M1
+ * @since 3.0
  */
 public class ClientJavaxInjectInjector extends BaseClientBqHk2Bridge implements InjectionResolver<javax.inject.Inject> {
 

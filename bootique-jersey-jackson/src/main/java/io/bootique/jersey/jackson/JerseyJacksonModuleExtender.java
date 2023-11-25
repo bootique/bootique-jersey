@@ -57,7 +57,7 @@ public class JerseyJacksonModuleExtender extends ModuleExtender<JerseyJacksonMod
      * Adds a custom serializer for a value type.
      *
      * @return this extender instance
-     * @since 2.0.B1
+     * @since 2.0
      */
     public JerseyJacksonModuleExtender addSerializer(Class<? extends JsonSerializer> serializerType) {
         contributeSerializers().add(serializerType);
@@ -68,7 +68,7 @@ public class JerseyJacksonModuleExtender extends ModuleExtender<JerseyJacksonMod
      * Adds a custom serializer for a value type.
      *
      * @return this extender instance
-     * @since 2.0.B1
+     * @since 2.0
      */
     public JerseyJacksonModuleExtender addSerializer(JsonSerializer serializer) {
         contributeSerializers().addInstance(serializer);

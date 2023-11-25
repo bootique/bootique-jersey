@@ -164,7 +164,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
     /**
-     * @since 2.0.B1
+     * @since 2.0
      */
     public JerseyModuleExtender setApplication(Application app) {
         binder.bind(Application.class).toInstance(app);
@@ -172,7 +172,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
     /**
-     * @since 2.0.B1
+     * @since 2.0
      */
     public JerseyModuleExtender setApplication(Class<? extends Application> appType) {
         binder.bind(Application.class).to(appType);
