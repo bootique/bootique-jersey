@@ -46,8 +46,7 @@ public class JerseyClientInstrumentedModule implements BQModule, BQModuleProvide
 
     @Override
     public BuiltModule buildModule() {
-        return BuiltModule.of(new JerseyClientInstrumentedModule())
-                .provider(this)
+        return BuiltModule.of(this)
                 .description("Integrates metrics and extra logging in Jersey HTTP client")
                 .overrides(JerseyClientModule.class)
                 .build();
