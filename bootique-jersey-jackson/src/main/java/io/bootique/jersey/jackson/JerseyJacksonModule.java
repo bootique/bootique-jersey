@@ -45,7 +45,7 @@ public class JerseyJacksonModule extends ConfigModule implements BQModuleProvide
     public BuiltModule buildModule() {
         return BuiltModule.of(this)
                 .provider(this)
-                .description("Deprecated and can be replaced with 'bootique-jersey-jakarta-jackson'.")
+                .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-jackson'.")
                 .config(configPrefix, JerseyJacksonFactory.class)
                 .build();
     }
