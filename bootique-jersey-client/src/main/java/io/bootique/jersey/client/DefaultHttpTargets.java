@@ -24,6 +24,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
+/**
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 public class DefaultHttpTargets implements HttpTargets {
 
     private final Map<String, Supplier<WebTarget>> namedTargets;

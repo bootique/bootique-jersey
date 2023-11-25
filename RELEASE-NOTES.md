@@ -1,3 +1,7 @@
+## 3.0-M3
+
+* #84 (Jakarta migration) Deprecate JAX-RS 2 modules
+
 ## 3.0.M2
 
 * #65 Upgrade to Jersey 2.38 / 3.0.9

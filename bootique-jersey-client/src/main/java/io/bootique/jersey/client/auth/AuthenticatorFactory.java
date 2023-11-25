@@ -26,6 +26,10 @@ import io.bootique.di.Injector;
 
 import javax.ws.rs.client.ClientRequestFilter;
 
+/**
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @BQConfig("Authenticator for a given auth protocol.")
 public interface AuthenticatorFactory extends PolymorphicConfiguration {

@@ -25,7 +25,9 @@ import java.time.LocalTime;
  * Support for LocalTime parameter binding, covering a gap in JAX-RS specification.
  *
  * @since 3.0
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
+@Deprecated(since = "3.0", forRemoval = true)
 public class LocalTimeConverter implements ParamConverter<LocalTime> {
 
     @Override

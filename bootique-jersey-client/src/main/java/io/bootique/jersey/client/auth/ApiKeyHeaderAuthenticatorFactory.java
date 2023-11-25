@@ -30,7 +30,9 @@ import java.util.Objects;
 
 /**
  * @since 1.1
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
+@Deprecated(since = "3.0", forRemoval = true)
 @JsonTypeName("apiKeyHeader")
 @BQConfig("Performs request authentication with a fixed API key passed as a request header")
 public class ApiKeyHeaderAuthenticatorFactory implements AuthenticatorFactory {

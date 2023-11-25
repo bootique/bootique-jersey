@@ -32,6 +32,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
+/**
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 @JsonTypeName("basic")
 @BQConfig("Authenticator for BASIC auth protocol.")
 public class BasicAuthenticatorFactory implements AuthenticatorFactory {

@@ -31,6 +31,10 @@ import io.bootique.metrics.health.HealthCheckModule;
 
 import javax.inject.Singleton;
 
+/**
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 public class JerseyClientInstrumentedModule extends ConfigModule {
 
     public static final MetricNaming METRIC_NAMING = MetricNaming.forModule(JerseyClientInstrumentedModule.class);

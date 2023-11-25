@@ -19,27 +19,25 @@
 
 package io.bootique.jersey.client;
 
+import io.bootique.di.Injector;
+import io.bootique.di.Key;
+import io.bootique.di.TypeLiteral;
+import org.glassfish.hk2.api.*;
+import org.glassfish.hk2.utilities.AbstractActiveDescriptor;
+import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-
-import io.bootique.di.Injector;
-import io.bootique.di.Key;
-import io.bootique.di.TypeLiteral;
-import org.glassfish.hk2.api.DescriptorType;
-import org.glassfish.hk2.api.DescriptorVisibility;
-import org.glassfish.hk2.api.Injectee;
-import org.glassfish.hk2.api.JustInTimeInjectionResolver;
-import org.glassfish.hk2.api.ServiceHandle;
-import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.hk2.utilities.AbstractActiveDescriptor;
-import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
-
+/**
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 public class ClientBqInjectorBridge extends BaseClientBqHk2Bridge implements JustInTimeInjectionResolver {
 
 	/*

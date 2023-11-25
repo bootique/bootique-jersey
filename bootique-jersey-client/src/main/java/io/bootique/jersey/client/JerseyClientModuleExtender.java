@@ -24,6 +24,10 @@ import io.bootique.di.SetBuilder;
 
 import javax.ws.rs.core.Feature;
 
+/**
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 public class JerseyClientModuleExtender {
 
     private Binder binder;

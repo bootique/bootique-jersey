@@ -33,6 +33,10 @@ import javax.ws.rs.client.ClientResponseFilter;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 // The priority must be higher than that of RequestLogger, so that the Timer could print its output inside the Logger
 @Priority(200)
 public class RequestTimer implements ClientRequestFilter, ClientResponseFilter {

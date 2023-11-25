@@ -27,8 +27,11 @@ import java.lang.annotation.Target;
 
 /**
  * A binding annotation for explicitly registered Jersey resources.
+ *
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD })
+@Deprecated(since = "3.0", forRemoval = true)
+@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
 // TODO: should this be called something like "JerseyComponent" ?

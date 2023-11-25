@@ -26,7 +26,9 @@ import java.util.Map;
 
 /**
  * @since 3.0
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
+@Deprecated(since = "3.0", forRemoval = true)
 public class MappedParamConvertersProvider implements ParamConverterProvider {
 
     private final Map<Class<?>, ParamConverter> paramConverters;

@@ -27,7 +27,9 @@ import org.glassfish.jersey.client.ClientConfig;
 
 /**
  * @since 3.0
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
+@Deprecated(since = "3.0", forRemoval = true)
 @BQConfig
 public class InstrumentedHttpClientFactoryFactory extends HttpClientFactoryFactory {
 

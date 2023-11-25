@@ -24,7 +24,10 @@ import javax.ws.rs.client.Client;
 /**
  * JAX RS {@link javax.ws.rs.client.Client} builder that builds the client with references to various parts of
  * "jerseyclient" Bootique configuration.
+ *
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
+@Deprecated(since = "3.0", forRemoval = true)
 public interface HttpClientBuilder {
 
     Client build();

@@ -32,7 +32,10 @@ import java.util.Set;
 
 /**
  * A YAML-configurable factory of Jersey servlet.
+ *
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
+@Deprecated(since = "3.0", forRemoval = true)
 @BQConfig("Configures a servlet that is an entry point to Jersey REST API engine.")
 public class JerseyServletFactory {
 

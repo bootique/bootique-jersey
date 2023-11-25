@@ -33,6 +33,10 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.function.Function;
 
+/**
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 @JsonTypeName("oauth2")
 @BQConfig("Authenticator for Oauth2 protocol. Includes URL of the OAuth token endpoint and " +
         "username/password that are exchanged for the token.")

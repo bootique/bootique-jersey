@@ -23,6 +23,10 @@ import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.MultivaluedMap;
 
+/**
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 class OAuth2TokenAuthenticator implements ClientRequestFilter {
 
     private OAuth2TokenDAO tokenDAO;

@@ -5,6 +5,10 @@ import io.bootique.metrics.health.HealthCheckGroup;
 
 import java.util.Map;
 
+/**
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 public class JerseyClientHealthChecks implements HealthCheckGroup {
     private final Map<String, HealthCheck> healthChecks;
 

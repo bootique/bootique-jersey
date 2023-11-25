@@ -30,7 +30,9 @@ import javax.ws.rs.client.ClientResponseFilter;
 
 /**
  * @since 3.0
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
+@Deprecated(since = "3.0", forRemoval = true)
 @Priority(100)
 public class RequestLogger implements ClientRequestFilter, ClientResponseFilter {
 

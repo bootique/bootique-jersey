@@ -24,7 +24,10 @@ import java.util.Set;
 
 /**
  * An injectable manager of preconfigured JAX RS {@link WebTarget} objects.
+ *
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
+@Deprecated(since = "3.0", forRemoval = true)
 public interface HttpTargets {
 
     /**

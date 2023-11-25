@@ -31,7 +31,10 @@ import java.util.function.Supplier;
 
 /**
  * Provides a simple HTTP health check to verify that remote endpoints are alive and accessible.
+ *
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
+@Deprecated(since = "3.0", forRemoval = true)
 public class HttpHealthCheck implements HealthCheck {
 
     private Supplier<Response> responseSupplier;

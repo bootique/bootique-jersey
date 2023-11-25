@@ -19,9 +19,6 @@
 
 package io.bootique.jersey;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import io.bootique.di.BQInject;
 import io.bootique.di.Injector;
 import io.bootique.di.TypeLiteral;
@@ -29,10 +26,16 @@ import org.glassfish.hk2.api.Injectee;
 import org.glassfish.hk2.api.InjectionResolver;
 import org.glassfish.hk2.api.ServiceHandle;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 /**
  * This resolver provides support for the {@link BQInject} annotation inside Jersey runtime
+ *
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-public class BqInjectInjector extends BaseBqHk2Bridge implements InjectionResolver<BQInject>  {
+@Deprecated(since = "3.0", forRemoval = true)
+public class BqInjectInjector extends BaseBqHk2Bridge implements InjectionResolver<BQInject> {
 
     @Inject
     public BqInjectInjector(Injector injector) {

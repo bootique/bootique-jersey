@@ -29,6 +29,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.logging.Logger;
 
+/**
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 // a copy of non-public Jersey DefaultClientAsyncExecutorProvider that allows us to customize async pool parameters
 @ClientAsyncExecutor
 public class ClientAsyncExecutorProvider extends ThreadPoolExecutorProvider {

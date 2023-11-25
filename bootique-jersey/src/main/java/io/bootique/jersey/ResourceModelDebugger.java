@@ -34,7 +34,10 @@ import java.util.stream.Collectors;
 /**
  * Debugs all container resources. In DEBUG mode prints only the app resources, in TRACE mode prints app and Jersey
  * internal resources as well as handler classes.
+ *
+ * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
+@Deprecated(since = "3.0", forRemoval = true)
 public class ResourceModelDebugger implements ModelProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceModelDebugger.class);
