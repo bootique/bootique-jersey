@@ -20,7 +20,7 @@
 package io.bootique.jersey.client;
 
 import io.bootique.BQModuleProvider;
-import io.bootique.bootstrap.BuiltModule;
+import io.bootique.ModuleCrate;
 
 /**
  * @deprecated The users are encouraged to switch to the Jakarta-based flavor
@@ -29,8 +29,8 @@ import io.bootique.bootstrap.BuiltModule;
 public class JerseyClientModuleProvider implements BQModuleProvider {
 
     @Override
-    public BuiltModule buildModule() {
-        return BuiltModule.of(new JerseyClientModule())
+    public ModuleCrate moduleCrate() {
+        return ModuleCrate.of(new JerseyClientModule())
                 .provider(this)
                 .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-client'.")
                 .config("jerseyclient", HttpClientFactoryFactory.class)

@@ -20,7 +20,7 @@
 package io.bootique.jersey;
 
 import io.bootique.BQModuleProvider;
-import io.bootique.bootstrap.BuiltModule;
+import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.*;
 import io.bootique.jersey.jaxrs.*;
@@ -64,8 +64,8 @@ public class JerseyModule implements BQModule, BQModuleProvider {
     }
 
     @Override
-    public BuiltModule buildModule() {
-        return BuiltModule.of(this)
+    public ModuleCrate moduleCrate() {
+        return ModuleCrate.of(this)
                 .provider(this)
                 .description("Integrates Jersey JAX-RS HTTP server")
                 .config(CONFIG_PREFIX, JerseyServletFactory.class)

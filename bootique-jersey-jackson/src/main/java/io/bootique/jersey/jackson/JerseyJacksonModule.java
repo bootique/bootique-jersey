@@ -21,7 +21,7 @@ package io.bootique.jersey.jackson;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import io.bootique.BQModuleProvider;
 import io.bootique.ConfigModule;
-import io.bootique.bootstrap.BuiltModule;
+import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
 import io.bootique.di.Provides;
@@ -42,8 +42,8 @@ public class JerseyJacksonModule extends ConfigModule implements BQModuleProvide
     }
 
     @Override
-    public BuiltModule buildModule() {
-        return BuiltModule.of(this)
+    public ModuleCrate moduleCrate() {
+        return ModuleCrate.of(this)
                 .provider(this)
                 .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-jackson'.")
                 .config(configPrefix, JerseyJacksonFactory.class)

@@ -20,7 +20,7 @@ package io.bootique.jersey.client.jetty;
 
 import io.bootique.BQCoreModule;
 import io.bootique.BQModuleProvider;
-import io.bootique.bootstrap.BuiltModule;
+import io.bootique.ModuleCrate;
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.jersey.client.JerseyClientModule;
@@ -33,8 +33,8 @@ public class JerseyClientJettyModule implements BQModule, BQModuleProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(JerseyClientJettyModule.class);
 
     @Override
-    public BuiltModule buildModule() {
-        return BuiltModule.of(this)
+    public ModuleCrate moduleCrate() {
+        return ModuleCrate.of(this)
                 .description("Integrates Jetty transport for Jersey HTTP client")
                 .build();
     }

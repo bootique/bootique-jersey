@@ -20,7 +20,7 @@
 package io.bootique.jersey.client.instrumented;
 
 import io.bootique.BQModuleProvider;
-import io.bootique.bootstrap.BuiltModule;
+import io.bootique.ModuleCrate;
 import io.bootique.jersey.client.JerseyClientModule;
 import io.bootique.jersey.client.JerseyClientModuleProvider;
 import io.bootique.metrics.MetricsModule;
@@ -37,8 +37,8 @@ import static java.util.Arrays.asList;
 public class JerseyClientInstrumentedModuleProvider implements BQModuleProvider {
 
     @Override
-    public BuiltModule buildModule() {
-        return BuiltModule.of(new JerseyClientInstrumentedModule())
+    public ModuleCrate moduleCrate() {
+        return ModuleCrate.of(new JerseyClientInstrumentedModule())
                 .provider(this)
                 .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-client-instrumented'.")
                 .overrides(JerseyClientModule.class)

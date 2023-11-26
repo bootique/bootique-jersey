@@ -21,7 +21,7 @@ package io.bootique.jersey.client.instrumented;
 
 import com.codahale.metrics.MetricRegistry;
 import io.bootique.BQModuleProvider;
-import io.bootique.bootstrap.BuiltModule;
+import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
@@ -45,8 +45,8 @@ public class JerseyClientInstrumentedModule implements BQModule, BQModuleProvide
     public static final MetricNaming METRIC_NAMING = MetricNaming.forModule(JerseyClientInstrumentedModule.class);
 
     @Override
-    public BuiltModule buildModule() {
-        return BuiltModule.of(this)
+    public ModuleCrate moduleCrate() {
+        return ModuleCrate.of(this)
                 .description("Integrates metrics and extra logging in Jersey HTTP client")
                 .overrides(JerseyClientModule.class)
                 .build();

@@ -20,7 +20,7 @@
 package io.bootique.jersey;
 
 import io.bootique.BQModuleProvider;
-import io.bootique.bootstrap.BuiltModule;
+import io.bootique.ModuleCrate;
 import io.bootique.jetty.JettyModuleProvider;
 
 import java.util.Collection;
@@ -34,8 +34,8 @@ import static java.util.Collections.singletonList;
 public class JerseyModuleProvider implements BQModuleProvider {
 
     @Override
-    public BuiltModule buildModule() {
-        return BuiltModule.of(new JerseyModule())
+    public ModuleCrate moduleCrate() {
+        return ModuleCrate.of(new JerseyModule())
                 .provider(this)
                 .description("Deprecated, can be replaced with 'bootique-jersey-jakarta'.")
                 .config("jersey", JerseyServletFactory.class)
