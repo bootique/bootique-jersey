@@ -20,6 +20,7 @@
 package io.bootique.jersey;
 
 import io.bootique.ConfigModule;
+import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.*;
 import io.bootique.jersey.jaxrs.*;
@@ -52,7 +53,6 @@ public class JerseyModule extends ConfigModule {
 
     static final String RESOURCES_BY_PATH_BINDING = "io.bootique.jersey.resourcesByPath";
 
-
     /**
      * Returns an instance of {@link JerseyModuleExtender} used by downstream modules to load custom extensions of
      * services declared in the JerseyModule. Should be invoked from a downstream Module's "configure" method.
@@ -62,6 +62,14 @@ public class JerseyModule extends ConfigModule {
      */
     public static JerseyModuleExtender extend(Binder binder) {
         return new JerseyModuleExtender(binder);
+    }
+
+    @Override
+    public ModuleCrate crate() {
+        return ModuleCrate.of(this)
+                .description("Deprecated, can be replaced with 'bootique-jersey-jakarta'.")
+                .config("jersey", JerseyServletFactory.class)
+                .build();
     }
 
     @Override

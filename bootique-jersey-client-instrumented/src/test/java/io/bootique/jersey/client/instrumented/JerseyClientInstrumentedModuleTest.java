@@ -16,23 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.beanvalidation;
 
-import io.bootique.BQModuleProvider;
-import io.bootique.ModuleCrate;
+package io.bootique.jersey.client.instrumented;
 
-/**
- * @since 2.0
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
- */
-@Deprecated(since = "3.0", forRemoval = true)
-public class JerseyBeanValidationModuleProvider implements BQModuleProvider {
+import io.bootique.junit5.BQModuleTester;
+import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestTool;
+import org.junit.jupiter.api.Test;
 
-    @Override
-    public ModuleCrate moduleCrate() {
-        return ModuleCrate.of(new JerseyBeanValidationModule())
-                .provider(this)
-                .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-beanvalidation'.")
-                .build();
+@BQTest
+public class JerseyClientInstrumentedModuleTest {
+
+    @BQTestTool
+    final BQTestFactory testFactory = new BQTestFactory();
+
+    @Test
+    public void autoLoadable() {
+        BQModuleTester.of(JerseyClientInstrumentedModule.class).testAutoLoadable().testConfig();
     }
 }

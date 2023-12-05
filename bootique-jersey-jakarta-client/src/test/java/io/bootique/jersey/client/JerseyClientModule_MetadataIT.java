@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class JerseyClientModuleProvider_MetadataIT {
+public class JerseyClientModule_MetadataIT {
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app().autoLoadModules().createRuntime();

@@ -20,6 +20,7 @@
 package io.bootique.jersey.client;
 
 import io.bootique.ConfigModule;
+import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
 import io.bootique.di.Injector;
@@ -44,6 +45,14 @@ public class JerseyClientModule extends ConfigModule {
      */
     public static JerseyClientModuleExtender extend(Binder binder) {
         return new JerseyClientModuleExtender(binder);
+    }
+
+    @Override
+    public ModuleCrate crate() {
+        return ModuleCrate.of(new JerseyClientModule())
+                .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-client'.")
+                .config("jerseyclient", HttpClientFactoryFactory.class)
+                .build();
     }
 
     @Override

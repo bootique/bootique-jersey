@@ -19,7 +19,6 @@
 package io.bootique.jersey.jackson;
 
 import com.fasterxml.jackson.databind.JsonSerializer;
-import io.bootique.BQModuleProvider;
 import io.bootique.ConfigModule;
 import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
@@ -35,16 +34,15 @@ import java.util.Set;
  * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
 @Deprecated(since = "3.0", forRemoval = true)
-public class JerseyJacksonModule extends ConfigModule implements BQModuleProvider {
+public class JerseyJacksonModule extends ConfigModule {
 
     public static JerseyJacksonModuleExtender extend(Binder binder) {
         return new JerseyJacksonModuleExtender(binder);
     }
 
     @Override
-    public ModuleCrate moduleCrate() {
+    public ModuleCrate crate() {
         return ModuleCrate.of(this)
-                .provider(this)
                 .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-jackson'.")
                 .config(configPrefix, JerseyJacksonFactory.class)
                 .build();

@@ -18,13 +18,13 @@
  */
 package io.bootique.jersey.jackson;
 
-import io.bootique.junit5.BQModuleProviderChecker;
+import io.bootique.junit5.BQModuleTester;
 import org.junit.jupiter.api.Test;
 
 public class JerseyJacksonModuleTest {
 
     @Test
     public void autoLoad() {
-        BQModuleProviderChecker.testAutoLoadable(JerseyJacksonModule.class);
+        BQModuleTester.of(JerseyJacksonModule.class).testAutoLoadable().testConfig();
     }
 }

@@ -19,7 +19,7 @@
 
 package io.bootique.jersey;
 
-import io.bootique.junit5.BQModuleProviderChecker;
+import io.bootique.junit5.BQModuleTester;
 import io.bootique.junit5.BQTest;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 public class JerseyModuleTest {
 
     @Test
-    public void autoLoadable() {
-        BQModuleProviderChecker.testAutoLoadable(JerseyModule.class);
+    public void check() {
+        BQModuleTester.of(JerseyModule.class).testAutoLoadable().testConfig();
     }
 }

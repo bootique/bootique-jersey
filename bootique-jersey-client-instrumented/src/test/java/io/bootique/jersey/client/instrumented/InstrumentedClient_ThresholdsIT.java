@@ -23,12 +23,14 @@ import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jersey.client.HttpClientFactory;
-import io.bootique.jersey.client.JerseyClientModuleProvider;
+import io.bootique.jersey.client.JerseyClientModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
+import io.bootique.metrics.MetricsModule;
+import io.bootique.metrics.health.HealthCheckModule;
 import io.bootique.metrics.health.HealthCheckOutcome;
 import io.bootique.metrics.health.HealthCheckRegistry;
 import io.bootique.metrics.health.HealthCheckStatus;
@@ -60,8 +62,7 @@ public class InstrumentedClient_ThresholdsIT {
 
     private BQRuntime createClient() {
         return clientFactory.app()
-                .moduleProvider(new JerseyClientModuleProvider())
-                .moduleProvider(new JerseyClientInstrumentedModuleProvider())
+                .modules(JerseyClientModule.class, JerseyClientInstrumentedModule.class, HealthCheckModule.class, MetricsModule.class)
                 .property("bq.jerseyclient.health.requestsPerMin.warning", "0.3")
                 .property("bq.jerseyclient.health.requestsPerMin.critical", "0.6")
                 .createRuntime();

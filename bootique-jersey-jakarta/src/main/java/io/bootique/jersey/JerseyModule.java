@@ -19,7 +19,7 @@
 
 package io.bootique.jersey;
 
-import io.bootique.BQModuleProvider;
+import io.bootique.BQModule;
 import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.*;
@@ -40,14 +40,11 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 import javax.inject.Singleton;
 import java.time.*;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Collections.singletonList;
-
-public class JerseyModule implements BQModule, BQModuleProvider {
+public class JerseyModule implements BQModule {
 
     private static final String CONFIG_PREFIX = "jersey";
     static final String RESOURCES_BY_PATH_BINDING = "io.bootique.jersey.jakarta.resourcesByPath";
@@ -64,18 +61,11 @@ public class JerseyModule implements BQModule, BQModuleProvider {
     }
 
     @Override
-    public ModuleCrate moduleCrate() {
+    public ModuleCrate crate() {
         return ModuleCrate.of(this)
-                .provider(this)
                 .description("Integrates Jersey JAX-RS HTTP server")
                 .config(CONFIG_PREFIX, JerseyServletFactory.class)
                 .build();
-    }
-
-    @Override
-    @Deprecated(since = "3.0", forRemoval = true)
-    public Collection<BQModuleProvider> dependencies() {
-        return singletonList(new JettyModule());
     }
 
     @Override

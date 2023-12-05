@@ -48,8 +48,7 @@ public class HttpTargets_FeaturesIT {
 
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
-            .modules(JettyModule.class, JerseyModule.class)
-            .moduleProvider(new LogbackModule())
+            .modules(JettyModule.class, JerseyModule.class, LogbackModule.class)
             .module(b -> JerseyModule.extend(b).addResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
@@ -60,8 +59,7 @@ public class HttpTargets_FeaturesIT {
     @Test
     public void features() {
         HttpTargets targets = clientFactory.app()
-                .moduleProvider(new JerseyClientModuleProvider())
-                .moduleProvider(new LogbackModule())
+                .modules(JerseyClientModule.class, LogbackModule.class)
                 .property("bq.jerseyclient.targets.t.url", JettyTester.getUrl(server) + "/get")
                 .createRuntime()
                 .getInstance(HttpTargets.class);

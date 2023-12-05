@@ -19,6 +19,7 @@
 package io.bootique.jersey.beanvalidation;
 
 import io.bootique.ConfigModule;
+import io.bootique.ModuleCrate;
 import io.bootique.di.Binder;
 
 /**
@@ -30,6 +31,13 @@ public class JerseyBeanValidationModule extends ConfigModule {
 
     public static JerseyBeanValidationModuleExtender extend(Binder binder) {
         return new JerseyBeanValidationModuleExtender(binder);
+    }
+
+    @Override
+    public ModuleCrate crate() {
+        return ModuleCrate.of(this)
+                .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-beanvalidation'.")
+                .build();
     }
 
     @Override

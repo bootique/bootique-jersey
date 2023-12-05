@@ -19,21 +19,13 @@
 
 package io.bootique.jersey.client;
 
-import io.bootique.BQModuleProvider;
-import io.bootique.ModuleCrate;
+import io.bootique.junit5.BQModuleTester;
+import org.junit.jupiter.api.Test;
 
-/**
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
- */
-@Deprecated(since = "3.0", forRemoval = true)
-public class JerseyClientModuleProvider implements BQModuleProvider {
+public class JerseyClientModuleTest {
 
-    @Override
-    public ModuleCrate moduleCrate() {
-        return ModuleCrate.of(new JerseyClientModule())
-                .provider(this)
-                .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-client'.")
-                .config("jerseyclient", HttpClientFactoryFactory.class)
-                .build();
+    @Test
+    public void check() {
+        BQModuleTester.of(JerseyClientModule.class).testAutoLoadable().testConfig();
     }
 }

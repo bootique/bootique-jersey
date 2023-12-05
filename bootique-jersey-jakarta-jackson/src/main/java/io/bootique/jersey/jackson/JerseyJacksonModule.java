@@ -19,10 +19,9 @@
 package io.bootique.jersey.jackson;
 
 import com.fasterxml.jackson.databind.JsonSerializer;
-import io.bootique.BQModuleProvider;
+import io.bootique.BQModule;
 import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
-import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.di.Provides;
 import io.bootique.jersey.JerseyModule;
@@ -33,7 +32,7 @@ import java.util.Set;
 /**
  * @since 2.0
  */
-public class JerseyJacksonModule implements BQModule, BQModuleProvider {
+public class JerseyJacksonModule implements BQModule {
 
     private static final String CONFIG_PREFIX = "jerseyjackson";
 
@@ -42,9 +41,8 @@ public class JerseyJacksonModule implements BQModule, BQModuleProvider {
     }
 
     @Override
-    public ModuleCrate moduleCrate() {
+    public ModuleCrate crate() {
         return ModuleCrate.of(this)
-                .provider(this)
                 .description("Integrates Jackson JSON serializers to Jersey JAX-RS engine")
                 .config(CONFIG_PREFIX, JerseyJacksonFactory.class)
                 .build();

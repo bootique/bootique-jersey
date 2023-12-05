@@ -21,6 +21,7 @@ package io.bootique.jersey.client.instrumented;
 
 import com.codahale.metrics.MetricRegistry;
 import io.bootique.ConfigModule;
+import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
 import io.bootique.di.Provides;
@@ -38,6 +39,14 @@ import javax.inject.Singleton;
 public class JerseyClientInstrumentedModule extends ConfigModule {
 
     public static final MetricNaming METRIC_NAMING = MetricNaming.forModule(JerseyClientInstrumentedModule.class);
+
+    @Override
+    public ModuleCrate crate() {
+        return ModuleCrate.of(this)
+                .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-client-instrumented'.")
+                .overrides(JerseyClientModule.class)
+                .build();
+    }
 
     @Override
     protected String defaultConfigPrefix() {

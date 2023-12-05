@@ -19,10 +19,13 @@
 
 package io.bootique.jersey.client;
 
-import io.bootique.BQModuleProvider;
+import io.bootique.BQModule;
 import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
-import io.bootique.di.*;
+import io.bootique.di.Binder;
+import io.bootique.di.Injector;
+import io.bootique.di.Key;
+import io.bootique.di.Provides;
 import jakarta.ws.rs.core.Feature;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 import org.glassfish.jersey.client.spi.ConnectorProvider;
@@ -30,7 +33,7 @@ import org.glassfish.jersey.client.spi.ConnectorProvider;
 import javax.inject.Singleton;
 import java.util.Set;
 
-public class JerseyClientModule implements BQModule, BQModuleProvider {
+public class JerseyClientModule implements BQModule {
 
     private static final String CONFIG_PREFIX = "jerseyclient";
 
@@ -46,7 +49,7 @@ public class JerseyClientModule implements BQModule, BQModuleProvider {
     }
 
     @Override
-    public ModuleCrate moduleCrate() {
+    public ModuleCrate crate() {
         return ModuleCrate.of(this)
                 .description("Integrates Jersey JAX-RS HTTP client.")
                 .config(CONFIG_PREFIX, HttpClientFactoryFactory.class)

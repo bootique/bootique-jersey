@@ -18,13 +18,13 @@
  */
 package io.bootique.jersey.beanvalidation;
 
-import io.bootique.junit5.BQModuleProviderChecker;
+import io.bootique.junit5.BQModuleTester;
 import org.junit.jupiter.api.Test;
 
 public class JerseyBeanValidationModuleTest {
 
     @Test
-    public void autoLoadable() {
-        BQModuleProviderChecker.testAutoLoadable(JerseyBeanValidationModule.class);
+    public void check() {
+        BQModuleTester.of(JerseyBeanValidationModule.class).testAutoLoadable().testConfig();
     }
 }
