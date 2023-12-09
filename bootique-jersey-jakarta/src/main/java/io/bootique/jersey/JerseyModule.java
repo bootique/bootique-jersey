@@ -160,9 +160,7 @@ public class JerseyModule implements BQModule {
 
     @Provides
     @Singleton
-    private MappedServlet<ServletContainer> provideJerseyServlet(
-            ConfigurationFactory configFactory,
-            ResourceConfig config) {
-        return configFactory.config(JerseyServletFactory.class, CONFIG_PREFIX).createJerseyServlet(config);
+    private MappedServlet<ServletContainer> provideJerseyServlet(ConfigurationFactory configFactory) {
+        return configFactory.config(JerseyServletFactory.class, CONFIG_PREFIX).createJerseyServlet();
     }
 }

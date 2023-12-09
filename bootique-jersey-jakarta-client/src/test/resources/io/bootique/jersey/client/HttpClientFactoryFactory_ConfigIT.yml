@@ -1,0 +1,12 @@
+a:
+  followRedirects: true
+  connectTimeoutMs: 78
+  readTimeoutMs: 66
+  asyncThreadPoolSize: 44
+
+b:
+  auth:
+    a1:
+      type: basic
+      username: u1
+      password: p1

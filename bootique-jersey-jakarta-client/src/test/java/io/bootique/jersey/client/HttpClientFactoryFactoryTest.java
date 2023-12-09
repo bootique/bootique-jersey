@@ -39,8 +39,10 @@ public class HttpClientFactoryFactoryTest {
     @Test
     public void createClientFactory_AsyncThreadPool() {
 
-        Client client = new HttpClientFactoryFactory()
-                .createClientFactory(mockInjector, Set.of(), new HttpUrlConnectorProvider()).newClient();
+        Client client = new HttpClientFactoryFactory(
+                mockInjector,
+                Set.of(),
+                new HttpUrlConnectorProvider()).createClientFactory().newClient();
 
         try {
             assertTrue(client.getConfiguration().isRegistered(ClientAsyncExecutorProvider.class));
@@ -52,13 +54,13 @@ public class HttpClientFactoryFactoryTest {
     @Test
     public void createClientFactory() {
 
-        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
+        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(mockInjector, Collections.emptySet(), mock(ConnectorProvider.class));
         factoryFactory.setAsyncThreadPoolSize(5);
         factoryFactory.setConnectTimeoutMs(101);
         factoryFactory.setFollowRedirects(true);
         factoryFactory.setReadTimeoutMs(203);
 
-        HttpClientFactory factory = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), mock(ConnectorProvider.class));
+        HttpClientFactory factory = factoryFactory.createClientFactory();
         assertNotNull(factory);
 
         Client client = factory.newClient();

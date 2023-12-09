@@ -80,7 +80,7 @@ public class JerseyClientInstrumentedModule implements BQModule {
 
     @Provides
     @Singleton
-    JerseyClientHealthChecks provideThresholdHealthCheck(InstrumentedHttpClientFactoryFactory factory, MetricRegistry metricRegistry) {
-        return factory.createHealthChecks(metricRegistry);
+    JerseyClientHealthChecks provideThresholdHealthCheck(InstrumentedHttpClientFactoryFactory factory) {
+        return factory.createHealthChecks();
     }
 }

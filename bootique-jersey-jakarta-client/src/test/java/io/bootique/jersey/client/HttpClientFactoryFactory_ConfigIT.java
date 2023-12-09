@@ -19,57 +19,32 @@
 
 package io.bootique.jersey.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
+import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.config.ConfigurationFactory;
-import io.bootique.config.PolymorphicConfiguration;
-import io.bootique.config.TypesFactory;
-import io.bootique.config.jackson.JsonConfigurationFactory;
-import io.bootique.jackson.DefaultJacksonService;
-import io.bootique.jackson.JacksonService;
 import io.bootique.jersey.client.auth.AuthenticatorFactory;
 import io.bootique.jersey.client.auth.BasicAuthenticatorFactory;
-import io.bootique.log.DefaultBootLogger;
-import org.junit.jupiter.api.BeforeEach;
+import io.bootique.junit5.BQApp;
+import io.bootique.junit5.BQTest;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@BQTest
 public class HttpClientFactoryFactory_ConfigIT {
 
-    private TypesFactory<PolymorphicConfiguration> typesFactory;
-
-    @BeforeEach
-    public void before() {
-        typesFactory = new TypesFactory<>(
-                getClass().getClassLoader(),
-                PolymorphicConfiguration.class,
-                new DefaultBootLogger(true));
-    }
-
-    private ConfigurationFactory factory(String yaml) {
-
-        // not using a mock; making sure all Jackson extensions are loaded
-        JacksonService jacksonService = new DefaultJacksonService(typesFactory.getTypes());
-
-        YAMLParser parser;
-        try {
-            parser = new YAMLFactory().createParser(yaml);
-            JsonNode rootNode = jacksonService.newObjectMapper().readTree(parser);
-            return new JsonConfigurationFactory(rootNode, jacksonService.newObjectMapper());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    @BQApp(skipRun = true)
+    static final BQRuntime app = Bootique
+            .app("-c", "classpath:io/bootique/jersey/client/HttpClientFactoryFactory_ConfigIT.yml")
+            .autoLoadModules()
+            .createRuntime();
 
     @Test
     public void clientFlags() {
-        HttpClientFactoryFactory factory = factory(
-                "r:\n  followRedirects: true\n  connectTimeoutMs: 78\n  readTimeoutMs: 66\n  asyncThreadPoolSize: 44\n")
-                .config(HttpClientFactoryFactory.class, "r");
+
+        HttpClientFactoryFactory factory = app
+                .getInstance(ConfigurationFactory.class)
+                .config(HttpClientFactoryFactory.class, "a");
 
         assertEquals(true, factory.followRedirects);
         assertEquals(78, factory.connectTimeoutMs);
@@ -79,9 +54,9 @@ public class HttpClientFactoryFactory_ConfigIT {
 
     @Test
     public void authTypes() {
-        HttpClientFactoryFactory factory = factory(
-                "r:\n  auth:\n    a1:\n      type: basic\n      username: u1\n      password: p1\n")
-                .config(HttpClientFactoryFactory.class, "r");
+        HttpClientFactoryFactory factory = app
+                .getInstance(ConfigurationFactory.class)
+                .config(HttpClientFactoryFactory.class, "b");
 
         assertNotNull(factory.auth);
         assertEquals(1, factory.auth.size());

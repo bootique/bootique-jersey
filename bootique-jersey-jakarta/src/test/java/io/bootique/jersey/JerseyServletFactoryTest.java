@@ -18,7 +18,6 @@
  */
 package io.bootique.jersey;
 
-import io.bootique.jersey.JerseyServletFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,12 +26,10 @@ public class JerseyServletFactoryTest {
 
     @Test
     public void normalizeAppPath() {
-
-        JerseyServletFactory f = new JerseyServletFactory();
-        assertEquals("/*", f.normalizeAppPath(""));
-        assertEquals("/*", f.normalizeAppPath("/"));
-        assertEquals("/a/*", f.normalizeAppPath("a"));
-        assertEquals("/a/*", f.normalizeAppPath("/a"));
-        assertEquals("/a/*", f.normalizeAppPath("/a/"));
+        assertEquals("/*", JerseyServletFactory.normalizeAppPath(""));
+        assertEquals("/*", JerseyServletFactory.normalizeAppPath("/"));
+        assertEquals("/a/*", JerseyServletFactory.normalizeAppPath("a"));
+        assertEquals("/a/*", JerseyServletFactory.normalizeAppPath("/a"));
+        assertEquals("/a/*", JerseyServletFactory.normalizeAppPath("/a/"));
     }
 }

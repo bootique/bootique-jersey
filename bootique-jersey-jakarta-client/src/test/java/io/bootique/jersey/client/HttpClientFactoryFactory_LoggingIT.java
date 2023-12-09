@@ -94,9 +94,9 @@ public class HttpClientFactoryFactory_LoggingIT {
 
         startApp("debug.yml");
 
-        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
+        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider());
         factoryFactory.setFollowRedirects(true);
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
+        Client client = factoryFactory.createClientFactory().newClient();
 
         Response r = client.target("http://127.0.0.1:8080/get").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
@@ -118,9 +118,9 @@ public class HttpClientFactoryFactory_LoggingIT {
 
         startApp("warn.yml");
 
-        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
+        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider());
         factoryFactory.setFollowRedirects(true);
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider()).newClient();
+        Client client = factoryFactory.createClientFactory().newClient();
 
         Response r = client.target("http://127.0.0.1:8080/get").request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());

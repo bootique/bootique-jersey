@@ -28,6 +28,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
 
+import javax.inject.Inject;
 import java.util.Set;
 
 /**
@@ -36,18 +37,25 @@ import java.util.Set;
 @BQConfig
 public class JerseyJacksonFactory {
 
+    private final Set<JsonSerializer> serializers;
+
     private boolean skipNullProperties;
+
+    @Inject
+    public JerseyJacksonFactory(Set<JsonSerializer> serializers) {
+        this.serializers = serializers;
+    }
 
     @BQConfigProperty
     public void setSkipNullProperties(boolean skipNullProperties) {
         this.skipNullProperties = skipNullProperties;
     }
 
-    public ObjectMapperResolver createObjectMapperResolver(Set<JsonSerializer> serializers) {
-        return new ObjectMapperResolver(createObjectMapper(serializers));
+    public ObjectMapperResolver createObjectMapperResolver() {
+        return new ObjectMapperResolver(createObjectMapper());
     }
 
-    protected ObjectMapper createObjectMapper(Set<JsonSerializer> serializers) {
+    protected ObjectMapper createObjectMapper() {
         ObjectMapper mapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);

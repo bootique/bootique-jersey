@@ -27,6 +27,7 @@ import jakarta.ws.rs.core.Application;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.Set;
 
@@ -38,7 +39,14 @@ public class JerseyServletFactory {
 
     private static final String DEFAULT_URL_PATTERN = "/*";
 
+    private final ResourceConfig application;
+
     protected String urlPattern;
+
+    @Inject
+    public JerseyServletFactory(ResourceConfig application) {
+        this.application = application;
+    }
 
     /**
      * @param urlPattern a URL: pattern for the Jersey servlet. Default is "/*".
@@ -57,7 +65,7 @@ public class JerseyServletFactory {
      * @param urlPattern a URL: pattern for the Jersey servlet unless it was already
      *                   set.
      * @return self.
-     * @deprecated since 2.0 as we don't need to initialize the urlPattern explicitly to be able to returna  default.
+     * @deprecated since 2.0 as we don't need to initialize the urlPattern explicitly to be able to return a default.
      */
     @Deprecated
     public JerseyServletFactory initUrlPatternIfNotSet(String urlPattern) {
@@ -69,9 +77,9 @@ public class JerseyServletFactory {
         return this;
     }
 
-    public MappedServlet<ServletContainer> createJerseyServlet(ResourceConfig resourceConfig) {
-        ServletContainer servlet = new ServletContainer(resourceConfig);
-        Set<String> urlPatterns = Collections.singleton(getUrlPattern(resourceConfig));
+    public MappedServlet<ServletContainer> createJerseyServlet() {
+        ServletContainer servlet = new ServletContainer(application);
+        Set<String> urlPatterns = Collections.singleton(getUrlPattern(application));
         return new MappedServlet<>(servlet, urlPatterns, "jersey");
     }
 
@@ -102,7 +110,7 @@ public class JerseyServletFactory {
         return null;
     }
 
-    protected String normalizeAppPath(String path) {
+    protected static String normalizeAppPath(String path) {
         // TODO: %-encode per ApplicationPath javadoc?
 
         StringBuilder normal = new StringBuilder();

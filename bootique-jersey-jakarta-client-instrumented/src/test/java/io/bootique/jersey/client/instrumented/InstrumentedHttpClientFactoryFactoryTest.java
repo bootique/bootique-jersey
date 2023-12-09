@@ -18,6 +18,7 @@
  */
 package io.bootique.jersey.client.instrumented;
 
+import com.codahale.metrics.MetricRegistry;
 import io.bootique.di.Injector;
 import io.bootique.jersey.client.ClientAsyncExecutorProvider;
 import io.bootique.jersey.client.instrumented.mdc.MDCAwareClientAsyncExecutorProvider;
@@ -38,8 +39,11 @@ public class InstrumentedHttpClientFactoryFactoryTest {
     @Test
     public void createClientFactory_AsyncThreadPool() {
 
-        Client client = new InstrumentedHttpClientFactoryFactory()
-                .createClientFactory(mockInjector, Set.of(), new HttpUrlConnectorProvider()).newClient();
+        Client client = new InstrumentedHttpClientFactoryFactory(
+                mockInjector,
+                Set.of(),
+                new HttpUrlConnectorProvider(),
+                mock(MetricRegistry.class)).createClientFactory().newClient();
 
         try {
             assertTrue(client.getConfiguration().isRegistered(MDCAwareClientAsyncExecutorProvider.class));

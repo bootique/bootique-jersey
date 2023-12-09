@@ -31,8 +31,6 @@ import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.jetty.server.ServerHolder;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
-import io.bootique.junit5.BQTestFactory;
-import io.bootique.junit5.BQTestTool;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.ProcessingException;
@@ -40,7 +38,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -63,22 +60,15 @@ public class InstrumentedClientIT {
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    @BQTestTool
-    final BQTestFactory testFactory = new BQTestFactory();
-
-    BQRuntime client;
+    // important to recreate the client app before every test as it starts with zero metrics counters
+    @BQApp(skipRun = true)
+    final BQRuntime client = Bootique.app().autoLoadModules().createRuntime();
 
     private static String getUrlBadPort(String getUrl) {
         ServerHolder serverHolder = server.getInstance(ServerHolder.class);
         int goodPort = serverHolder.getConnector().getPort();
         int badPort = PortFinder.findAvailablePort(serverHolder.getConnector().getHost());
         return getUrl.replace(":" + goodPort, ":" + badPort);
-    }
-
-    @BeforeEach
-    public void resetClient() {
-        // important to recreate the client app before every test as it starts with zero metrics counters
-        client = testFactory.app().autoLoadModules().createRuntime();
     }
 
     @Test

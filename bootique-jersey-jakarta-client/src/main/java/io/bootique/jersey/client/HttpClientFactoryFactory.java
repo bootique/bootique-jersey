@@ -38,6 +38,7 @@ import org.glassfish.jersey.client.spi.ConnectorProvider;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.message.GZipEncoder;
 
+import javax.inject.Inject;
 import java.security.KeyStore;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,6 +49,10 @@ import java.util.function.Supplier;
 @BQConfig("Configures HttpClientFactory, including named authenticators, timeouts, SSL certificates, etc.")
 public class HttpClientFactoryFactory {
 
+    private final Injector injector;
+    private final Set<Feature> features;
+    private final ConnectorProvider connectorProvider;
+
     protected boolean followRedirects;
     protected boolean compression;
     protected int readTimeoutMs;
@@ -57,7 +62,16 @@ public class HttpClientFactoryFactory {
     protected Map<String, TrustStoreFactory> trustStores;
     protected Map<String, WebTargetFactory> targets;
 
-    public HttpClientFactoryFactory() {
+    @Inject
+    public HttpClientFactoryFactory(
+            Injector injector,
+            @JerseyClientFeatures Set<Feature> features,
+            ConnectorProvider connectorProvider) {
+
+        this.injector = injector;
+        this.features = features;
+        this.connectorProvider = connectorProvider;
+
         this.followRedirects = true;
         this.compression = true;
     }
@@ -130,10 +144,7 @@ public class HttpClientFactoryFactory {
         return new DefaultHttpTargets(createNamedTargets(clientFactory));
     }
 
-    public HttpClientFactory createClientFactory(
-            Injector injector,
-            Set<Feature> features,
-            ConnectorProvider connectorProvider) {
+    public HttpClientFactory createClientFactory() {
 
         ClientConfig config = createConfig(features, connectorProvider);
 

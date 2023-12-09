@@ -26,12 +26,10 @@ import io.bootique.di.Binder;
 import io.bootique.di.Injector;
 import io.bootique.di.Key;
 import io.bootique.di.Provides;
-import jakarta.ws.rs.core.Feature;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 import org.glassfish.jersey.client.spi.ConnectorProvider;
 
 import javax.inject.Singleton;
-import java.util.Set;
 
 public class JerseyClientModule implements BQModule {
 
@@ -77,13 +75,8 @@ public class JerseyClientModule implements BQModule {
 
     @Provides
     @Singleton
-    HttpClientFactory provideClientFactory(
-            HttpClientFactoryFactory factoryFactory,
-            Injector injector,
-            @JerseyClientFeatures Set<Feature> features,
-            ConnectorProvider connectorProvider) {
-
-        return factoryFactory.createClientFactory(injector, features, connectorProvider);
+    HttpClientFactory provideClientFactory(HttpClientFactoryFactory factoryFactory) {
+        return factoryFactory.createClientFactory();
     }
 
     @Provides

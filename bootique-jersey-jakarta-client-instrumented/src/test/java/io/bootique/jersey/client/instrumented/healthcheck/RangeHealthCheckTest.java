@@ -24,7 +24,7 @@ public class RangeHealthCheckTest {
     @BeforeEach
     public void before() {
         this.registry = Mockito.mock(MetricRegistry.class);
-        this.healthCheckFactory = new JerseyClientHealthChecksFactory();
+        this.healthCheckFactory = new JerseyClientHealthChecksFactory(registry);
         DoubleRangeFactory timeRequestsThresholds = new DoubleRangeFactory();
         timeRequestsThresholds.setCritical(0.05);
         timeRequestsThresholds.setWarning(0.01);
@@ -33,7 +33,7 @@ public class RangeHealthCheckTest {
 
         Mockito.when(registry.timer(RequestTimer.TIMER_NAME)).thenReturn(Mockito.mock(Timer.class));
 
-        JerseyClientHealthChecks rangeHealthCheck = healthCheckFactory.createHealthChecks(registry);
+        JerseyClientHealthChecks rangeHealthCheck = healthCheckFactory.createHealthChecks();
         this.healthCheckRegistry = new HealthCheckRegistry(rangeHealthCheck.getHealthChecks());
     }
 

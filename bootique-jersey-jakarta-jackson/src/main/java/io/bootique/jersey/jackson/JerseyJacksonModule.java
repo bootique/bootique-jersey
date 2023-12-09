@@ -18,7 +18,6 @@
  */
 package io.bootique.jersey.jackson;
 
-import com.fasterxml.jackson.databind.JsonSerializer;
 import io.bootique.BQModule;
 import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
@@ -27,7 +26,6 @@ import io.bootique.di.Provides;
 import io.bootique.jersey.JerseyModule;
 
 import javax.inject.Singleton;
-import java.util.Set;
 
 /**
  * @since 2.0
@@ -56,13 +54,11 @@ public class JerseyJacksonModule implements BQModule {
 
     @Singleton
     @Provides
-    ObjectMapperResolverFeature provideObjectMapperResolverFeature(
-            ConfigurationFactory configurationFactory,
-            Set<JsonSerializer> serializers) {
+    ObjectMapperResolverFeature provideObjectMapperResolverFeature(ConfigurationFactory configFactory) {
 
-        ObjectMapperResolver omr = configurationFactory
+        ObjectMapperResolver omr = configFactory
                 .config(JerseyJacksonFactory.class, CONFIG_PREFIX)
-                .createObjectMapperResolver(serializers);
+                .createObjectMapperResolver();
 
         return new ObjectMapperResolverFeature(omr);
     }

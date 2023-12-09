@@ -8,6 +8,7 @@ import io.bootique.metrics.health.check.DoubleRangeFactory;
 import io.bootique.metrics.health.check.ValueRange;
 import io.bootique.metrics.health.check.ValueRangeCheck;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -15,31 +16,38 @@ import java.util.function.Supplier;
 @BQConfig
 public class JerseyClientHealthChecksFactory {
 
-    public static final String REQUESTS_PER_MIN_CHECK =  JerseyClientInstrumentedModule
+    public static final String REQUESTS_PER_MIN_CHECK = JerseyClientInstrumentedModule
             .METRIC_NAMING
             .name("Requests", "PerMin");
 
+    private final MetricRegistry metricRegistry;
+
     private DoubleRangeFactory requestsPerMin;
+
+    @Inject
+    public JerseyClientHealthChecksFactory(MetricRegistry metricRegistry) {
+        this.metricRegistry = metricRegistry;
+    }
 
     @BQConfigProperty
     public void setRequestsPerMin(DoubleRangeFactory requestsPerMin) {
         this.requestsPerMin = requestsPerMin;
     }
 
-    public JerseyClientHealthChecks createHealthChecks(MetricRegistry metricRegistry) {
-        return new JerseyClientHealthChecks(createHealthChecksMap(metricRegistry));
+    public JerseyClientHealthChecks createHealthChecks() {
+        return new JerseyClientHealthChecks(createHealthChecksMap());
     }
 
-    protected Map<String, HealthCheck> createHealthChecksMap(MetricRegistry registry) {
+    protected Map<String, HealthCheck> createHealthChecksMap() {
         Map<String, HealthCheck> checks = new HashMap<>(3);
-        checks.put(REQUESTS_PER_MIN_CHECK, createTimeRequestsCheck(registry));
+        checks.put(REQUESTS_PER_MIN_CHECK, createTimeRequestsCheck());
         return checks;
     }
 
-    private HealthCheck createTimeRequestsCheck(MetricRegistry registry) {
+    private HealthCheck createTimeRequestsCheck() {
         ValueRange<Double> range = getRequestsPerMin();
         Supplier<Double> deferredGauge = ()
-                -> registry.timer(RequestTimer.TIMER_NAME).getOneMinuteRate();
+                -> metricRegistry.timer(RequestTimer.TIMER_NAME).getOneMinuteRate();
 
         return new ValueRangeCheck<>(range, deferredGauge);
     }
