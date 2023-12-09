@@ -19,7 +19,7 @@
 
 package io.bootique.jersey;
 
-import io.bootique.ConfigModule;
+import io.bootique.BQModule;
 import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.*;
@@ -49,8 +49,9 @@ import java.util.Set;
  * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
 @Deprecated(since = "3.0", forRemoval = true)
-public class JerseyModule extends ConfigModule {
+public class JerseyModule implements BQModule {
 
+    private static final String CONFIG_PREFIX = "jersey";
     static final String RESOURCES_BY_PATH_BINDING = "io.bootique.jersey.resourcesByPath";
 
     /**
@@ -68,7 +69,7 @@ public class JerseyModule extends ConfigModule {
     public ModuleCrate crate() {
         return ModuleCrate.of(this)
                 .description("Deprecated, can be replaced with 'bootique-jersey-jakarta'.")
-                .config("jersey", JerseyServletFactory.class)
+                .config(CONFIG_PREFIX, JerseyServletFactory.class)
                 .build();
     }
 
@@ -163,6 +164,6 @@ public class JerseyModule extends ConfigModule {
     @Provides
     @Singleton
     private MappedServlet<ServletContainer> provideJerseyServlet(ConfigurationFactory configFactory, ResourceConfig config) {
-        return config(JerseyServletFactory.class, configFactory).createJerseyServlet(config);
+        return configFactory.config(JerseyServletFactory.class, CONFIG_PREFIX).createJerseyServlet(config);
     }
 }

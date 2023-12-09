@@ -18,7 +18,7 @@
  */
 package io.bootique.jersey.beanvalidation;
 
-import io.bootique.ConfigModule;
+import io.bootique.BQModule;
 import io.bootique.ModuleCrate;
 import io.bootique.di.Binder;
 
@@ -27,7 +27,7 @@ import io.bootique.di.Binder;
  * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
 @Deprecated(since = "3.0", forRemoval = true)
-public class JerseyBeanValidationModule extends ConfigModule {
+public class JerseyBeanValidationModule implements BQModule {
 
     public static JerseyBeanValidationModuleExtender extend(Binder binder) {
         return new JerseyBeanValidationModuleExtender(binder);
@@ -42,6 +42,5 @@ public class JerseyBeanValidationModule extends ConfigModule {
 
     @Override
     public void configure(Binder binder) {
-        extend(binder);
     }
 }

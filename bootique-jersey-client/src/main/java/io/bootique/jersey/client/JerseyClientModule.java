@@ -19,7 +19,7 @@
 
 package io.bootique.jersey.client;
 
-import io.bootique.ConfigModule;
+import io.bootique.BQModule;
 import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
@@ -34,7 +34,9 @@ import java.util.Set;
  * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
 @Deprecated(since = "3.0", forRemoval = true)
-public class JerseyClientModule extends ConfigModule {
+public class JerseyClientModule implements BQModule {
+
+    private static final String CONFIG_PREFIX = "jerseyclient";
 
     /**
      * Returns an instance of {@link JerseyClientModuleExtender} used by downstream modules to load custom extensions of
@@ -51,7 +53,7 @@ public class JerseyClientModule extends ConfigModule {
     public ModuleCrate crate() {
         return ModuleCrate.of(new JerseyClientModule())
                 .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-client'.")
-                .config("jerseyclient", HttpClientFactoryFactory.class)
+                .config(CONFIG_PREFIX, HttpClientFactoryFactory.class)
                 .build();
     }
 
@@ -63,7 +65,7 @@ public class JerseyClientModule extends ConfigModule {
     @Provides
     @Singleton
     HttpClientFactoryFactory provideClientFactoryFactory(ConfigurationFactory configFactory) {
-        return config(HttpClientFactoryFactory.class, configFactory);
+        return configFactory.config(HttpClientFactoryFactory.class, CONFIG_PREFIX);
     }
 
     @Provides

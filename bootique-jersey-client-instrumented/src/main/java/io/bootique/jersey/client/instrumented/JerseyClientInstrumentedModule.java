@@ -20,7 +20,7 @@
 package io.bootique.jersey.client.instrumented;
 
 import com.codahale.metrics.MetricRegistry;
-import io.bootique.ConfigModule;
+import io.bootique.BQModule;
 import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
@@ -36,7 +36,9 @@ import javax.inject.Singleton;
  * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
 @Deprecated(since = "3.0", forRemoval = true)
-public class JerseyClientInstrumentedModule extends ConfigModule {
+public class JerseyClientInstrumentedModule implements BQModule {
+
+    private static final String CONFIG_PREFIX = "jerseyclient";
 
     public static final MetricNaming METRIC_NAMING = MetricNaming.forModule(JerseyClientInstrumentedModule.class);
 
@@ -46,12 +48,6 @@ public class JerseyClientInstrumentedModule extends ConfigModule {
                 .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-client-instrumented'.")
                 .overrides(JerseyClientModule.class)
                 .build();
-    }
-
-    @Override
-    protected String defaultConfigPrefix() {
-        // reusing overridden module prefix
-        return "jerseyclient";
     }
 
     @Override
@@ -82,7 +78,7 @@ public class JerseyClientInstrumentedModule extends ConfigModule {
     @Singleton
     @Provides
     InstrumentedHttpClientFactoryFactory providerInstrumentedHttpClientFactoryFactory(ConfigurationFactory configFactory) {
-        return config(InstrumentedHttpClientFactoryFactory.class, configFactory);
+        return configFactory.config(InstrumentedHttpClientFactoryFactory.class, CONFIG_PREFIX);
     }
 
     @Provides
