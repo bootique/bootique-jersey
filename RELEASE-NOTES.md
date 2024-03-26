@@ -1,6 +1,7 @@
 ## 3.0-M3
 
 * #84 (Jakarta migration) Deprecate JAX-RS 2 modules
+* #85 Remove Jersey Jetty HTTP client
 
 ## 3.0.M2
 
