@@ -38,7 +38,7 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.github.tomakehurst</groupId>
+				<groupId>org.wiremock</groupId>
 				<artifactId>wiremock</artifactId>
 				<version>${wiremock.version}</version>
 				<exclusions>
@@ -115,7 +115,7 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.tomakehurst</groupId>
+			<groupId>org.wiremock</groupId>
 			<artifactId>wiremock</artifactId>
 		</dependency>
 		<dependency>

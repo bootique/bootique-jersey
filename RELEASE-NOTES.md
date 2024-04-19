@@ -1,3 +1,7 @@
+## 3.0-M4
+
+* #86 Upgrade to Wiremock 3.5.0
+
 ## 3.0-M3
 
 * #84 (Jakarta migration) Deprecate JAX-RS 2 modules

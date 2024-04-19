@@ -55,7 +55,7 @@
         <activation2.version>2.0.1</activation2.version>
         <glassfish.jaxb3.version>3.0.1</glassfish.jaxb3.version>
         <jaxb3.version>3.0.1</jaxb3.version>
-        <wiremock.version>3.0.0-beta-5</wiremock.version>
+        <wiremock.version>3.5.3</wiremock.version>
     </properties>
 
     <scm>

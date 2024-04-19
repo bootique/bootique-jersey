@@ -138,6 +138,7 @@ class WireMockRedirectRewriter {
                         response.getBodyFileName(),
                         newHeaders,
                         response.getAdditionalProxyRequestHeaders(),
+                        response.getRemoveProxyRequestHeaders(),
                         response.getFixedDelayMilliseconds(),
                         response.getDelayDistribution(),
                         response.getChunkedDribbleDelay(),
