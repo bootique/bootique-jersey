@@ -1,0 +1,20 @@
+{
+  "id" : "bb40f612-d4a6-46d7-bd52-2ca7de0f6e8e",
+  "name" : "",
+  "request" : {
+    "url" : "/?q=abc",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "get:abc",
+    "headers" : {
+      "Vary" : "Accept-Encoding",
+      "Date" : "Mon, 22 Apr 2024 21:51:34 GMT",
+      "Content-Type" : "text/plain"
+    }
+  },
+  "uuid" : "bb40f612-d4a6-46d7-bd52-2ca7de0f6e8e",
+  "persistent" : true,
+  "insertionIndex" : 3
+}

@@ -1,0 +1,20 @@
+{
+  "id" : "b6896fdb-0538-4bd5-8267-4ac4fb48eb9d",
+  "name" : "p1",
+  "request" : {
+    "url" : "/p1",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "get:p1",
+    "headers" : {
+      "Vary" : "Accept-Encoding",
+      "Date" : "Mon, 22 Apr 2024 21:51:34 GMT",
+      "Content-Type" : "text/plain"
+    }
+  },
+  "uuid" : "b6896fdb-0538-4bd5-8267-4ac4fb48eb9d",
+  "persistent" : true,
+  "insertionIndex" : 2
+}

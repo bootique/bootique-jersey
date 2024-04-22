@@ -1,0 +1,20 @@
+{
+  "id" : "05a1e102-edf5-4e71-b504-e36f3a70ad18",
+  "name" : "",
+  "request" : {
+    "url" : "/",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "get",
+    "headers" : {
+      "Vary" : "Accept-Encoding",
+      "Date" : "Mon, 22 Apr 2024 21:51:34 GMT",
+      "Content-Type" : "text/plain"
+    }
+  },
+  "uuid" : "05a1e102-edf5-4e71-b504-e36f3a70ad18",
+  "persistent" : true,
+  "insertionIndex" : 1
+}

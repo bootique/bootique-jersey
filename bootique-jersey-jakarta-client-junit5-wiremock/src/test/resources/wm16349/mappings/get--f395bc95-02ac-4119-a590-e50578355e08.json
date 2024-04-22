@@ -1,0 +1,20 @@
+{
+  "id" : "f395bc95-02ac-4119-a590-e50578355e08",
+  "name" : "",
+  "request" : {
+    "url" : "/",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "get2",
+    "headers" : {
+      "Vary" : "Accept-Encoding",
+      "Date" : "Mon, 22 Apr 2024 21:51:34 GMT",
+      "Content-Type" : "text/plain"
+    }
+  },
+  "uuid" : "f395bc95-02ac-4119-a590-e50578355e08",
+  "persistent" : true,
+  "insertionIndex" : 1
+}

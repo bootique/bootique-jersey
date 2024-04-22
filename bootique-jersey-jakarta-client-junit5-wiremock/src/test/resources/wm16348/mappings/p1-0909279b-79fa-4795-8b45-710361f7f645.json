@@ -1,0 +1,20 @@
+{
+  "id" : "0909279b-79fa-4795-8b45-710361f7f645",
+  "name" : "p1",
+  "request" : {
+    "url" : "/p1?q=redirect-test",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "get:p1:redirect-test",
+    "headers" : {
+      "Vary" : "Accept-Encoding",
+      "Date" : "Mon, 22 Apr 2024 21:51:35 GMT",
+      "Content-Type" : "text/plain"
+    }
+  },
+  "uuid" : "0909279b-79fa-4795-8b45-710361f7f645",
+  "persistent" : true,
+  "insertionIndex" : 4
+}

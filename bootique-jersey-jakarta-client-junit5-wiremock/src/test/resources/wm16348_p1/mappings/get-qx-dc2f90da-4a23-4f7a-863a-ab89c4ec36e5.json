@@ -1,0 +1,20 @@
+{
+  "id" : "dc2f90da-4a23-4f7a-863a-ab89c4ec36e5",
+  "name" : "",
+  "request" : {
+    "url" : "/?q=x",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "get:p1:x",
+    "headers" : {
+      "Vary" : "Accept-Encoding",
+      "Date" : "Mon, 22 Apr 2024 21:51:34 GMT",
+      "Content-Type" : "text/plain"
+    }
+  },
+  "uuid" : "dc2f90da-4a23-4f7a-863a-ab89c4ec36e5",
+  "persistent" : true,
+  "insertionIndex" : 1
+}
