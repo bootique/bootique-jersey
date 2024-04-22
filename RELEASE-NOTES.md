@@ -1,3 +1,7 @@
+## 3.0-M5
+
+* #87 Wiremock transient dependency management - jackson version mismatch
+
 ## 3.0-M4
 
 * #86 Upgrade to Wiremock 3.5.0

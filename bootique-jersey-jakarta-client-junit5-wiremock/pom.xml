@@ -62,6 +62,10 @@
 						<groupId>com.fasterxml.jackson.core</groupId>
 						<artifactId>*</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>com.fasterxml.jackson.datatype</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
@@ -98,6 +102,11 @@
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-alpn-java-client</artifactId>
 				<version>${jetty11.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-jsr310</artifactId>
+				<version>${jackson.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -145,6 +154,10 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-alpn-java-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
 
 		<!-- Unit test dependencies -->
