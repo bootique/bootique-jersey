@@ -119,12 +119,10 @@
             <groupId>io.bootique.jersey</groupId>
             <artifactId>bootique-jersey</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
-            <scope>compile</scope>
         </dependency>
         <!--
          Dependency resolution is the heart of this module. We need to ensure that Jersey's Jackson libraries

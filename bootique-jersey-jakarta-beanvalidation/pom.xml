@@ -57,12 +57,10 @@
             <groupId>io.bootique.jersey</groupId>
             <artifactId>bootique-jersey-jakarta</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.ext</groupId>
             <artifactId>jersey-bean-validation</artifactId>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Unit test dependencies -->

@@ -66,17 +66,14 @@
 			<groupId>io.bootique.jersey</groupId>
 			<artifactId>bootique-jersey-client</artifactId>
 			<version>${project.version}</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.bootique.metrics</groupId>
 			<artifactId>bootique-metrics</artifactId>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.bootique.metrics</groupId>
 			<artifactId>bootique-metrics-healthchecks</artifactId>
-			<scope>compile</scope>
 		</dependency>
 
 		<!-- Unit test dependencies -->
