@@ -1,6 +1,7 @@
 ## 3.0-M5
 
 * #87 Wiremock transient dependency management - jackson version mismatch
+* #88 Runnable-jar-with-dependencies packaging fails on java 17 and 21
 
 ## 3.0-M4
 
