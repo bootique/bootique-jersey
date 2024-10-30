@@ -2,6 +2,7 @@
 
 * #87 Wiremock transient dependency management - jackson version mismatch
 * #88 Runnable-jar-with-dependencies packaging fails on java 17 and 21
+* #90 Upgrade Jersey to 2.45 and 3.0.16
 
 ## 3.0-M4
 
