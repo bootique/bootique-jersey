@@ -40,22 +40,22 @@
 			<dependency>
 				<groupId>io.bootique.jetty</groupId>
 				<artifactId>bootique-jetty-junit5</artifactId>
-				<version>${bootique.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.bootique.metrics</groupId>
 				<artifactId>bootique-metrics</artifactId>
-				<version>${bootique.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.bootique.metrics</groupId>
 				<artifactId>bootique-metrics-healthchecks</artifactId>
-				<version>${bootique.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.bootique.logback</groupId>
 				<artifactId>bootique-logback</artifactId>
-				<version>${bootique.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

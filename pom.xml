@@ -51,7 +51,6 @@
     </modules>
 
     <properties>
-        <bootique.version>${project.version}</bootique.version>
         <activation2.version>2.1.3</activation2.version>
         <glassfish.jaxb3.version>4.0.5</glassfish.jaxb3.version>
         <jaxb3.version>4.0.2</jaxb3.version>
@@ -69,7 +68,7 @@
             <dependency>
                 <groupId>io.bootique</groupId>
                 <artifactId>bootique</artifactId>
-                <version>${bootique.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
