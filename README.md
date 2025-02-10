@@ -160,11 +160,11 @@ to manage your URLs (and their runtime parameters) via configuration.
 E.g. you might use a different URL between test and production environments
 without changing the code.
 
-### Using BASIC Authentication
+### BASIC Authentication
 
 If your server endpoint requires BASIC authentication, you can associate
 your Clients and WebTargets with a named auth configuration. One or more
-named configurations are setup like this:
+named configurations are set up like this:
 
 ```yml
 jerseyclient:
@@ -198,11 +198,10 @@ jerseyclient:
       auth: myauth
 ```
 
-### Using OAuth2 Authentication
+### OAuth2 Authentication
 
-OAuth2 authentication is very similar to BASIC. In fact they are no different
-on the Java end. In YAML the type should be "oauth2", and an extra "tokenUrl"
-property is required. Here is an example auth for a Twitter client:
+OAuth2 authenticator supports an ability for the app to obtain tokens transparently using an OAuth2 token endpoint at 
+the specified URL, and then pass the tokens to the client requests. Here is an example auth for a Twitter client:
 
 ```yml
 jerseyclient:
@@ -214,4 +213,19 @@ jerseyclient:
       password: Efcdsfdsflkurecdsfj
 ```
 
+### Header-Based Authentication
 
+Sometimes the token is known upfront and doesn't expire, so the app can use it for all requests. For this there is
+another type of authenticator called `apiKeyHeader`. Here is an example with a configuration that uses an OAuth2-like 
+bearer token config:
+
+```yml
+jerseyclient:
+  auth:
+    twitter:
+      type: apiKeyHeader
+      tokenUrl: https://api.twitter.com/oauth2/token
+      name: "Authorization"
+      key: "Bearer XXXXXXXXXXXXXXXXXX"
+```
+But of course the name of the header is configurable and can be something else if needed.
