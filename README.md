@@ -223,7 +223,7 @@ bearer token config:
 jerseyclient:
   auth:
     myauth:
-      type: apiKeyHeader
+      type: "apiKeyHeader"
       name: "Authorization"
       key: "Bearer XXXXXXXXXXXXXXXXXX"
 ```
@@ -238,7 +238,7 @@ auth above. Just a different type of authenticator:
 jerseyclient:
   auth:
     myauth:
-      type: apiKeyParameter
+      type: "apiKeyParameter"
       name: "apiKey"
       key: "XXXXXXXXXXXXXXXXXX"
 ```
