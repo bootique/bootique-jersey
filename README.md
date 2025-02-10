@@ -222,10 +222,23 @@ bearer token config:
 ```yml
 jerseyclient:
   auth:
-    twitter:
+    myauth:
       type: apiKeyHeader
-      tokenUrl: https://api.twitter.com/oauth2/token
       name: "Authorization"
       key: "Bearer XXXXXXXXXXXXXXXXXX"
 ```
-But of course the name of the header is configurable and can be something else if needed.
+Of course, the name of the header is configurable and can be something else if needed.
+
+### Query Key-Based Authentication
+
+Although not as common, a security token can be passed as a URL query parameter. The setup is similar to the header-based 
+auth above. Just a different type of authenticator:
+
+```yml
+jerseyclient:
+  auth:
+    myauth:
+      type: apiKeyParameter
+      name: "apiKey"
+      key: "XXXXXXXXXXXXXXXXXX"
+```
