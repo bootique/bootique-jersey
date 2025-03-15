@@ -1,6 +1,7 @@
 ## 3.0-RC1
 
 * #91 Support for javax.inject
+* #92 Upgrade to Jersey 3.0.17
 
 ## 3.0-M6
 
