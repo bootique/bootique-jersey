@@ -1,3 +1,7 @@
+## 3.0-RC1
+
+* #91 Support for javax.inject
+
 ## 3.0-M6
 
 * #87 Wiremock transient dependency management - jackson version mismatch

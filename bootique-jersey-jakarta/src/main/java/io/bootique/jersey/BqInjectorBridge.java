@@ -26,7 +26,8 @@ import org.glassfish.hk2.api.*;
 import org.glassfish.hk2.utilities.AbstractActiveDescriptor;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -37,100 +38,100 @@ import java.util.Set;
  */
 public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjectionResolver {
 
-	/*
-	 * In terms of HK2 this is a fallback resolver that is used when required service not found in a ServiceLocator.
- 	 * We try to create here a custom ActiveDescriptor (once again this is a HK2 term) that will get that service
- 	 * from Bootique DI injector.
-	 */
+    /*
+     * In terms of HK2 this is a fallback resolver that is used when required service not found in a ServiceLocator.
+     * We try to create here a custom ActiveDescriptor (once again this is a HK2 term) that will get that service
+     * from Bootique DI injector.
+     */
 
-	private static final String GLASSFISH_PACKAGE = "org.glassfish";
+    private static final String GLASSFISH_PACKAGE = "org.glassfish";
 
-	private final ServiceLocator locator;
+    private final ServiceLocator locator;
 
-	@jakarta.inject.Inject
-	public BqInjectorBridge(Injector injector, ServiceLocator locator) {
-		super(injector);
-		this.locator = locator;
-	}
+    @jakarta.inject.Inject
+    public BqInjectorBridge(Injector injector, ServiceLocator locator) {
+        super(injector);
+        this.locator = locator;
+    }
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	@Override
-	public boolean justInTimeResolution(Injectee failedInjectionPoint) {
-		// HK2 injection point can have multiple qualifiers, Bq DI doesn't support that
-		if(failedInjectionPoint.getRequiredQualifiers().size() > 1) {
-			return false;
-		}
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public boolean justInTimeResolution(Injectee failedInjectionPoint) {
+        // HK2 injection point can have multiple qualifiers, Bq DI doesn't support that
+        if (failedInjectionPoint.getRequiredQualifiers().size() > 1) {
+            return false;
+        }
 
-		Provider<?> provider = resolveBqProvider(failedInjectionPoint);
-		if(provider == null) {
-			return false;
-		}
+        Provider<?> provider = resolveBqProvider(failedInjectionPoint);
+        if (provider == null) {
+            return false;
+        }
 
-		// register custom descriptor in a HK2's ServiceLocator
-		ServiceLocatorUtilities.addOneDescriptor(locator, new BqBindingActiveDescriptor(
-				provider,
-				failedInjectionPoint.getRequiredType(),
-				failedInjectionPoint.getRequiredQualifiers(),
-				TypeLiteral.of(failedInjectionPoint.getRequiredType()).getRawType()
-		));
-		// notify that we have added a new descriptor
-		return true;
-	}
+        // register custom descriptor in a HK2's ServiceLocator
+        ServiceLocatorUtilities.addOneDescriptor(locator, new BqBindingActiveDescriptor(
+                provider,
+                failedInjectionPoint.getRequiredType(),
+                failedInjectionPoint.getRequiredQualifiers(),
+                TypeLiteral.of(failedInjectionPoint.getRequiredType()).getRawType()
+        ));
+        // notify that we have added a new descriptor
+        return true;
+    }
 
-	@Override
-	protected boolean allowDynamicInjectionForKey(Injectee injectionPoint, Key<?> key) {
-		return injectionPoint.getParent() != null // parent's presence means that we are injecting value to parameter or field
-				&& !key.getType().getRawType().getPackage().getName().startsWith(GLASSFISH_PACKAGE);
-	}
+    @Override
+    protected boolean allowDynamicInjectionForKey(Injectee injectionPoint, Key<?> key) {
+        return injectionPoint.getParent() != null // parent's presence means that we are injecting value to parameter or field
+                && !key.getType().getRawType().getPackage().getName().startsWith(GLASSFISH_PACKAGE);
+    }
 
-	/**
-	 * Holds {@link Provider} reference to get the required service from Bootique DI.
-	 */
-	private static class BqBindingActiveDescriptor<T> extends AbstractActiveDescriptor<T> {
+    /**
+     * Holds {@link Provider} reference to get the required service from Bootique DI.
+     */
+    private static class BqBindingActiveDescriptor<T> extends AbstractActiveDescriptor<T> {
 
-		private final Provider<T> provider;
-		private final Type implType;
-		private final Class<T> implClass;
+        private final Provider<T> provider;
+        private final Type implType;
+        private final Class<T> implClass;
 
-		public BqBindingActiveDescriptor(Provider<T> provider, Type implType, Set<Annotation> qualifiers, Class<T> implClass) {
-			super(
-					Collections.singleton(implType),
-					jakarta.inject.Singleton.class,
-					null,
-					qualifiers,
-					DescriptorType.CLASS,
-					DescriptorVisibility.NORMAL,
-					0,
-					false,
-					false,
-					null,
-					Collections.emptyMap()
-			);
-			this.provider = provider;
-			this.implType = implType;
-			this.implClass = implClass;
-			setImplementation(implClass.getName());
-		}
+        public BqBindingActiveDescriptor(Provider<T> provider, Type implType, Set<Annotation> qualifiers, Class<T> implClass) {
+            super(
+                    Collections.singleton(implType),
+                    jakarta.inject.Singleton.class,
+                    null,
+                    qualifiers,
+                    DescriptorType.CLASS,
+                    DescriptorVisibility.NORMAL,
+                    0,
+                    false,
+                    false,
+                    null,
+                    Collections.emptyMap()
+            );
+            this.provider = provider;
+            this.implType = implType;
+            this.implClass = implClass;
+            setImplementation(implClass.getName());
+        }
 
-		public BqBindingActiveDescriptor() {
-			this.provider = null;
-			this.implClass = null;
-			this.implType = null;
-		}
+        public BqBindingActiveDescriptor() {
+            this.provider = null;
+            this.implClass = null;
+            this.implType = null;
+        }
 
-		@Override
-		public Class<T> getImplementationClass() {
-			return implClass;
-		}
+        @Override
+        public Class<T> getImplementationClass() {
+            return implClass;
+        }
 
-		@Override
-		public Type getImplementationType() {
-			return implType;
-		}
+        @Override
+        public Type getImplementationType() {
+            return implType;
+        }
 
-		@Override
-		public T create(ServiceHandle<?> root) {
-			return provider.get();
-		}
-	}
+        @Override
+        public T create(ServiceHandle<?> root) {
+            return provider.get();
+        }
+    }
 }

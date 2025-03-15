@@ -26,14 +26,15 @@ import org.glassfish.hk2.api.Injectee;
 import org.glassfish.hk2.api.InjectionResolver;
 import org.glassfish.hk2.api.ServiceHandle;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
+import jakarta.inject.Inject;
 
 /**
  * This resolver provides support for the {@link BQInject} annotation inside Jersey runtime
  */
 public class JavaxInjectInjector extends BaseBqHk2Bridge implements InjectionResolver<javax.inject.Inject>  {
 
-    @jakarta.inject.Inject
+    @Inject
     public JavaxInjectInjector(Injector injector) {
         super(injector);
     }
@@ -56,5 +57,4 @@ public class JavaxInjectInjector extends BaseBqHk2Bridge implements InjectionRes
         Provider<?> provider = resolveBqProvider(injectee);
         return isProvider ? provider : provider.get();
     }
-
 }

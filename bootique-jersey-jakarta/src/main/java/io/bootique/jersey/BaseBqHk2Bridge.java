@@ -6,7 +6,8 @@ import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
 import org.glassfish.hk2.api.Injectee;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -24,9 +25,13 @@ abstract class BaseBqHk2Bridge {
 
     protected Provider<?> resolveBqProvider(Injectee injectee) {
         TypeLiteral<?> typeLiteral = TypeLiteral.of(injectee.getRequiredType());
-        if(javax.inject.Provider.class.equals(typeLiteral.getRawType())) {
+
+        if (jakarta.inject.Provider.class.equals(typeLiteral.getRawType())
+                // TODO: remove this check in 4.0 when we stop supporting javax
+                || javax.inject.Provider.class.equals(typeLiteral.getRawType())) {
+
             Type requiredType = getGenericParameterType(injectee.getRequiredType());
-            if(requiredType == null) {
+            if (requiredType == null) {
                 throw new BootiqueException(-1, "Not specified generic type for Provider injection point.");
             }
             typeLiteral = TypeLiteral.of(requiredType);
@@ -39,11 +44,11 @@ abstract class BaseBqHk2Bridge {
                 ? Key.get(typeLiteral)
                 : Key.get(typeLiteral, bindingAnnotation);
 
-        if(!injector.hasProvider(key) && !allowDynamicInjectionForKey(injectee, key)) {
+        if (!injector.hasProvider(key) && !allowDynamicInjectionForKey(injectee, key)) {
             return null;
         }
 
-        return injector.getProvider(key);
+        return injector.getJakartaProvider(key);
     }
 
     /**

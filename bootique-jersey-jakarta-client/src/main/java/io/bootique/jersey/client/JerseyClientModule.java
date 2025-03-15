@@ -29,7 +29,7 @@ import io.bootique.di.Provides;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 import org.glassfish.jersey.client.spi.ConnectorProvider;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 public class JerseyClientModule implements BQModule {
 

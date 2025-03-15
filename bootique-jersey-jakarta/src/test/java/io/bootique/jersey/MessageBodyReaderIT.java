@@ -20,14 +20,14 @@ package io.bootique.jersey;
 
 import io.bootique.BQRuntime;
 import io.bootique.di.BQInject;
-import io.bootique.di.BQModule;
+import io.bootique.BQModule;
 import io.bootique.di.Injector;
-import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
 import io.bootique.junit5.TestRuntumeBuilder;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -39,12 +39,13 @@ import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Provider;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -93,10 +94,10 @@ public class MessageBodyReaderIT {
                 b -> JerseyModule.extend(b)
                         .addResource(Resource.class)
                         .addResource(MessageReaderWithInjection.class),
-                b -> b.bind(Service.class));
+                b -> b.bind(Service1.class));
 
         Response ok = client.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
-        JettyTester.assertOk(ok).assertContent("s_m");
+        JettyTester.assertOk(ok).assertContent("s1_m");
     }
 
     @Test
@@ -107,7 +108,7 @@ public class MessageBodyReaderIT {
                         .addResource(MessageReaderWithDynamicBeanInjection.class));
 
         Response ok = client.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
-        JettyTester.assertOk(ok).assertContent("b_m");
+        JettyTester.assertOk(ok).assertContent("b1[s1]_m");
     }
 
     @Test
@@ -120,10 +121,10 @@ public class MessageBodyReaderIT {
                             fc.register(MessageReaderWithAllInjections.class);
                             return false;
                         }),
-                b -> b.bind(Service.class));
+                b -> b.bind(Service1.class));
 
         Response ok = client.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
-        JettyTester.assertOk(ok).assertContent("x_b_s_m_s");
+        JettyTester.assertOk(ok).assertContent("x_b1[s1]_s1_s1_b2[s2]_s2_s2_b1[s1]_s2_m");
     }
 
     @Provider
@@ -146,7 +147,7 @@ public class MessageBodyReaderIT {
     public static class MessageReaderWithInjection extends BaseMessageReader {
 
         @BQInject
-        private javax.inject.Provider<Service> service;
+        private javax.inject.Provider<Service1> service;
 
         @Override
         protected String processText(String text) {
@@ -158,7 +159,7 @@ public class MessageBodyReaderIT {
     public static class MessageReaderWithDynamicBeanInjection extends BaseMessageReader {
 
         @Inject
-        private DynamicBean bean;
+        private DynamicBean1 bean;
 
         @Override
         protected String processText(String text) {
@@ -171,11 +172,23 @@ public class MessageBodyReaderIT {
 
         private final String label;
 
+        @BQInject
+        private DynamicBean1 b1;
+
         @Inject
-        private DynamicBean bean;
+        private DynamicBean2 b2;
+
+        @javax.inject.Inject
+        private DynamicBean1 b3;
 
         @BQInject
-        private javax.inject.Provider<Service> service;
+        private javax.inject.Provider<Service1> p1;
+
+        @Inject
+        private jakarta.inject.Provider<Service2> p2;
+
+        @javax.inject.Inject
+        private jakarta.inject.Provider<Service2> p3;
 
         @Inject
         private Injector injector;
@@ -187,8 +200,22 @@ public class MessageBodyReaderIT {
 
         @Override
         protected String processText(String text) {
-            return label + "_" + bean.getLabel() + "_" + service.get().getLabel() + "_"
-                    + text + "_" + injector.getInstance(Service.class).getLabel();
+            return List.of(
+                    label,
+
+                    b1.getLabel(),
+                    p1.get().getLabel(),
+                    injector.getInstance(Service1.class).getLabel(),
+
+                    b2.getLabel(),
+                    p2.get().getLabel(),
+                    injector.getInstance(Service2.class).getLabel(),
+
+                    b3.getLabel(),
+                    p3.get().getLabel(),
+
+                    text
+            ).stream().collect(Collectors.joining("_"));
         }
     }
 
@@ -214,15 +241,34 @@ public class MessageBodyReaderIT {
         }
     }
 
-    public static class Service {
+    public static class Service1 {
         String getLabel() {
-            return "s";
+            return "s1";
         }
     }
 
-    public static class DynamicBean {
+    public static class Service2 {
         String getLabel() {
-            return "b";
+            return "s2";
+        }
+    }
+
+    public static class DynamicBean1 {
+
+        @javax.inject.Inject
+        Service1 service1;
+
+        String getLabel() {
+            return "b1[" + service1.getLabel() + "]";
+        }
+    }
+
+    public static class DynamicBean2 {
+        @jakarta.inject.Inject
+        Service2 service2;
+
+        String getLabel() {
+            return "b2[" + service2.getLabel() + "]";
         }
     }
 
@@ -243,7 +289,7 @@ public class MessageBodyReaderIT {
                 InputStream entityStream) throws WebApplicationException {
 
             String text;
-            try (Scanner scanner = new Scanner(entityStream, StandardCharsets.UTF_8.name())) {
+            try (Scanner scanner = new Scanner(entityStream, StandardCharsets.UTF_8)) {
                 text = scanner.useDelimiter("\\A").next();
             }
 

@@ -30,7 +30,7 @@ import io.bootique.jersey.client.JerseyClientModule;
 import io.bootique.metrics.MetricNaming;
 import io.bootique.metrics.health.HealthCheckModule;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 public class JerseyClientInstrumentedModule implements BQModule {
 

@@ -38,7 +38,7 @@ import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.time.*;
 import java.util.HashMap;
 import java.util.Map;

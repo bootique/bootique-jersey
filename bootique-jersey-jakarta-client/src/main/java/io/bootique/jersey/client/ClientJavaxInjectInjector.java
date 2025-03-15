@@ -25,7 +25,7 @@ import org.glassfish.hk2.api.Injectee;
 import org.glassfish.hk2.api.InjectionResolver;
 import org.glassfish.hk2.api.ServiceHandle;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 
 /**
  * @since 3.0

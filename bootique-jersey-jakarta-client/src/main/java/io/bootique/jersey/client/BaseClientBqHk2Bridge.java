@@ -6,7 +6,7 @@ import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
 import org.glassfish.hk2.api.Injectee;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -43,7 +43,7 @@ abstract class BaseClientBqHk2Bridge {
             return null;
         }
 
-        return injector.getProvider(key);
+        return injector.getJakartaProvider(key);
     }
 
     /**

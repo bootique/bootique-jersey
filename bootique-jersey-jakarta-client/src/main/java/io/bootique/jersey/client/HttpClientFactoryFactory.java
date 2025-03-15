@@ -38,7 +38,7 @@ import org.glassfish.jersey.client.spi.ConnectorProvider;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.message.GZipEncoder;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.security.KeyStore;
 import java.util.Collections;
 import java.util.HashMap;

@@ -26,7 +26,7 @@ import org.glassfish.hk2.api.*;
 import org.glassfish.hk2.utilities.AbstractActiveDescriptor;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
