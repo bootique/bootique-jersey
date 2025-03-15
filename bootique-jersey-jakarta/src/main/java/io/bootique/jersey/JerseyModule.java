@@ -26,6 +26,7 @@ import io.bootique.di.*;
 import io.bootique.jersey.jaxrs.*;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.MappedServlet;
+import jakarta.inject.Named;
 import jakarta.ws.rs.container.DynamicFeature;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Feature;
@@ -77,7 +78,7 @@ public class JerseyModule implements BQModule {
         JerseyModule.extend(binder).initAllExtensions();
     }
 
-    @javax.inject.Singleton
+    @Singleton
     @Provides
     private ResourceConfig createResourceConfig(
             Injector injector,
@@ -85,7 +86,7 @@ public class JerseyModule implements BQModule {
             Set<DynamicFeature> dynamicFeatures,
             @JerseyResource Set<Object> resources,
             @JerseyResource Set<Package> packages,
-            @javax.inject.Named(RESOURCES_BY_PATH_BINDING) Map<String, Object> resourcesByPath,
+            @Named(RESOURCES_BY_PATH_BINDING) Map<String, Object> resourcesByPath,
             Set<MappedResource> mappedResources,
             Map<Class<?>, ParamConverter> paramConverters,
             @JerseyResource Map<String, Object> properties) {
