@@ -64,7 +64,7 @@ public class JerseyClientModule implements BQModule {
     ConnectorProvider provideConnectorProvider(Injector injector) {
         // the provider binding is optional. The default in Jersey is HttpUrlConnectorProvider
         Key<ConnectorProvider> key = Key.get(ConnectorProvider.class, CustomConnectorProvider.class);
-        return injector.hasProvider(key) ? injector.getProvider(key).get() : new HttpUrlConnectorProvider();
+        return injector.hasProvider(key) ? injector.getJakartaProvider(key).get() : new HttpUrlConnectorProvider();
     }
 
     @Provides
