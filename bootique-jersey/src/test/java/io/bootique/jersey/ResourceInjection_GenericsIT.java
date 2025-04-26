@@ -76,7 +76,7 @@ public class ResourceInjection_GenericsIT {
     public void fieldInjected() {
 
         WebTarget client = startServer(b -> {
-            b.bind(Key.get(new TypeLiteral<>() {
+            b.bind(Key.get(new TypeLiteral<S1<String>>() {
             })).toInstance(STRING_BOUND);
             b.bind(Key.get(new TypeLiteral<S1<Integer>>() {
             })).toInstance(INT_BOUND);
