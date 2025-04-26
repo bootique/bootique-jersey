@@ -19,13 +19,20 @@
 
 package io.bootique.jersey;
 
+import io.bootique.BQModule;
 import io.bootique.BQRuntime;
-import io.bootique.di.*;
+import io.bootique.di.BQInject;
+import io.bootique.di.Binder;
+import io.bootique.di.Key;
+import io.bootique.di.Provides;
+import io.bootique.di.TypeLiteral;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
 import io.bootique.junit5.TestRuntumeBuilder;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -34,8 +41,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import java.util.Arrays;
 
 import static java.util.Arrays.asList;
@@ -71,7 +76,7 @@ public class ResourceInjection_GenericsIT {
     public void fieldInjected() {
 
         WebTarget client = startServer(b -> {
-            b.bind(Key.get(new TypeLiteral<S1<String>>() {
+            b.bind(Key.get(new TypeLiteral<>() {
             })).toInstance(STRING_BOUND);
             b.bind(Key.get(new TypeLiteral<S1<Integer>>() {
             })).toInstance(INT_BOUND);

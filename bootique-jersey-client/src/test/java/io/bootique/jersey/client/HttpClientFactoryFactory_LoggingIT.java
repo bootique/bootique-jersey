@@ -20,7 +20,7 @@
 package io.bootique.jersey.client;
 
 import io.bootique.BQCoreModule;
-import io.bootique.di.BQModule;
+import io.bootique.BQModule;
 import io.bootique.di.Injector;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
