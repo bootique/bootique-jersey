@@ -22,11 +22,17 @@ package io.bootique.jersey.client;
 import io.bootique.di.Injector;
 import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
-import org.glassfish.hk2.api.*;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import org.glassfish.hk2.api.DescriptorType;
+import org.glassfish.hk2.api.DescriptorVisibility;
+import org.glassfish.hk2.api.Injectee;
+import org.glassfish.hk2.api.JustInTimeInjectionResolver;
+import org.glassfish.hk2.api.ServiceHandle;
+import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.AbstractActiveDescriptor;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 
-import jakarta.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -44,7 +50,7 @@ public class ClientBqInjectorBridge extends BaseClientBqHk2Bridge implements Jus
 
     private final ServiceLocator locator;
     
-    @jakarta.inject.Inject
+    @Inject
     public ClientBqInjectorBridge(Injector injector, ServiceLocator locator) {
         super(injector);
         this.locator = locator;

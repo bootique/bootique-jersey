@@ -22,6 +22,7 @@ package io.bootique.jersey.client;
 import io.bootique.di.BQInject;
 import io.bootique.di.Injector;
 import io.bootique.di.TypeLiteral;
+import jakarta.inject.Inject;
 import org.glassfish.hk2.api.Injectee;
 import org.glassfish.hk2.api.InjectionResolver;
 import org.glassfish.hk2.api.ServiceHandle;
@@ -30,7 +31,7 @@ import jakarta.inject.Provider;
 
 public class ClientBqInjectInjector extends BaseClientBqHk2Bridge implements InjectionResolver<BQInject> {
 
-    @jakarta.inject.Inject
+    @Inject
     public ClientBqInjectInjector(Injector injector) {
         super(injector);
     }
