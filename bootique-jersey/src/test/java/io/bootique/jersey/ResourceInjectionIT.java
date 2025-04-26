@@ -51,7 +51,7 @@ public class ResourceInjectionIT {
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
             .module(b -> b.bind(InjectedService.class).toInstance(service))
-            .module(b -> b.bind(UnInjectedResource.class).toJakartaProviderInstance(() -> new UnInjectedResource(service)))
+            .module(b -> b.bind(UnInjectedResource.class).toProviderInstance(() -> new UnInjectedResource(service)))
             .module(b -> JerseyModule.extend(b)
                     .addFeature(ctx -> {
                         ctx.property(TEST_PROPERTY, "x");

@@ -43,7 +43,7 @@ abstract class BaseClientBqHk2Bridge {
             return null;
         }
 
-        return injector.getJakartaProvider(key);
+        return injector.getProvider(key);
     }
 
     /**
