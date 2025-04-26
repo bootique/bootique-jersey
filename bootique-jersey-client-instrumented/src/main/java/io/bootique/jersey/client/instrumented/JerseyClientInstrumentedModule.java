@@ -30,14 +30,11 @@ import io.bootique.jersey.client.JerseyClientModule;
 import io.bootique.metrics.MetricNaming;
 import io.bootique.metrics.health.HealthCheckModule;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
-/**
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
- */
-@Deprecated(since = "3.0", forRemoval = true)
 public class JerseyClientInstrumentedModule implements BQModule {
 
+    // reusing overridden module prefix
     private static final String CONFIG_PREFIX = "jerseyclient";
 
     public static final MetricNaming METRIC_NAMING = MetricNaming.forModule(JerseyClientInstrumentedModule.class);
@@ -45,7 +42,7 @@ public class JerseyClientInstrumentedModule implements BQModule {
     @Override
     public ModuleCrate crate() {
         return ModuleCrate.of(this)
-                .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-client-instrumented'.")
+                .description("Integrates metrics and extra logging in Jersey HTTP client")
                 .overrides(JerseyClientModule.class)
                 .build();
     }
@@ -83,7 +80,7 @@ public class JerseyClientInstrumentedModule implements BQModule {
 
     @Provides
     @Singleton
-    JerseyClientHealthChecks provideThresholdHealthCheck(InstrumentedHttpClientFactoryFactory factory, MetricRegistry metricRegistry) {
-        return factory.createHealthChecks(metricRegistry);
+    JerseyClientHealthChecks provideThresholdHealthCheck(InstrumentedHttpClientFactoryFactory factory) {
+        return factory.createHealthChecks();
     }
 }

@@ -18,16 +18,15 @@
  */
 package io.bootique.jersey.jaxrs;
 
-import javax.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.ParamConverter;
+
 import java.time.LocalTime;
 
 /**
  * Support for LocalTime parameter binding, covering a gap in JAX-RS specification.
  *
  * @since 3.0
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 public class LocalTimeConverter implements ParamConverter<LocalTime> {
 
     @Override

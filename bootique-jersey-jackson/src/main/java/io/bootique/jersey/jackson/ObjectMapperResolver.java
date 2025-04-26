@@ -19,18 +19,15 @@
 package io.bootique.jersey.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.Provider;
 
 /**
  * A Jersey extension that provides a preconfigured Jackson ObjectMapper for all object (de)serialization needed
  * within Jersey.
  *
  * @since 2.0
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 @Provider
 public class ObjectMapperResolver implements ContextResolver<ObjectMapper> {
 

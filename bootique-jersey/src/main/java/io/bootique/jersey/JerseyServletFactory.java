@@ -22,26 +22,31 @@ package io.bootique.jersey;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
 import io.bootique.jetty.MappedServlet;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import jakarta.inject.Inject;
 import java.util.Collections;
 import java.util.Set;
 
 /**
  * A YAML-configurable factory of Jersey servlet.
- *
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 @BQConfig("Configures a servlet that is an entry point to Jersey REST API engine.")
 public class JerseyServletFactory {
 
     private static final String DEFAULT_URL_PATTERN = "/*";
 
+    private final ResourceConfig application;
+
     protected String urlPattern;
+
+    @Inject
+    public JerseyServletFactory(ResourceConfig application) {
+        this.application = application;
+    }
 
     /**
      * @param urlPattern a URL: pattern for the Jersey servlet. Default is "/*".
@@ -54,27 +59,9 @@ public class JerseyServletFactory {
         this.urlPattern = urlPattern;
     }
 
-    /**
-     * Conditionally initializes servlet url pattern if it is null.
-     *
-     * @param urlPattern a URL: pattern for the Jersey servlet unless it was already
-     *                   set.
-     * @return self.
-     * @deprecated since 2.0 as we don't need to initialize the urlPattern explicitly to be able to returna  default.
-     */
-    @Deprecated
-    public JerseyServletFactory initUrlPatternIfNotSet(String urlPattern) {
-
-        if (this.urlPattern == null) {
-            this.urlPattern = urlPattern;
-        }
-
-        return this;
-    }
-
-    public MappedServlet<ServletContainer> createJerseyServlet(ResourceConfig resourceConfig) {
-        ServletContainer servlet = new ServletContainer(resourceConfig);
-        Set<String> urlPatterns = Collections.singleton(getUrlPattern(resourceConfig));
+    public MappedServlet<ServletContainer> createJerseyServlet() {
+        ServletContainer servlet = new ServletContainer(application);
+        Set<String> urlPatterns = Collections.singleton(getUrlPattern(application));
         return new MappedServlet<>(servlet, urlPatterns, "jersey");
     }
 
@@ -105,7 +92,7 @@ public class JerseyServletFactory {
         return null;
     }
 
-    protected String normalizeAppPath(String path) {
+    protected static String normalizeAppPath(String path) {
         // TODO: %-encode per ApplicationPath javadoc?
 
         StringBuilder normal = new StringBuilder();

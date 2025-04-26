@@ -25,18 +25,14 @@ import io.bootique.annotation.BQConfigProperty;
 import io.bootique.di.Injector;
 import io.bootique.jersey.client.HttpClientBuilder;
 import io.bootique.jersey.client.HttpClientFactory;
+import jakarta.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.client.WebTarget;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
-import javax.ws.rs.client.ClientRequestFilter;
-import javax.ws.rs.client.WebTarget;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.function.Function;
 
-/**
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
- */
-@Deprecated(since = "3.0", forRemoval = true)
 @JsonTypeName("oauth2")
 @BQConfig("Authenticator for Oauth2 protocol. Includes URL of the OAuth token endpoint and " +
         "username/password that are exchanged for the token.")

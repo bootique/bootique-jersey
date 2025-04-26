@@ -25,8 +25,9 @@ import org.junit.jupiter.api.Test;
 
 @BQTest
 public class JerseyModuleTest {
+
     @Test
     public void check() {
-        BQModuleTester.of(JerseyModule.class).testConfig().testAutoLoadable();
+        BQModuleTester.of(JerseyModule.class).testAutoLoadable().testConfig();
     }
 }

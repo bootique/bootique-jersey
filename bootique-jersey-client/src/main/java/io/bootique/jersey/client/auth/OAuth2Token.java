@@ -24,9 +24,7 @@ import java.util.Objects;
 
 /**
  * Represents a token received from a remote oauth server.
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 public class OAuth2Token {
 
     private String accessToken;

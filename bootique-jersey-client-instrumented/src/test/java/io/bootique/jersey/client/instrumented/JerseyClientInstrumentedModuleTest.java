@@ -21,18 +21,13 @@ package io.bootique.jersey.client.instrumented;
 
 import io.bootique.junit5.BQModuleTester;
 import io.bootique.junit5.BQTest;
-import io.bootique.junit5.BQTestFactory;
-import io.bootique.junit5.BQTestTool;
 import org.junit.jupiter.api.Test;
 
 @BQTest
 public class JerseyClientInstrumentedModuleTest {
 
-    @BQTestTool
-    final BQTestFactory testFactory = new BQTestFactory();
-
     @Test
-    public void autoLoadable() {
-        BQModuleTester.of(JerseyClientInstrumentedModule.class).testAutoLoadable().testConfig();
+    public void check() {
+        BQModuleTester.of(JerseyClientInstrumentedModule.class).testConfig().testAutoLoadable();
     }
 }

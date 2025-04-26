@@ -27,12 +27,12 @@
 		<version>4.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>bootique-jersey-jakarta-client-junit5-wiremock</artifactId>
+	<artifactId>bootique-jersey-client-junit5-wiremock</artifactId>
 	<packaging>jar</packaging>
 
-	<name>bootique-jersey-jakarta-client-junit5-wiremock: Wiremock integration for Jersey Client</name>
+	<name>bootique-jersey-client-junit5-wiremock: Wiremock integration for Jersey Client</name>
 	<description>
-		Wiremock testing framework integration for Jersey Client (Jakarta flavor)
+		Wiremock testing framework integration for Jersey Client
 	</description>
 
 	<dependencyManagement>
@@ -120,7 +120,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.bootique.jersey</groupId>
-			<artifactId>bootique-jersey-jakarta-client</artifactId>
+			<artifactId>bootique-jersey-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -169,7 +169,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.bootique.jersey</groupId>
-			<artifactId>bootique-jersey-jakarta</artifactId>
+			<artifactId>bootique-jersey</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>

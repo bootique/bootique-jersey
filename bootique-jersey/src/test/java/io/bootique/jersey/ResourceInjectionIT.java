@@ -21,21 +21,21 @@ package io.bootique.jersey;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
+import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.inject.Inject;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -73,12 +73,12 @@ public class ResourceInjectionIT {
     public void fieldInjected() {
 
         Response r1 = jetty.getTarget().path("f").request().get();
-        assertEquals(Status.OK.getStatusCode(), r1.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("f_1_x", r1.readEntity(String.class));
         r1.close();
 
         Response r2 = jetty.getTarget().path("f").request().get();
-        assertEquals(Status.OK.getStatusCode(), r2.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), r2.getStatus());
         assertEquals("f_2_x", r2.readEntity(String.class));
         r2.close();
     }
@@ -87,12 +87,12 @@ public class ResourceInjectionIT {
     public void constructorInjected() {
 
         Response r1 = jetty.getTarget().path("c").request().get();
-        assertEquals(Status.OK.getStatusCode(), r1.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("c_1_x", r1.readEntity(String.class));
         r1.close();
 
         Response r2 = jetty.getTarget().path("c").request().get();
-        assertEquals(Status.OK.getStatusCode(), r2.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), r2.getStatus());
         assertEquals("c_2_x", r2.readEntity(String.class));
         r2.close();
     }
@@ -101,12 +101,12 @@ public class ResourceInjectionIT {
     public void providerForResource() {
 
         Response r1 = jetty.getTarget().path("u").request().get();
-        assertEquals(Status.OK.getStatusCode(), r1.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("u_1_x", r1.readEntity(String.class));
         r1.close();
 
         Response r2 = jetty.getTarget().path("u").request().get();
-        assertEquals(Status.OK.getStatusCode(), r2.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), r2.getStatus());
         assertEquals("u_2_x", r2.readEntity(String.class));
         r2.close();
     }

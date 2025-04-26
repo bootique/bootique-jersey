@@ -26,9 +26,8 @@ import org.glassfish.hk2.api.*;
 import org.glassfish.hk2.utilities.AbstractActiveDescriptor;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
+import jakarta.inject.Provider;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -36,10 +35,7 @@ import java.util.Set;
 
 /**
  * Allows HK2 to do a lookup and grab services from Bootique DI Injector.
- *
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjectionResolver {
 
     /*
@@ -52,7 +48,7 @@ public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjec
 
     private final ServiceLocator locator;
 
-    @Inject
+    @jakarta.inject.Inject
     public BqInjectorBridge(Injector injector, ServiceLocator locator) {
         super(injector);
         this.locator = locator;
@@ -89,7 +85,7 @@ public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjec
     }
 
     /**
-     * This descriptor just holds {@link Provider} reference to get the required service from Bootique DI.
+     * Holds {@link Provider} reference to get the required service from Bootique DI.
      */
     private static class BqBindingActiveDescriptor<T> extends AbstractActiveDescriptor<T> {
 
@@ -100,7 +96,7 @@ public class BqInjectorBridge extends BaseBqHk2Bridge implements JustInTimeInjec
         public BqBindingActiveDescriptor(Provider<T> provider, Type implType, Set<Annotation> qualifiers, Class<T> implClass) {
             super(
                     Collections.singleton(implType),
-                    Singleton.class,
+                    jakarta.inject.Singleton.class,
                     null,
                     qualifiers,
                     DescriptorType.CLASS,

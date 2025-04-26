@@ -28,16 +28,16 @@ import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
 import io.bootique.logback.LogbackModule;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -94,12 +94,12 @@ public class HttpClientFactoryFactory_LoggingIT {
 
         startApp("debug.yml");
 
-        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
+        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider());
         factoryFactory.setFollowRedirects(true);
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
+        Client client = factoryFactory.createClientFactory().newClient();
 
         Response r = client.target("http://127.0.0.1:8080/get").request().get();
-        assertEquals(Status.OK.getStatusCode(), r.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
         assertEquals("got", r.readEntity(String.class));
 
         // wait for the log file to be flushed... there seems to be a race
@@ -118,12 +118,12 @@ public class HttpClientFactoryFactory_LoggingIT {
 
         startApp("warn.yml");
 
-        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
+        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider());
         factoryFactory.setFollowRedirects(true);
-        Client client = factoryFactory.createClientFactory(mockInjector, Collections.emptySet()).newClient();
+        Client client = factoryFactory.createClientFactory().newClient();
 
         Response r = client.target("http://127.0.0.1:8080/get").request().get();
-        assertEquals(Status.OK.getStatusCode(), r.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
         assertEquals("got", r.readEntity(String.class));
 
         // wait for the log file to be flushed... there seems to be a race

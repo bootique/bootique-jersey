@@ -19,13 +19,13 @@
 
 package io.bootique.jersey;
 
+import io.bootique.jersey.JerseyModule;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
 import org.junit.jupiter.api.Test;
-
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

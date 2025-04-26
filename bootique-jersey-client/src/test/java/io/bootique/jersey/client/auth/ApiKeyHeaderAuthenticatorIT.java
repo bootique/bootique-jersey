@@ -28,15 +28,14 @@ import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @BQTest
 public class ApiKeyHeaderAuthenticatorIT {
@@ -51,15 +50,13 @@ public class ApiKeyHeaderAuthenticatorIT {
             .createRuntime();
 
     @BQTestTool
-    final BQTestFactory clientTestFactory = new BQTestFactory();
+    final BQTestFactory clientTestFactory = new BQTestFactory().autoLoadModules();
 
     private WebTarget clientTarget(String name) {
         return clientTestFactory.app("-c", "classpath:io/bootique/jersey/client/auth/ApiKeyHeaderAuthenticatorIT.yml")
-                .autoLoadModules()
                 .module(b -> BQCoreModule.extend(b).setProperty("bq.jerseyclient.targets.valid.url", jetty.getUrl() + "/r1"))
                 .module(b -> BQCoreModule.extend(b).setProperty("bq.jerseyclient.targets.customValid.url", jetty.getUrl() + "/r2"))
-                .module(b -> BQCoreModule.extend(b).setProperty("bq.jerseyclient.targets.invalid.url", jetty.getUrl() + "/r1"))
-                .createRuntime()
+                .module(b -> BQCoreModule.extend(b).setProperty("bq.jerseyclient.targets.invalid.url", jetty.getUrl() + "/r1"))                .createRuntime()
                 .getInstance(HttpTargets.class)
                 .newTarget(name);
     }

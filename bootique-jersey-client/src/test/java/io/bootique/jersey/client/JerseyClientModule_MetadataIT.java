@@ -52,7 +52,7 @@ public class JerseyClientModule_MetadataIT {
         assertTrue(jerseyClientOpt.isPresent());
         ModuleMetadata jerseyClient = jerseyClientOpt.get();
 
-        assertEquals("Deprecated, can be replaced with 'bootique-jersey-jakarta-client'.", jerseyClient.getDescription());
+        assertEquals("Integrates Jersey JAX-RS HTTP client.", jerseyClient.getDescription());
 
         assertEquals(1, jerseyClient.getConfigs().size());
         ConfigMetadataNode rootConfig = jerseyClient.getConfigs().stream().findFirst().get();

@@ -19,18 +19,14 @@
 
 package io.bootique.jersey.client;
 
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.ClientRequestFilter;
 import org.glassfish.jersey.client.ClientConfig;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.ClientRequestFilter;
 import java.security.KeyStore;
 import java.util.Map;
 
-/**
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
- */
-@Deprecated(since = "3.0", forRemoval = true)
 public class DefaultHttpClientFactory implements HttpClientFactory {
 
     private ClientConfig config;

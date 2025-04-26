@@ -20,10 +20,12 @@
 package io.bootique.jersey.client;
 
 import io.bootique.di.Injector;
+import jakarta.ws.rs.client.Client;
 import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
+import org.glassfish.jersey.client.spi.ConnectorProvider;
 import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.client.Client;
 import java.util.Collections;
 import java.util.Set;
 
@@ -32,43 +34,46 @@ import static org.mockito.Mockito.mock;
 
 public class HttpClientFactoryFactoryTest {
 
-	private Injector mockInjector = mock(Injector.class);
+    private Injector mockInjector = mock(Injector.class);
 
-	@Test
+    @Test
     public void createClientFactory_AsyncThreadPool() {
 
-		Client client = new HttpClientFactoryFactory().createClientFactory(mockInjector, Set.of()).newClient();
+        Client client = new HttpClientFactoryFactory(
+                mockInjector,
+                Set.of(),
+                new HttpUrlConnectorProvider()).createClientFactory().newClient();
 
-		try {
-			assertTrue(client.getConfiguration().isRegistered(ClientAsyncExecutorProvider.class));
-		} finally {
-			client.close();
-		}
-	}
+        try {
+            assertTrue(client.getConfiguration().isRegistered(ClientAsyncExecutorProvider.class));
+        } finally {
+            client.close();
+        }
+    }
 
-	@Test
+    @Test
     public void createClientFactory() {
 
-		HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory();
-		factoryFactory.setAsyncThreadPoolSize(5);
-		factoryFactory.setConnectTimeoutMs(101);
-		factoryFactory.setFollowRedirects(true);
-		factoryFactory.setReadTimeoutMs(203);
+        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(mockInjector, Collections.emptySet(), mock(ConnectorProvider.class));
+        factoryFactory.setAsyncThreadPoolSize(5);
+        factoryFactory.setConnectTimeoutMs(101);
+        factoryFactory.setFollowRedirects(true);
+        factoryFactory.setReadTimeoutMs(203);
 
-		HttpClientFactory factory = factoryFactory.createClientFactory(mockInjector, Collections.emptySet());
-		assertNotNull(factory);
+        HttpClientFactory factory = factoryFactory.createClientFactory();
+        assertNotNull(factory);
 
-		Client client = factory.newClient();
+        Client client = factory.newClient();
 
-		try {
+        try {
 
-			assertEquals(5, client.getConfiguration().getProperty(ClientProperties.ASYNC_THREADPOOL_SIZE));
-			assertEquals(101, client.getConfiguration().getProperty(ClientProperties.CONNECT_TIMEOUT));
-			assertEquals(true, client.getConfiguration().getProperty(ClientProperties.FOLLOW_REDIRECTS));
-			assertEquals(203, client.getConfiguration().getProperty(ClientProperties.READ_TIMEOUT));
+            assertEquals(5, client.getConfiguration().getProperty(ClientProperties.ASYNC_THREADPOOL_SIZE));
+            assertEquals(101, client.getConfiguration().getProperty(ClientProperties.CONNECT_TIMEOUT));
+            assertEquals(true, client.getConfiguration().getProperty(ClientProperties.FOLLOW_REDIRECTS));
+            assertEquals(203, client.getConfiguration().getProperty(ClientProperties.READ_TIMEOUT));
 
-		} finally {
-			client.close();
-		}
-	}
+        } finally {
+            client.close();
+        }
+    }
 }

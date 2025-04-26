@@ -21,19 +21,15 @@ package io.bootique.jersey.client;
 
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.WebTarget;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.filter.EncodingFeature;
 import org.glassfish.jersey.message.GZipEncoder;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.WebTarget;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-/**
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
- */
-@Deprecated(since = "3.0", forRemoval = true)
 @BQConfig
 public class WebTargetFactory {
 

@@ -22,18 +22,16 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
 import io.bootique.di.Injector;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.core.UriBuilder;
 
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
-import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.Objects;
 
 /**
  * @since 1.1
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 @JsonTypeName("apiKeyParameter")
 @BQConfig("Performs request authentication with a fixed API key passed as a query parameter")
 public class ApiKeyParameterAuthenticatorFactory implements AuthenticatorFactory {

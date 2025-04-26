@@ -25,19 +25,20 @@ import io.bootique.di.BQInject;
 import io.bootique.di.Injector;
 import io.bootique.jersey.client.auth.AuthenticatorFactory;
 import io.bootique.jersey.client.log.RequestLogger;
+import jakarta.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.GenericType;
 import org.glassfish.hk2.api.InjectionResolver;
 import org.glassfish.hk2.api.JustInTimeInjectionResolver;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.filter.EncodingFeature;
+import org.glassfish.jersey.client.spi.ConnectorProvider;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.message.GZipEncoder;
 
-import javax.inject.Singleton;
-import javax.ws.rs.client.ClientRequestFilter;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.GenericType;
+import jakarta.inject.Inject;
 import java.security.KeyStore;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,12 +46,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-/**
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
- */
-@Deprecated(since = "3.0", forRemoval = true)
 @BQConfig("Configures HttpClientFactory, including named authenticators, timeouts, SSL certificates, etc.")
 public class HttpClientFactoryFactory {
+
+    private final Injector injector;
+    private final Set<Feature> features;
+    private final ConnectorProvider connectorProvider;
 
     protected boolean followRedirects;
     protected boolean compression;
@@ -61,7 +62,16 @@ public class HttpClientFactoryFactory {
     protected Map<String, TrustStoreFactory> trustStores;
     protected Map<String, WebTargetFactory> targets;
 
-    public HttpClientFactoryFactory() {
+    @Inject
+    public HttpClientFactoryFactory(
+            Injector injector,
+            @JerseyClientFeatures Set<Feature> features,
+            ConnectorProvider connectorProvider) {
+
+        this.injector = injector;
+        this.features = features;
+        this.connectorProvider = connectorProvider;
+
         this.followRedirects = true;
         this.compression = true;
     }
@@ -134,20 +144,19 @@ public class HttpClientFactoryFactory {
         return new DefaultHttpTargets(createNamedTargets(clientFactory));
     }
 
-    public HttpClientFactory createClientFactory(Injector injector, Set<Feature> features) {
-        ClientConfig config = createConfig(features);
+    public HttpClientFactory createClientFactory() {
+
+        ClientConfig config = createConfig(features, connectorProvider);
 
         config.register(new AbstractBinder() {
             @Override
             protected void configure() {
-                bind(injector).to(Injector.class)
-                        .in(Singleton.class);
-                bind(ClientBqInjectorBridge.class)
-                        .to(JustInTimeInjectionResolver.class)
-                        .in(Singleton.class);
-                bind(ClientBqInjectInjector.class)
-                        .to(new GenericType<InjectionResolver<BQInject>>(){})
-                        .in(Singleton.class);
+                bind(injector).to(Injector.class).in(jakarta.inject.Singleton.class);
+                bind(ClientBqInjectorBridge.class).to(JustInTimeInjectionResolver.class).in(jakarta.inject.Singleton.class);
+                bind(ClientJavaxInjectInjector.class).to(new GenericType<InjectionResolver<javax.inject.Inject>>() {
+                }).in(jakarta.inject.Singleton.class);
+                bind(ClientBqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>() {
+                }).in(jakarta.inject.Singleton.class);
             }
         });
 
@@ -178,12 +187,14 @@ public class HttpClientFactoryFactory {
         return filters;
     }
 
-    protected ClientConfig createConfig(Set<Feature> features) {
+    protected ClientConfig createConfig(Set<Feature> features, ConnectorProvider connectorProvider) {
         ClientConfig config = new ClientConfig();
         config.property(ClientProperties.FOLLOW_REDIRECTS, followRedirects);
         config.property(ClientProperties.READ_TIMEOUT, readTimeoutMs);
         config.property(ClientProperties.CONNECT_TIMEOUT, connectTimeoutMs);
         config.property(ClientProperties.ASYNC_THREADPOOL_SIZE, asyncThreadPoolSize);
+
+        config.connectorProvider(connectorProvider);
 
         features.forEach(config::register);
 

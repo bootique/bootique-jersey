@@ -19,13 +19,9 @@
 
 package io.bootique.jersey.client.instrumented;
 
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
 
-/**
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
- */
-@Deprecated(since = "3.0", forRemoval = true)
 public class InstrumentedFeature implements Feature {
 
     private final RequestTimer filter;

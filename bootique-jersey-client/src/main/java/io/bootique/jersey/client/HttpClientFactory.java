@@ -19,14 +19,11 @@
 
 package io.bootique.jersey.client;
 
-import javax.ws.rs.client.Client;
+import jakarta.ws.rs.client.Client;
 
 /**
  * An injectable factory for creating JAX RS clients based on Bootique configuration.
- *
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 public interface HttpClientFactory {
 
     /**

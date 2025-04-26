@@ -31,19 +31,15 @@ import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.jetty.server.ServerHolder;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
-import io.bootique.junit5.BQTestFactory;
-import io.bootique.junit5.BQTestTool;
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.Produces;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -64,22 +60,15 @@ public class InstrumentedClientIT {
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    @BQTestTool
-    final BQTestFactory testFactory = new BQTestFactory();
-
-    BQRuntime client;
+    // important to recreate the client app before every test as it starts with zero metrics counters
+    @BQApp(skipRun = true)
+    final BQRuntime client = Bootique.app().autoLoadModules().createRuntime();
 
     private static String getUrlBadPort(String getUrl) {
         ServerHolder serverHolder = server.getInstance(ServerHolder.class);
         int goodPort = serverHolder.getConnector().getPort();
         int badPort = PortFinder.findAvailablePort(serverHolder.getConnector().getHost());
         return getUrl.replace(":" + goodPort, ":" + badPort);
-    }
-
-    @BeforeEach
-    public void resetClient() {
-        // important to recreate the client app before every test as it starts with zero metrics counters
-        client = testFactory.app().autoLoadModules().createRuntime();
     }
 
     @Test
@@ -158,7 +147,7 @@ public class InstrumentedClientIT {
         @GET
         @Path("get500")
         public Response get500() {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

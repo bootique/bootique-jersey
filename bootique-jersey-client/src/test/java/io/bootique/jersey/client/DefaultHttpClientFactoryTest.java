@@ -19,11 +19,11 @@
 
 package io.bootique.jersey.client;
 
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientRequestFilter;
 import org.glassfish.jersey.client.ClientConfig;
 import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientRequestFilter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

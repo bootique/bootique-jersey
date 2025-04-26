@@ -1,3 +1,7 @@
+## 4.0-M1
+
+* #93 Remove deprecated modules (javax flavor) and deprecated APIs
+
 ## 3.0-RC1
 
 * #91 Support for javax.inject

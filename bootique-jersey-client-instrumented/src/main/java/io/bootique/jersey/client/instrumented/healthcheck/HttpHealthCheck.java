@@ -21,20 +21,17 @@ package io.bootique.jersey.client.instrumented.healthcheck;
 
 import io.bootique.metrics.health.HealthCheck;
 import io.bootique.metrics.health.HealthCheckOutcome;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientProperties;
 
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 import java.net.ConnectException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
  * Provides a simple HTTP health check to verify that remote endpoints are alive and accessible.
- *
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 public class HttpHealthCheck implements HealthCheck {
 
     private Supplier<Response> responseSupplier;

@@ -18,17 +18,16 @@
  */
 package io.bootique.jersey.jaxrs;
 
-import javax.ws.rs.ext.ParamConverter;
-import javax.ws.rs.ext.ParamConverterProvider;
+import jakarta.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.ParamConverterProvider;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
  * @since 3.0
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 public class MappedParamConvertersProvider implements ParamConverterProvider {
 
     private final Map<Class<?>, ParamConverter> paramConverters;

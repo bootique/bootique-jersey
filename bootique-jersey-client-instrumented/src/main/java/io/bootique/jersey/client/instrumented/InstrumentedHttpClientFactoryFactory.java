@@ -21,31 +21,48 @@ package io.bootique.jersey.client.instrumented;
 import com.codahale.metrics.MetricRegistry;
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
+import io.bootique.di.Injector;
 import io.bootique.jersey.client.HttpClientFactoryFactory;
+import io.bootique.jersey.client.JerseyClientFeatures;
 import io.bootique.jersey.client.instrumented.mdc.MDCAwareClientAsyncExecutorProvider;
+import jakarta.ws.rs.core.Feature;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.spi.ConnectorProvider;
+
+import jakarta.inject.Inject;
+import java.util.Set;
 
 /**
  * @since 3.0
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 @BQConfig
 public class InstrumentedHttpClientFactoryFactory extends HttpClientFactoryFactory {
 
+    private final MetricRegistry metricRegistry;
+
     private JerseyClientHealthChecksFactory health;
+
+    @Inject
+    public InstrumentedHttpClientFactoryFactory(
+            Injector injector,
+            @JerseyClientFeatures Set<Feature> features,
+            ConnectorProvider connectorProvider,
+            MetricRegistry metricRegistry) {
+        super(injector, features, connectorProvider);
+        this.metricRegistry = metricRegistry;
+    }
 
     @BQConfigProperty("Configures client healthcheck thresholds")
     public void setHealth(JerseyClientHealthChecksFactory health) {
         this.health = health;
     }
 
-    public JerseyClientHealthChecks createHealthChecks(MetricRegistry metricRegistry) {
-        return getHealth().createHealthChecks(metricRegistry);
+    public JerseyClientHealthChecks createHealthChecks() {
+        return getHealth().createHealthChecks();
     }
 
     private JerseyClientHealthChecksFactory getHealth() {
-        return health != null ? health : new JerseyClientHealthChecksFactory();
+        return health != null ? health : new JerseyClientHealthChecksFactory(metricRegistry);
     }
 
     @Override

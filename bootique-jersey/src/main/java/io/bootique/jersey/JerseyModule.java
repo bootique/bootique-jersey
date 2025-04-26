@@ -26,33 +26,29 @@ import io.bootique.di.*;
 import io.bootique.jersey.jaxrs.*;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.MappedServlet;
+import jakarta.inject.Named;
+import jakarta.ws.rs.container.DynamicFeature;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.ParamConverterProvider;
 import org.glassfish.hk2.api.InjectionResolver;
 import org.glassfish.hk2.api.JustInTimeInjectionResolver;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.ws.rs.container.DynamicFeature;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.ext.ParamConverter;
-import javax.ws.rs.ext.ParamConverterProvider;
+import jakarta.inject.Singleton;
 import java.time.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
- */
-@Deprecated(since = "3.0", forRemoval = true)
 public class JerseyModule implements BQModule {
 
     private static final String CONFIG_PREFIX = "jersey";
-    static final String RESOURCES_BY_PATH_BINDING = "io.bootique.jersey.resourcesByPath";
+    static final String RESOURCES_BY_PATH_BINDING = "io.bootique.jersey.jakarta.resourcesByPath";
 
     /**
      * Returns an instance of {@link JerseyModuleExtender} used by downstream modules to load custom extensions of
@@ -68,7 +64,7 @@ public class JerseyModule implements BQModule {
     @Override
     public ModuleCrate crate() {
         return ModuleCrate.of(this)
-                .description("Deprecated, can be replaced with 'bootique-jersey-jakarta'.")
+                .description("Integrates Jersey JAX-RS HTTP server")
                 .config(CONFIG_PREFIX, JerseyServletFactory.class)
                 .build();
     }
@@ -101,16 +97,16 @@ public class JerseyModule implements BQModule {
         config.register(new AbstractBinder() {
             @Override
             protected void configure() {
-                bind(injector).to(Injector.class).in(Singleton.class);
-                bind(BqInjectorBridge.class).to(JustInTimeInjectionResolver.class).in(Singleton.class);
-                bind(BqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>() {
-                }).in(Singleton.class);
+                bind(injector).to(Injector.class).in(jakarta.inject.Singleton.class);
+                bind(BqInjectorBridge.class).to(JustInTimeInjectionResolver.class).in(jakarta.inject.Singleton.class);
+                bind(JavaxInjectInjector.class).to(new GenericType<InjectionResolver<javax.inject.Inject>>() {}).in(jakarta.inject.Singleton.class);
+                bind(BqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>() {}).in(jakarta.inject.Singleton.class);
             }
         });
 
         packages.forEach(p -> config.packages(true, p.getName()));
 
-        // wrap resources registration in a feature. Otherwise, Jersey prints a warning because resources are registered
+        // wrap registration of resources in a Feature. Otherwise, Jersey prints a warning because resources are registered
         // as instances instead of classes - https://github.com/eclipse-ee4j/jersey/issues/3700
 
         config.register((Feature) context -> {
@@ -135,6 +131,8 @@ public class JerseyModule implements BQModule {
         dynamicFeatures.forEach(config::register);
 
         config.addProperties(properties);
+
+        // TODO: make this pluggable?
         config.register(ResourceModelDebugger.class);
 
         return config;
@@ -163,7 +161,7 @@ public class JerseyModule implements BQModule {
 
     @Provides
     @Singleton
-    private MappedServlet<ServletContainer> provideJerseyServlet(ConfigurationFactory configFactory, ResourceConfig config) {
-        return configFactory.config(JerseyServletFactory.class, CONFIG_PREFIX).createJerseyServlet(config);
+    private MappedServlet<ServletContainer> provideJerseyServlet(ConfigurationFactory configFactory) {
+        return configFactory.config(JerseyServletFactory.class, CONFIG_PREFIX).createJerseyServlet();
     }
 }

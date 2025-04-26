@@ -19,17 +19,15 @@
 package io.bootique.jersey.client.instrumented.mdc;
 
 import io.bootique.jersey.client.ClientAsyncExecutorProvider;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.glassfish.jersey.client.ClientAsyncExecutor;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.concurrent.*;
 
 /**
  * @since 3.0
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 @ClientAsyncExecutor
 public class MDCAwareClientAsyncExecutorProvider extends ClientAsyncExecutorProvider {
 

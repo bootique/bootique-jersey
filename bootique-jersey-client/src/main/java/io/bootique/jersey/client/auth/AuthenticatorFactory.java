@@ -23,13 +23,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.bootique.annotation.BQConfig;
 import io.bootique.config.PolymorphicConfiguration;
 import io.bootique.di.Injector;
+import jakarta.ws.rs.client.ClientRequestFilter;
 
-import javax.ws.rs.client.ClientRequestFilter;
-
-/**
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
- */
-@Deprecated(since = "3.0", forRemoval = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @BQConfig("Authenticator for a given auth protocol.")
 public interface AuthenticatorFactory extends PolymorphicConfiguration {

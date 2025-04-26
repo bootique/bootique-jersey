@@ -18,24 +18,18 @@
  */
 package io.bootique.jersey;
 
+import jakarta.ws.rs.core.Configuration;
 import org.glassfish.jersey.server.model.ModelProcessor;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.ResourceModel;
 
-import javax.ws.rs.core.Configuration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Defines custom resource mappings
  *
  * @since 2.0
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 public class ResourcePathCustomizer implements ModelProcessor {
 
     private Map<Class<?>, List<String>> pathsByType;

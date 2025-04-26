@@ -22,22 +22,23 @@ package io.bootique.jersey.client;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
+import io.bootique.jersey.client.HttpClientFactory;
+import io.bootique.jersey.client.JerseyClientModule;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.*;
+import jakarta.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.ext.Provider;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.Provider;
+import jakarta.inject.Inject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,12 +80,12 @@ public class ProviderInjectionIT {
                 .target(JettyTester.getUrl(server));
 
         Response r1 = target.request().get();
-        assertEquals(Status.OK.getStatusCode(), r1.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), r1.getStatus());
         assertEquals("[bare_string]_1", r1.readEntity(TestResponse.class).toString());
         r1.close();
 
         Response r2 = target.request().get();
-        assertEquals(Status.OK.getStatusCode(), r2.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), r2.getStatus());
         assertEquals("[bare_string]_2", r2.readEntity(TestResponse.class).toString());
         r2.close();
     }

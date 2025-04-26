@@ -19,6 +19,7 @@
 
 package io.bootique.jersey.client.auth;
 
+import io.bootique.jersey.client.auth.OAuth2Token;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

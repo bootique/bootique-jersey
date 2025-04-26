@@ -18,6 +18,8 @@
  */
 package io.bootique.jersey.client;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.glassfish.jersey.client.ClientAsyncExecutor;
 import org.glassfish.jersey.client.internal.LocalizationMessages;
 import org.glassfish.jersey.internal.util.collection.LazyValue;
@@ -25,14 +27,8 @@ import org.glassfish.jersey.internal.util.collection.Value;
 import org.glassfish.jersey.internal.util.collection.Values;
 import org.glassfish.jersey.spi.ThreadPoolExecutorProvider;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.logging.Logger;
 
-/**
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
- */
-@Deprecated(since = "3.0", forRemoval = true)
 // a copy of non-public Jersey DefaultClientAsyncExecutorProvider that allows us to customize async pool parameters
 @ClientAsyncExecutor
 public class ClientAsyncExecutorProvider extends ThreadPoolExecutorProvider {

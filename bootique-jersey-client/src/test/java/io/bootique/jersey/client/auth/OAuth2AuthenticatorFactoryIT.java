@@ -23,19 +23,19 @@ import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.di.Injector;
 import io.bootique.jersey.JerseyModule;
+import io.bootique.jersey.client.auth.OAuth2AuthenticatorFactory;
+import io.bootique.jersey.client.auth.OAuth2Token;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
-
-import javax.ws.rs.*;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.ClientRequestFilter;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -136,7 +136,7 @@ public class OAuth2AuthenticatorFactoryIT {
         @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
         public Response post_error(@FormParam("grant_type") String grantType,
                                    @HeaderParam("authorization") String auth) {
-            return Response.status(Status.BAD_REQUEST).entity("{\"error\":\"invalid_request\"}").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\":\"invalid_request\"}").build();
         }
 
         @GET
@@ -144,7 +144,7 @@ public class OAuth2AuthenticatorFactoryIT {
         public Response getWithToken(@HeaderParam("authorization") String auth) {
             return auth != null && auth.toLowerCase().startsWith("bearer ")
                     ? Response.ok().build()
-                    : Response.status(Status.BAD_REQUEST).build();
+                    : Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
 }

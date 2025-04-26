@@ -24,16 +24,13 @@ import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
 import io.bootique.di.Injector;
+import io.bootique.di.Key;
 import io.bootique.di.Provides;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
+import org.glassfish.jersey.client.spi.ConnectorProvider;
 
-import javax.inject.Singleton;
-import javax.ws.rs.core.Feature;
-import java.util.Set;
+import jakarta.inject.Singleton;
 
-/**
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
- */
-@Deprecated(since = "3.0", forRemoval = true)
 public class JerseyClientModule implements BQModule {
 
     private static final String CONFIG_PREFIX = "jerseyclient";
@@ -51,8 +48,8 @@ public class JerseyClientModule implements BQModule {
 
     @Override
     public ModuleCrate crate() {
-        return ModuleCrate.of(new JerseyClientModule())
-                .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-client'.")
+        return ModuleCrate.of(this)
+                .description("Integrates Jersey JAX-RS HTTP client.")
                 .config(CONFIG_PREFIX, HttpClientFactoryFactory.class)
                 .build();
     }
@@ -64,18 +61,22 @@ public class JerseyClientModule implements BQModule {
 
     @Provides
     @Singleton
+    ConnectorProvider provideConnectorProvider(Injector injector) {
+        // the provider binding is optional. The default in Jersey is HttpUrlConnectorProvider
+        Key<ConnectorProvider> key = Key.get(ConnectorProvider.class, CustomConnectorProvider.class);
+        return injector.hasProvider(key) ? injector.getJakartaProvider(key).get() : new HttpUrlConnectorProvider();
+    }
+
+    @Provides
+    @Singleton
     HttpClientFactoryFactory provideClientFactoryFactory(ConfigurationFactory configFactory) {
         return configFactory.config(HttpClientFactoryFactory.class, CONFIG_PREFIX);
     }
 
     @Provides
     @Singleton
-    HttpClientFactory provideClientFactory(
-            HttpClientFactoryFactory factoryFactory,
-            Injector injector,
-            @JerseyClientFeatures Set<Feature> features) {
-        
-        return factoryFactory.createClientFactory(injector, features);
+    HttpClientFactory provideClientFactory(HttpClientFactoryFactory factoryFactory) {
+        return factoryFactory.createClientFactory();
     }
 
     @Provides

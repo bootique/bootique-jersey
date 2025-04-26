@@ -26,9 +26,7 @@ import io.bootique.di.SetBuilder;
 
 /**
  * @since 2.0
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 public class JerseyJacksonModuleExtender extends ModuleExtender<JerseyJacksonModuleExtender> {
 
     private SetBuilder<JsonSerializer> serializers;

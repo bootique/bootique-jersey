@@ -21,17 +21,13 @@ package io.bootique.jersey;
 
 import io.bootique.ModuleExtender;
 import io.bootique.di.*;
+import jakarta.ws.rs.container.DynamicFeature;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.ext.ParamConverter;
 
-import javax.ws.rs.container.DynamicFeature;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.ext.ParamConverter;
 import java.util.Map;
 
-/**
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
- */
-@Deprecated(since = "3.0", forRemoval = true)
 public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
 
     private SetBuilder<Feature> features;
@@ -70,17 +66,11 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public <T> JerseyModuleExtender addParamConverter(Class<T> valueType, Class<? extends ParamConverter<T>> converterType) {
         contributeParamConverters().put(valueType, converterType);
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public <T> JerseyModuleExtender addParamConverter(Class<T> valueType, ParamConverter<T> converterType) {
         contributeParamConverters().putInstance(valueType, converterType);
         return this;
@@ -118,11 +108,11 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
 
     /**
      * Registers an API resource type with a custom path. The path argument overrides class-level
-     * {@link javax.ws.rs.Path} annotation value, allowing to remap resource to a different URL. This even allows to
+     * {@link jakarta.ws.rs.Path} annotation value, allowing to remap resource to a different URL. This even allows to
      * map the same resource multiple times under different paths.
      *
      * @param resource type of the resource
-     * @param path     resource URL path that overrides {@link javax.ws.rs.Path} annotation on the resource class.
+     * @param path     resource URL path that overrides {@link jakarta.ws.rs.Path} annotation on the resource class.
      * @return this extender
      * @since 2.0
      */
@@ -132,7 +122,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
     /**
-     * Registers a "mapped" API resource. MappedResource paths override class-level {@link javax.ws.rs.Path} annotation
+     * Registers a "mapped" API resource. MappedResource paths override class-level {@link jakarta.ws.rs.Path} annotation
      * value, allowing to remap resource to a different URL. This even allows to map the same resource multiple times
      * under different paths.
      *
@@ -146,7 +136,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
     /**
-     * Registers a "mapped" API resource. MappedResource paths override class-level {@link javax.ws.rs.Path} annotation
+     * Registers a "mapped" API resource. MappedResource paths override class-level {@link jakarta.ws.rs.Path} annotation
      * value, allowing to remap resource to a different URL. This even allows to map the same resource multiple times
      * under different paths.
      *
@@ -160,7 +150,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
     /**
-     * Registers a "mapped" API resource. MappedResource paths override class-level {@link javax.ws.rs.Path} annotation
+     * Registers a "mapped" API resource. MappedResource paths override class-level {@link jakarta.ws.rs.Path} annotation
      * value, allowing to remap resource to a different URL. This even allows to map the same resource multiple times
      * under different paths.
      *

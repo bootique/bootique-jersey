@@ -18,7 +18,6 @@
  */
 package io.bootique.jersey.jackson;
 
-import com.fasterxml.jackson.databind.JsonSerializer;
 import io.bootique.BQModule;
 import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
@@ -26,14 +25,11 @@ import io.bootique.di.Binder;
 import io.bootique.di.Provides;
 import io.bootique.jersey.JerseyModule;
 
-import javax.inject.Singleton;
-import java.util.Set;
+import jakarta.inject.Singleton;
 
 /**
  * @since 2.0
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 public class JerseyJacksonModule implements BQModule {
 
     private static final String CONFIG_PREFIX = "jerseyjackson";
@@ -45,7 +41,7 @@ public class JerseyJacksonModule implements BQModule {
     @Override
     public ModuleCrate crate() {
         return ModuleCrate.of(this)
-                .description("Deprecated, can be replaced with 'bootique-jersey-jakarta-jackson'.")
+                .description("Integrates Jackson JSON serializers to Jersey JAX-RS engine")
                 .config(CONFIG_PREFIX, JerseyJacksonFactory.class)
                 .build();
     }
@@ -58,13 +54,11 @@ public class JerseyJacksonModule implements BQModule {
 
     @Singleton
     @Provides
-    ObjectMapperResolverFeature provideObjectMapperResolverFeature(
-            ConfigurationFactory configurationFactory,
-            Set<JsonSerializer> serializers) {
+    ObjectMapperResolverFeature provideObjectMapperResolverFeature(ConfigurationFactory configFactory) {
 
-        ObjectMapperResolver omr = configurationFactory
+        ObjectMapperResolver omr = configFactory
                 .config(JerseyJacksonFactory.class, CONFIG_PREFIX)
-                .createObjectMapperResolver(serializers);
+                .createObjectMapperResolver();
 
         return new ObjectMapperResolverFeature(omr);
     }

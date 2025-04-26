@@ -18,15 +18,14 @@
  */
 package io.bootique.jersey.jackson;
 
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
+
 import java.util.Objects;
 
 /**
  * @since 2.0
- * @deprecated The users are encouraged to switch to the Jakarta-based flavor
  */
-@Deprecated(since = "3.0", forRemoval = true)
 public class ObjectMapperResolverFeature implements Feature {
 
     private ObjectMapperResolver resolver;
