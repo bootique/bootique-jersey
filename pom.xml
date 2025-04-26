@@ -46,7 +46,6 @@
 
     <properties>
         <glassfish.jaxb3.version>4.0.5</glassfish.jaxb3.version>
-        <jaxb3.version>4.0.2</jaxb3.version>
         <wiremock.version>3.5.3</wiremock.version>
     </properties>
 
