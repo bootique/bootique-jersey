@@ -153,8 +153,6 @@ public class HttpClientFactoryFactory {
             protected void configure() {
                 bind(injector).to(Injector.class).in(jakarta.inject.Singleton.class);
                 bind(ClientBqInjectorBridge.class).to(JustInTimeInjectionResolver.class).in(jakarta.inject.Singleton.class);
-                bind(ClientJavaxInjectInjector.class).to(new GenericType<InjectionResolver<javax.inject.Inject>>() {
-                }).in(jakarta.inject.Singleton.class);
                 bind(ClientBqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>() {
                 }).in(jakarta.inject.Singleton.class);
             }

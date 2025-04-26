@@ -99,7 +99,6 @@ public class JerseyModule implements BQModule {
             protected void configure() {
                 bind(injector).to(Injector.class).in(jakarta.inject.Singleton.class);
                 bind(BqInjectorBridge.class).to(JustInTimeInjectionResolver.class).in(jakarta.inject.Singleton.class);
-                bind(JavaxInjectInjector.class).to(new GenericType<InjectionResolver<javax.inject.Inject>>() {}).in(jakarta.inject.Singleton.class);
                 bind(BqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>() {}).in(jakarta.inject.Singleton.class);
             }
         });

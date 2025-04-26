@@ -18,9 +18,9 @@
  */
 package io.bootique.jersey;
 
+import io.bootique.BQModule;
 import io.bootique.BQRuntime;
 import io.bootique.di.BQInject;
-import io.bootique.BQModule;
 import io.bootique.di.Injector;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQTest;
@@ -34,7 +34,11 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
-import jakarta.ws.rs.core.*;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Provider;
 import org.junit.jupiter.api.Test;
@@ -45,7 +49,6 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -108,7 +111,7 @@ public class MessageBodyReaderIT {
                         .addResource(MessageReaderWithDynamicBeanInjection.class));
 
         Response ok = client.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
-        JettyTester.assertOk(ok).assertContent("b1[s1]_m");
+        JettyTester.assertOk(ok).assertContent("b2[s2]_m");
     }
 
     @Test
@@ -124,7 +127,7 @@ public class MessageBodyReaderIT {
                 b -> b.bind(Service1.class));
 
         Response ok = client.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
-        JettyTester.assertOk(ok).assertContent("x_b1[s1]_s1_s1_b2[s2]_s2_s2_b1[s1]_s2_m");
+        JettyTester.assertOk(ok).assertContent("x_s1_b2[s2]_b2[s2]_s2_s2_m");
     }
 
     @Provider
@@ -147,7 +150,7 @@ public class MessageBodyReaderIT {
     public static class MessageReaderWithInjection extends BaseMessageReader {
 
         @BQInject
-        private javax.inject.Provider<Service1> service;
+        private jakarta.inject.Provider<Service1> service;
 
         @Override
         protected String processText(String text) {
@@ -159,7 +162,7 @@ public class MessageBodyReaderIT {
     public static class MessageReaderWithDynamicBeanInjection extends BaseMessageReader {
 
         @Inject
-        private DynamicBean1 bean;
+        private DynamicBean2 bean;
 
         @Override
         protected String processText(String text) {
@@ -173,22 +176,13 @@ public class MessageBodyReaderIT {
         private final String label;
 
         @BQInject
-        private DynamicBean1 b1;
+        private DynamicBean2 b1;
 
         @Inject
         private DynamicBean2 b2;
 
-        @javax.inject.Inject
-        private DynamicBean1 b3;
-
-        @BQInject
-        private javax.inject.Provider<Service1> p1;
-
         @Inject
         private jakarta.inject.Provider<Service2> p2;
-
-        @javax.inject.Inject
-        private jakarta.inject.Provider<Service2> p3;
 
         @Inject
         private Injector injector;
@@ -200,22 +194,18 @@ public class MessageBodyReaderIT {
 
         @Override
         protected String processText(String text) {
-            return List.of(
+            return String.join("_", List.of(
                     label,
 
-                    b1.getLabel(),
-                    p1.get().getLabel(),
                     injector.getInstance(Service1.class).getLabel(),
 
+                    b1.getLabel(),
                     b2.getLabel(),
                     p2.get().getLabel(),
                     injector.getInstance(Service2.class).getLabel(),
 
-                    b3.getLabel(),
-                    p3.get().getLabel(),
-
                     text
-            ).stream().collect(Collectors.joining("_"));
+            ));
         }
     }
 
@@ -253,18 +243,8 @@ public class MessageBodyReaderIT {
         }
     }
 
-    public static class DynamicBean1 {
-
-        @javax.inject.Inject
-        Service1 service1;
-
-        String getLabel() {
-            return "b1[" + service1.getLabel() + "]";
-        }
-    }
-
     public static class DynamicBean2 {
-        @jakarta.inject.Inject
+        @Inject
         Service2 service2;
 
         String getLabel() {

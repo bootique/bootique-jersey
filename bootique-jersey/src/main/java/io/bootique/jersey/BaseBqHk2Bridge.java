@@ -26,9 +26,7 @@ abstract class BaseBqHk2Bridge {
     protected Provider<?> resolveBqProvider(Injectee injectee) {
         TypeLiteral<?> typeLiteral = TypeLiteral.of(injectee.getRequiredType());
 
-        if (jakarta.inject.Provider.class.equals(typeLiteral.getRawType())
-                // TODO: remove this check in 4.0 when we stop supporting javax
-                || javax.inject.Provider.class.equals(typeLiteral.getRawType())) {
+        if (Provider.class.equals(typeLiteral.getRawType())) {
 
             Type requiredType = getGenericParameterType(injectee.getRequiredType());
             if (requiredType == null) {

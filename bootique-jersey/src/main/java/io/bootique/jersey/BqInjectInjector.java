@@ -52,16 +52,8 @@ public class BqInjectInjector extends BaseBqHk2Bridge implements InjectionResolv
     @Override
     public Object resolve(Injectee injectee, ServiceHandle<?> serviceHandle) {
         TypeLiteral<?> typeLiteral = TypeLiteral.of(injectee.getRequiredType());
-
         Provider<?> provider = resolveBqProvider(injectee);
-
-        if (javax.inject.Provider.class.equals(typeLiteral.getRawType())) {
-            return (javax.inject.Provider) provider::get;
-        } else if (jakarta.inject.Provider.class.equals(typeLiteral.getRawType())) {
-            return provider;
-        } else {
-            return provider.get();
-        }
+        return Provider.class.equals(typeLiteral.getRawType()) ? provider : provider.get();
     }
 
 }
