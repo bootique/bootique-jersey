@@ -62,17 +62,17 @@
             <dependency>
                 <groupId>org.glassfish.jersey.inject</groupId>
                 <artifactId>jersey-hk2</artifactId>
-                <version>${jersey3.version}</version>
+                <version>${jersey.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-client</artifactId>
-                <version>${jersey3.version}</version>
+                <version>${jersey.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.connectors</groupId>
                 <artifactId>jersey-grizzly-connector</artifactId>
-                <version>${jersey3.version}</version>
+                <version>${jersey.version}</version>
             </dependency>
 
             <!-- This modules imports lots of Jackson-related stuff, whose versions
@@ -81,7 +81,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-json-jackson</artifactId>
-                <version>${jersey3.version}</version>
+                <version>${jersey.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>com.fasterxml.jackson.jaxrs</groupId>

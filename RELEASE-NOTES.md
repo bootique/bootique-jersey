@@ -1,3 +1,7 @@
+## 4.0-M2
+
+* #96 Upgrade to Jersey 3.1
+
 ## 4.0-M1
 
 * #93 Remove deprecated modules (javax flavor) and deprecated APIs

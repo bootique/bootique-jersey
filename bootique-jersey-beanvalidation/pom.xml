@@ -45,7 +45,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey.ext</groupId>
                 <artifactId>jersey-bean-validation</artifactId>
-                <version>${jersey3.version}</version>
+                <version>${jersey.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

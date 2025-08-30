@@ -51,7 +51,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-multipart</artifactId>
-                <version>${jersey3.version}</version>
+                <version>${jersey.version}</version>
             </dependency>
             <!-- This modules imports lots of Jackson-related stuff, whose versions
     conflict with Bootique config loader. Manually exclude things already imported
@@ -59,7 +59,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-json-jackson</artifactId>
-                <version>${jersey3.version}</version>
+                <version>${jersey.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>com.fasterxml.jackson.core</groupId>
