@@ -52,11 +52,6 @@
 				<artifactId>bootique-metrics-healthchecks</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>io.bootique.logback</groupId>
-				<artifactId>bootique-logback</artifactId>
-				<version>${project.version}</version>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

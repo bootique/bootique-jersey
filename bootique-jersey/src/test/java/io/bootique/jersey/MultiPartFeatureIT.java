@@ -21,29 +21,28 @@ package io.bootique.jersey;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.EntityPart;
+import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
-// see https://github.com/bootique/bootique-jersey/issues/11
 @BQTest
 public class MultiPartFeatureIT {
 
@@ -52,26 +51,28 @@ public class MultiPartFeatureIT {
     @BQApp
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
-            .module(b -> JerseyModule.extend(b).addFeature(MultiPartFeature.class).addResource(Resource.class))
+            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    private WebTarget multiPartTarget = ClientBuilder
+    private final WebTarget multiPartTarget = ClientBuilder
             .newBuilder()
-            .register(MultiPartFeature.class)
             .build()
             .target(jetty.getUrl());
 
     @Test
-    public void response() {
+    public void response() throws IOException {
 
-        FormDataBodyPart part = new FormDataBodyPart("upload", "I am a part", MediaType.TEXT_PLAIN_TYPE);
-        FormDataMultiPart multipart = new FormDataMultiPart();
-        multipart.bodyPart(part);
+        EntityPart part = EntityPart
+                .withName("upload")
+                .content("I am a part")
+                .mediaType(MediaType.TEXT_PLAIN_TYPE).build();
+        GenericEntity<List<EntityPart>> parts = new GenericEntity<>(List.of(part)) {
+        };
 
         Response r = multiPartTarget
                 .request(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(multipart, multipart.getMediaType()));
+                .post(Entity.entity(parts, MediaType.MULTIPART_FORM_DATA));
 
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
         assertEquals("{\"message\":\"I am a part\"}", r.readEntity(String.class));
@@ -85,8 +86,8 @@ public class MultiPartFeatureIT {
         @POST
         @Produces(MediaType.APPLICATION_JSON)
         @Consumes(MediaType.MULTIPART_FORM_DATA)
-        public Response uploadMultiPart(@FormDataParam("upload") String upload) {
-            return Response.ok().entity("{\"message\":\"" + upload + "\"}").build();
+        public Response uploadMultiPart(@FormParam("upload") EntityPart upload) throws IOException {
+            return Response.ok().entity("{\"message\":\"" + upload.getContent(String.class) + "\"}").build();
         }
     }
 }
