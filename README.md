@@ -20,6 +20,7 @@
 [![build test deploy](https://github.com/bootique/bootique-jersey/actions/workflows/maven.yml/badge.svg)](https://github.com/bootique/bootique-jersey/actions/workflows/maven.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/io.bootique.jersey/bootique-jersey.svg?colorB=brightgreen)](https://search.maven.org/artifact/io.bootique.jersey/bootique-jersey/)
 
+
 # bootique-jersey
 Provides [Jersey](https://jersey.java.net/) JAX-RS server and client integration with [Bootique](http://bootique.io).
 This provides the necessary API to create REST services and consume someone else's REST services.
