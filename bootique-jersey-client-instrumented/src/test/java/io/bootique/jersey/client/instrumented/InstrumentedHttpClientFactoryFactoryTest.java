@@ -19,6 +19,7 @@
 package io.bootique.jersey.client.instrumented;
 
 import com.codahale.metrics.MetricRegistry;
+import io.bootique.di.DIBootstrap;
 import io.bootique.di.Injector;
 import io.bootique.jersey.client.ClientAsyncExecutorProvider;
 import io.bootique.jersey.client.instrumented.mdc.MDCAwareClientAsyncExecutorProvider;
@@ -30,20 +31,19 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
 public class InstrumentedHttpClientFactoryFactoryTest {
 
-    private final Injector mockInjector = mock(Injector.class);
+    private final Injector injector = DIBootstrap.createInjector();
 
     @Test
     public void createClientFactory_AsyncThreadPool() {
 
         Client client = new InstrumentedHttpClientFactoryFactory(
-                mockInjector,
+                injector,
                 Set.of(),
                 new HttpUrlConnectorProvider(),
-                mock(MetricRegistry.class)).createClientFactory().newClient();
+                new MetricRegistry()).createClientFactory().newClient();
 
         try {
             assertTrue(client.getConfiguration().isRegistered(MDCAwareClientAsyncExecutorProvider.class));

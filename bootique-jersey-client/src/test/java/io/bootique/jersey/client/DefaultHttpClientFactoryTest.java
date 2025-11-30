@@ -29,13 +29,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 public class DefaultHttpClientFactoryTest {
 
-    private ClientConfig config = new ClientConfig();
-    private ClientRequestFilter mockAuth1 = mock(ClientRequestFilter.class);
-    private ClientRequestFilter mockAuth2 = mock(ClientRequestFilter.class);
+    private final ClientConfig config = new ClientConfig();
+    private final ClientRequestFilter auth1 = requestContext -> {
+    };
+    private final ClientRequestFilter auth2 = requestContext -> {
+    };
 
     @Test
     public void newClient() {
@@ -68,16 +69,16 @@ public class DefaultHttpClientFactoryTest {
         config.property("a", "b");
 
         Map<String, ClientRequestFilter> authFilters = new HashMap<>();
-        authFilters.put("one", mockAuth1);
-        authFilters.put("two", mockAuth2);
+        authFilters.put("one", auth1);
+        authFilters.put("two", auth2);
 
         DefaultHttpClientFactory factory = new DefaultHttpClientFactory(config, authFilters, Collections.emptyMap());
         Client c = factory.newBuilder().auth("one").build();
         assertNotNull(c);
 
         assertEquals("b", c.getConfiguration().getProperty("a"));
-        assertTrue(c.getConfiguration().isRegistered(mockAuth1));
-        assertFalse(c.getConfiguration().isRegistered(mockAuth2));
+        assertTrue(c.getConfiguration().isRegistered(auth1));
+        assertFalse(c.getConfiguration().isRegistered(auth2));
     }
 
     @Test
@@ -86,8 +87,8 @@ public class DefaultHttpClientFactoryTest {
         config.property("a", "b");
 
         Map<String, ClientRequestFilter> authFilters = new HashMap<>();
-        authFilters.put("one", mockAuth1);
-        authFilters.put("two", mockAuth2);
+        authFilters.put("one", auth1);
+        authFilters.put("two", auth2);
 
         DefaultHttpClientFactory factory = new DefaultHttpClientFactory(config, authFilters, Collections.emptyMap());
         assertThrows(IllegalArgumentException.class, () -> factory.newBuilder().auth("three"));

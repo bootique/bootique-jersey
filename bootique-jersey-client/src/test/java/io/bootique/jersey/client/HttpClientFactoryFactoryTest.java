@@ -19,28 +19,27 @@
 
 package io.bootique.jersey.client;
 
+import io.bootique.di.DIBootstrap;
 import io.bootique.di.Injector;
 import jakarta.ws.rs.client.Client;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
-import org.glassfish.jersey.client.spi.ConnectorProvider;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 public class HttpClientFactoryFactoryTest {
 
-    private Injector mockInjector = mock(Injector.class);
+    private final Injector injector = DIBootstrap.createInjector();
 
     @Test
     public void createClientFactory_AsyncThreadPool() {
 
         Client client = new HttpClientFactoryFactory(
-                mockInjector,
+                injector,
                 Set.of(),
                 new HttpUrlConnectorProvider()).createClientFactory().newClient();
 
@@ -54,7 +53,13 @@ public class HttpClientFactoryFactoryTest {
     @Test
     public void createClientFactory() {
 
-        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(mockInjector, Collections.emptySet(), mock(ConnectorProvider.class));
+        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(
+                injector,
+                Collections.emptySet(),
+                (client, runtimeConfig) -> {
+                    throw new UnsupportedOperationException();
+                });
+
         factoryFactory.setAsyncThreadPoolSize(5);
         factoryFactory.setConnectTimeoutMs(101);
         factoryFactory.setFollowRedirects(true);

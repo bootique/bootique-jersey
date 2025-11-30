@@ -21,6 +21,7 @@ package io.bootique.jersey.client;
 
 import io.bootique.BQCoreModule;
 import io.bootique.BQModule;
+import io.bootique.di.DIBootstrap;
 import io.bootique.di.Injector;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
@@ -46,10 +47,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
 @BQTest
 public class HttpClientFactoryFactory_LoggingIT {
@@ -57,7 +56,7 @@ public class HttpClientFactoryFactory_LoggingIT {
     @BQTestTool
     final BQTestFactory serverFactory = new BQTestFactory();
 
-    private Injector mockInjector;
+    private Injector injector;
     private File logsDir;
 
     private void startApp(String config) {
@@ -81,11 +80,11 @@ public class HttpClientFactoryFactory_LoggingIT {
 
     @BeforeEach
     public void before() {
-        mockInjector = mock(Injector.class);
-        logsDir = new File("target/logback");
+        this.injector = DIBootstrap.createInjector();
+        this.logsDir = new File("target/logback");
 
         if (logsDir.exists()) {
-            asList(logsDir.listFiles()).forEach(f -> f.delete());
+            asList(logsDir.listFiles()).forEach(File::delete);
         }
     }
 
@@ -94,7 +93,7 @@ public class HttpClientFactoryFactory_LoggingIT {
 
         startApp("debug.yml");
 
-        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider());
+        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(injector, Collections.emptySet(), new HttpUrlConnectorProvider());
         factoryFactory.setFollowRedirects(true);
         Client client = factoryFactory.createClientFactory().newClient();
 
@@ -109,7 +108,7 @@ public class HttpClientFactoryFactory_LoggingIT {
 
         File log = new File(logsDir, "debug.log");
         List<String> lines = Files.readAllLines(log.toPath());
-        assertEquals(2, lines.size(), lines.stream().collect(joining("\n")));
+        assertEquals(2, lines.size(), String.join("\n", lines));
         assertTrue(lines.get(1).contains("GET http://127.0.0.1:8080/get"));
     }
 
@@ -118,7 +117,7 @@ public class HttpClientFactoryFactory_LoggingIT {
 
         startApp("warn.yml");
 
-        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(mockInjector, Collections.emptySet(), new HttpUrlConnectorProvider());
+        HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(injector, Collections.emptySet(), new HttpUrlConnectorProvider());
         factoryFactory.setFollowRedirects(true);
         Client client = factoryFactory.createClientFactory().newClient();
 

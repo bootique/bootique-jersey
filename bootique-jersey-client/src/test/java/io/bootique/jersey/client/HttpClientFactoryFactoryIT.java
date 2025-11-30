@@ -21,6 +21,7 @@ package io.bootique.jersey.client;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
+import io.bootique.di.DIBootstrap;
 import io.bootique.di.Injector;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jersey.client.auth.AuthenticatorFactory;
@@ -29,7 +30,11 @@ import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -44,7 +49,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 @BQTest
 public class HttpClientFactoryFactoryIT {
@@ -58,13 +62,13 @@ public class HttpClientFactoryFactoryIT {
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
-    private final Injector mockInjector = mock(Injector.class);
+    private final Injector injector = DIBootstrap.createInjector();
 
     @Test
     public void createClientFactory_FollowRedirect() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(
-                mockInjector,
+                injector,
                 Collections.emptySet(),
                 new HttpUrlConnectorProvider());
 
@@ -80,7 +84,7 @@ public class HttpClientFactoryFactoryIT {
     public void createClientFactory_NoFollowRedirect() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(
-                mockInjector,
+                injector,
                 Collections.emptySet(),
                 new HttpUrlConnectorProvider());
         factoryFactory.setFollowRedirects(false);
@@ -94,7 +98,7 @@ public class HttpClientFactoryFactoryIT {
     public void createClientFactory_DefaultRedirect_Follow() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(
-                mockInjector,
+                injector,
                 Collections.emptySet(),
                 new HttpUrlConnectorProvider());
         Client client = factoryFactory.createClientFactory().newClient();
@@ -108,7 +112,7 @@ public class HttpClientFactoryFactoryIT {
     public void createClientFactory_Compression() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(
-                mockInjector,
+                injector,
                 Collections.emptySet(),
                 new HttpUrlConnectorProvider());
         factoryFactory.setCompression(true);
@@ -123,7 +127,7 @@ public class HttpClientFactoryFactoryIT {
     public void createClientFactory_NoCompression() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(
-                mockInjector,
+                injector,
                 Collections.emptySet(),
                 new HttpUrlConnectorProvider());
         factoryFactory.setCompression(false);
@@ -138,7 +142,7 @@ public class HttpClientFactoryFactoryIT {
     public void createClientFactory_CompressionDefault() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(
-                mockInjector,
+                injector,
                 Collections.emptySet(),
                 new HttpUrlConnectorProvider());
         factoryFactory.setCompression(true);
@@ -153,7 +157,7 @@ public class HttpClientFactoryFactoryIT {
     public void createClientFactory_NoTimeout() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(
-                mockInjector,
+                injector,
                 Collections.emptySet(),
                 new HttpUrlConnectorProvider());
         Client client = factoryFactory.createClientFactory().newClient();
@@ -167,7 +171,7 @@ public class HttpClientFactoryFactoryIT {
     public void createClientFactory_LongTimeout() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(
-                mockInjector,
+                injector,
                 Collections.emptySet(),
                 new HttpUrlConnectorProvider());
         factoryFactory.setReadTimeoutMs(2000);
@@ -182,7 +186,7 @@ public class HttpClientFactoryFactoryIT {
     public void createClientFactory_ReadTimeout() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(
-                mockInjector,
+                injector,
                 Collections.emptySet(),
                 new HttpUrlConnectorProvider());
         factoryFactory.setReadTimeoutMs(50);
@@ -196,7 +200,7 @@ public class HttpClientFactoryFactoryIT {
     public void createClientFactory_BasicAuth() {
 
         HttpClientFactoryFactory factoryFactory = new HttpClientFactoryFactory(
-                mockInjector,
+                injector,
                 Collections.emptySet(),
                 new HttpUrlConnectorProvider());
 
