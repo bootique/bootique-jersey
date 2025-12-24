@@ -30,9 +30,9 @@
     <artifactId>bootique-jersey</artifactId>
     <packaging>jar</packaging>
 
-    <name>bootique-jersey: Jersey 3 JAX-RS provider integration for Bootique</name>
+    <name>bootique-jersey: Jersey JAX-RS provider integration for Bootique</name>
     <description>
-        Provides Jersey 3 integration with Bootique
+        Provides Jersey integration with Bootique
     </description>
 
     <dependencies>
