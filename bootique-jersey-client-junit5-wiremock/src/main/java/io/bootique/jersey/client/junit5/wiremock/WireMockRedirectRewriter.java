@@ -129,9 +129,9 @@ class WireMockRedirectRewriter {
                     return stubMapping;
                 }
 
-                var newHeaders = overrideLocationHeaders(headers, originalLocation.firstValue());
+                HttpHeaders newHeaders = overrideLocationHeaders(headers, originalLocation.firstValue());
 
-                var newRespDef = new ResponseDefinition(
+                ResponseDefinition newRespDef = new ResponseDefinition(
                         response.getStatus(),
                         response.getStatusMessage(),
                         new Body(response.getBody()),
@@ -147,9 +147,10 @@ class WireMockRedirectRewriter {
                         response.getFault(),
                         response.getTransformers(),
                         response.getTransformerParameters(),
+                        response.getBrowserProxyUrl(),
                         response.wasConfigured());
 
-                return new StubMapping(stubMapping.getRequest(), newRespDef);
+                return StubMapping.builder().setRequest(stubMapping.getRequest()).setResponse(newRespDef).build();
             }
         };
     }

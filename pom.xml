@@ -46,7 +46,7 @@
 
     <properties>
         <glassfish.jaxb3.version>4.0.5</glassfish.jaxb3.version>
-        <wiremock.version>4.0.0-beta.15</wiremock.version>
+        <wiremock.version>4.0.0-beta.24</wiremock.version>
         <commons.text.version>1.14.0</commons.text.version>
     </properties>
 
