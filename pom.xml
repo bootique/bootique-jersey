@@ -45,7 +45,6 @@
     </modules>
 
     <properties>
-        <glassfish.jaxb3.version>4.0.5</glassfish.jaxb3.version>
         <wiremock.version>4.0.0-beta.24</wiremock.version>
         <commons.text.version>1.14.0</commons.text.version>
     </properties>
@@ -149,11 +148,6 @@
                 <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
                 <artifactId>jackson-jakarta-rs-base</artifactId>
                 <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jaxb</groupId>
-                <artifactId>jaxb-runtime</artifactId>
-                <version>${glassfish.jaxb3.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
