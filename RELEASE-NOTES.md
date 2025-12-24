@@ -2,6 +2,7 @@
 
 * #96 Upgrade to Jersey 3.1
 * #97 Support JAX-RS multipart out of the box
+* #98 Upgrade to JAX-RS 4.0.0 and Jersey 4.0.0
 
 ## 4.0-M1
 

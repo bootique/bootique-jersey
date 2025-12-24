@@ -35,7 +35,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.filter.EncodingFeature;
 import org.glassfish.jersey.client.spi.ConnectorProvider;
-import org.glassfish.jersey.internal.inject.AbstractBinder;
+import org.glassfish.jersey.inject.hk2.AbstractBinder;
 import org.glassfish.jersey.message.GZipEncoder;
 
 import jakarta.inject.Inject;
