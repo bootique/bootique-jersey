@@ -40,6 +40,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 import jakarta.inject.Singleton;
+
 import java.time.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +49,7 @@ import java.util.Set;
 public class JerseyModule implements BQModule {
 
     private static final String CONFIG_PREFIX = "jersey";
+    static final String DISABLE_WADL_PROPERTY = "jersey.config.server.wadl.disableWadl";
     static final String RESOURCES_BY_PATH_BINDING = "io.bootique.jersey.jakarta.resourcesByPath";
 
     /**
@@ -99,7 +101,8 @@ public class JerseyModule implements BQModule {
             protected void configure() {
                 bind(injector).to(Injector.class).in(jakarta.inject.Singleton.class);
                 bind(BqInjectorBridge.class).to(JustInTimeInjectionResolver.class).in(jakarta.inject.Singleton.class);
-                bind(BqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>() {}).in(jakarta.inject.Singleton.class);
+                bind(BqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>() {
+                }).in(jakarta.inject.Singleton.class);
             }
         });
 
@@ -130,6 +133,11 @@ public class JerseyModule implements BQModule {
         dynamicFeatures.forEach(config::register);
 
         config.addProperties(properties);
+
+        // disable WADL byd default, unless explicitly enabled
+        if (!properties.containsKey(DISABLE_WADL_PROPERTY)) {
+            config.property(DISABLE_WADL_PROPERTY, true);
+        }
 
         // TODO: make this pluggable?
         config.register(ResourceModelDebugger.class);
