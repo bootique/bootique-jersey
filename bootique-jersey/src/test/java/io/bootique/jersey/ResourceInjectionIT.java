@@ -53,10 +53,7 @@ public class ResourceInjectionIT {
             .module(b -> b.bind(InjectedService.class).toInstance(service))
             .module(b -> b.bind(UnInjectedResource.class).toProviderInstance(() -> new UnInjectedResource(service)))
             .module(b -> JerseyModule.extend(b)
-                    .addFeature(ctx -> {
-                        ctx.property(TEST_PROPERTY, "x");
-                        return false;
-                    })
+                    .setProperty(TEST_PROPERTY, "x")
                     .addResource(FieldInjectedResource.class)
                     .addResource(ConstructorInjectedResource.class)
                     .addResource(UnInjectedResource.class))

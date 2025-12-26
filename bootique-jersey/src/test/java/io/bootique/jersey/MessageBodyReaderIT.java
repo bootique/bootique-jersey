@@ -81,8 +81,8 @@ public class MessageBodyReaderIT {
 
         WebTarget client = startServer(b -> JerseyModule.extend(b)
                 .addResource(Resource.class)
+                .setProperty(TEST_PROPERTY, "x")
                 .addFeature(fc -> {
-                    fc.property(TEST_PROPERTY, "x");
                     fc.register(MessageReaderWithContextInjection.class);
                     return false;
                 }));
@@ -119,8 +119,8 @@ public class MessageBodyReaderIT {
         WebTarget client = startServer(
                 b -> JerseyModule.extend(b)
                         .addResource(Resource.class)
+                        .setProperty(TEST_PROPERTY, "x")
                         .addFeature(fc -> {
-                            fc.property(TEST_PROPERTY, "x");
                             fc.register(MessageReaderWithAllInjections.class);
                             return false;
                         }),
