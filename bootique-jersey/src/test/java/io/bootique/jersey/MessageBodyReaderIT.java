@@ -80,7 +80,7 @@ public class MessageBodyReaderIT {
     public void readerWithContextInjection() {
 
         WebTarget client = startServer(b -> JerseyModule.extend(b)
-                .addResource(Resource.class)
+                .addApiResource(Resource.class)
                 .setProperty(TEST_PROPERTY, "x")
                 .addFeature(fc -> {
                     fc.register(MessageReaderWithContextInjection.class);
@@ -95,8 +95,8 @@ public class MessageBodyReaderIT {
     public void readerWithBqInjection() {
         WebTarget client = startServer(
                 b -> JerseyModule.extend(b)
-                        .addResource(Resource.class)
-                        .addResource(MessageReaderWithInjection.class),
+                        .addApiResource(Resource.class)
+                        .addProvider(MessageReaderWithInjection.class),
                 b -> b.bind(Service1.class));
 
         Response ok = client.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
@@ -107,8 +107,8 @@ public class MessageBodyReaderIT {
     public void readerWithDynamicBqInjection() {
         WebTarget client = startServer(
                 b -> JerseyModule.extend(b)
-                        .addResource(Resource.class)
-                        .addResource(MessageReaderWithDynamicBeanInjection.class));
+                        .addApiResource(Resource.class)
+                        .addProvider(MessageReaderWithDynamicBeanInjection.class));
 
         Response ok = client.request().put(Entity.entity("m", MediaType.TEXT_PLAIN_TYPE));
         JettyTester.assertOk(ok).assertContent("b2[s2]_m");
@@ -118,7 +118,7 @@ public class MessageBodyReaderIT {
     public void readerWithAllInjections() {
         WebTarget client = startServer(
                 b -> JerseyModule.extend(b)
-                        .addResource(Resource.class)
+                        .addApiResource(Resource.class)
                         .setProperty(TEST_PROPERTY, "x")
                         .addFeature(fc -> {
                             fc.register(MessageReaderWithAllInjections.class);

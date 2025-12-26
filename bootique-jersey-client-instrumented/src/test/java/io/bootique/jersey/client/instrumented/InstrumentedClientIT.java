@@ -56,7 +56,7 @@ public class InstrumentedClientIT {
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
             .modules(JettyModule.class, JerseyModule.class)
-            .module(binder -> JerseyModule.extend(binder).addResource(Resource.class))
+            .module(binder -> JerseyModule.extend(binder).addApiResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 

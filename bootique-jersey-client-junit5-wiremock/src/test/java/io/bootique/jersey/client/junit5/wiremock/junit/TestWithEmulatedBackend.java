@@ -55,7 +55,7 @@ public abstract class TestWithEmulatedBackend {
             // So let's use the port that is less likely to cause conflicts with anything
             .module(b -> BQCoreModule.extend(b).setProperty("bq.jetty.connectors[0].port", "16348"))
 
-            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(b -> JerseyModule.extend(b).addApiResource(Resource.class))
             .module(b -> JettyModule.extend(b).addFilter(counter, "counter", 0, "/*"))
             .createRuntime();
 

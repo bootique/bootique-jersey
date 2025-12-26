@@ -20,24 +20,40 @@
 package io.bootique.jersey;
 
 import io.bootique.ModuleExtender;
-import io.bootique.di.*;
+import io.bootique.di.Binder;
+import io.bootique.di.Key;
+import io.bootique.di.MapBuilder;
+import io.bootique.di.SetBuilder;
+import io.bootique.di.TypeLiteral;
 import jakarta.ws.rs.container.DynamicFeature;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Feature;
 import jakarta.ws.rs.ext.ParamConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JerseyModuleExtender.class);
+
     private SetBuilder<Feature> features;
     private SetBuilder<DynamicFeature> dynamicFeatures;
-    private SetBuilder<Object> resources;
+    private SetBuilder<Object> providers;
+    private SetBuilder<ResourceRegistrar<?>> resourceRegistrars;
     private SetBuilder<Package> packages;
     private SetBuilder<MappedResource<?>> mappedResources;
-    private MapBuilder<String, Object> resourcesByPath;
+    private MapBuilder<String, Class<?>> resourcePathOverrides;
     private MapBuilder<String, Object> properties;
     private MapBuilder<Class<?>, ParamConverter<?>> paramConverters;
+
+
+    @Deprecated
+    private SetBuilder<Object> legacyResources;
+
+    @Deprecated
+    private MapBuilder<String, Object> legacyResourcesByPath;
 
     JerseyModuleExtender(Binder binder) {
         super(binder);
@@ -47,11 +63,15 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         contributeDynamicFeatures();
         contributeFeatures();
         contributePackages();
-        contributeResources();
-        contributeResourcesByPath();
+        contributeProviders();
+        contributeResourceRegistrars();
+        contributeResourcePathOverrides();
         contributeMappedResources();
         contributeProperties();
         contributeParamConverters();
+
+        contributeLegacyResources();
+        contributeLegacyResourcesByPath();
 
         return this;
     }
@@ -96,28 +116,99 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         return this;
     }
 
+    /**
+     * @deprecated This method doesn't work correctly with per-request resource scope. You must use either
+     * {@link #addApiResource(Object)} or {@link #addProvider(Object)} depending on what you are registering.
+     */
+    @Deprecated(since = "4.0", forRemoval = true)
     public JerseyModuleExtender addResource(Object resource) {
-        contributeResources().addInstance(resource);
+        LOGGER.warn("** Using deprecated 'addResource'");
+        contributeLegacyResources().addInstance(resource);
         return this;
     }
 
-    public JerseyModuleExtender addResource(Class<?> resource) {
-        contributeResources().add(resource);
+    /**
+     * @deprecated This method doesn't work correctly with per-request resource scope. You must use
+     * {@link #addApiResource(Class)} (or, sometimes, {@link #addProvider(Class)}, if you used this method to register
+     * arbitrary JAX-RS providers). In case of an API resource, consider whether it (or its Bootique provider method)
+     * should now to be explicitly annotated with {@link jakarta.inject.Singleton}, as per-request resources incur more
+     * overhead.
+     */
+    @Deprecated(since = "4.0", forRemoval = true)
+    public JerseyModuleExtender addResource(Class<?> resourceType) {
+        LOGGER.warn("** Using deprecated 'addResource'. This may incorrectly force a singleton scope on per-request resources.");
+        contributeLegacyResources().add(resourceType);
+        return this;
+    }
+
+
+    /**
+     * @since 2.0
+     * @deprecated This method doesn't work correctly with per-request resource scope. You must use
+     * {@link #addApiResource(Class, String)}. When doing this, consider whether it (or its Bootique provider method)
+     * should now to be explicitly annotated with {@link jakarta.inject.Singleton}, as per-request resources incur more
+     * overhead.
+     */
+    @Deprecated(since = "4.0", forRemoval = true)
+    public JerseyModuleExtender addResource(Class<?> resource, String path) {
+        contributeLegacyResourcesByPath().put(path, resource);
+        return this;
+    }
+
+    /**
+     * Adds a JAX-RS provider instance, such as message body reader, writer, exception mapper, etc.
+     *
+     * @since 4.0
+     */
+    public JerseyModuleExtender addProvider(Object provider) {
+        contributeProviders().addInstance(provider);
+        return this;
+    }
+
+    /**
+     * Adds a JAX-RS provider, such as message body reader, writer, exception mapper, etc.
+     *
+     * @since 4.0
+     */
+    public JerseyModuleExtender addProvider(Class<?> providerType) {
+        contributeProviders().add(providerType);
+        return this;
+    }
+
+    /**
+     * Registers a resource instance with Jersey. Resource instance scope will be singleton (it will be reused across
+     * requests). Jersey will provide injection for the <code>@Context</code> annotation.
+     *
+     * @since 4.0
+     */
+    public JerseyModuleExtender addApiResource(Object resource) {
+        contributeResourceRegistrars().addInstance(new SingletonResourceRegistrar<>(resource));
+        return this;
+    }
+
+    /**
+     * Registers an API resource type with Jersey. Resource instance scope (singleton vs per-request) will be aligned
+     * with the Bootique scope for this type. Jersey will provide injection for the <code>@Context</code> annotation.
+     *
+     * @since 4.0
+     */
+    public JerseyModuleExtender addApiResource(Class<?> resourceType) {
+        contributeResourceRegistrars().addInstance(new ScopedResourceRegistrar<>(resourceType));
         return this;
     }
 
     /**
      * Registers an API resource type with a custom path. The path argument overrides class-level
-     * {@link jakarta.ws.rs.Path} annotation value, allowing to remap resource to a different URL. This even allows to
-     * map the same resource multiple times under different paths.
+     * {@link jakarta.ws.rs.Path} annotation value, allowing to remap resource to a different URL. This method also
+     * allows to map the same resource multiple times under different paths.
      *
      * @param resource type of the resource
      * @param path     resource URL path that overrides {@link jakarta.ws.rs.Path} annotation on the resource class.
-     * @return this extender
-     * @since 2.0
+     * @since 4.0
      */
-    public JerseyModuleExtender addResource(Class<?> resource, String path) {
-        contributeResourcesByPath().put(path, resource);
+    public JerseyModuleExtender addApiResource(Class<?> resource, String path) {
+        addApiResource(resource);
+        contributeResourcePathOverrides().putInstance(path, resource);
         return this;
     }
 
@@ -203,17 +294,23 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         return this;
     }
 
-    protected MapBuilder<String, Object> contributeResourcesByPath() {
-        if (resourcesByPath == null) {
-            resourcesByPath = newMap(String.class, Object.class, JerseyModule.RESOURCES_BY_PATH_BINDING);
+    protected MapBuilder<String, Class<?>> contributeResourcePathOverrides() {
+        if (resourcePathOverrides == null) {
+            resourcePathOverrides = newMap(
+                    new TypeLiteral<>() {
+                    },
+                    new TypeLiteral<>() {
+                    },
+                    JerseyModule.RESOURCES_PATH_OVERRIDE_BINDING);
         }
-        return resourcesByPath;
+        return resourcePathOverrides;
     }
 
 
     protected SetBuilder<MappedResource<?>> contributeMappedResources() {
         if (mappedResources == null) {
-            mappedResources = newSet(new TypeLiteral<>() {});
+            mappedResources = newSet(new TypeLiteral<>() {
+            });
         }
         return mappedResources;
     }
@@ -240,12 +337,34 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         return dynamicFeatures;
     }
 
-    protected SetBuilder<Object> contributeResources() {
-        if (resources == null) {
-            // TODO: switch to named bindings defined in JerseyModule?
-            resources = newSet(Key.get(Object.class, JerseyResource.class));
+    SetBuilder<Object> contributeProviders() {
+        if (providers == null) {
+            providers = newSet(Key.get(Object.class, JerseyModule.PROVIDERS_BINDING));
         }
-        return resources;
+        return providers;
+    }
+
+    SetBuilder<ResourceRegistrar<?>> contributeResourceRegistrars() {
+        if (resourceRegistrars == null) {
+            resourceRegistrars = newSet(Key.get(new TypeLiteral<>() {
+            }, JerseyResource.class));
+        }
+        return resourceRegistrars;
+    }
+
+    SetBuilder<Object> contributeLegacyResources() {
+        if (legacyResources == null) {
+            legacyResources = newSet(Key.get(Object.class, JerseyResource.class));
+        }
+        return legacyResources;
+    }
+
+    MapBuilder<String, Object> contributeLegacyResourcesByPath() {
+        if (legacyResourcesByPath == null) {
+            legacyResourcesByPath = newMap(String.class, Object.class, JerseyModule.RESOURCES_PATH_OVERRIDE_BINDING);
+        }
+
+        return legacyResourcesByPath;
     }
 
     protected SetBuilder<Package> contributePackages() {
@@ -258,7 +377,9 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
 
     protected MapBuilder<Class<?>, ParamConverter<?>> contributeParamConverters() {
         if (paramConverters == null) {
-            paramConverters = newMap(new TypeLiteral<>() {}, new TypeLiteral<>() {});
+            paramConverters = newMap(new TypeLiteral<>() {
+            }, new TypeLiteral<>() {
+            });
         }
         return paramConverters;
     }

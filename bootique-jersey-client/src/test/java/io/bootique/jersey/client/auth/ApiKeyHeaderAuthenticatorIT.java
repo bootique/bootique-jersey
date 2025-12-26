@@ -46,7 +46,7 @@ public class ApiKeyHeaderAuthenticatorIT {
     static final BQRuntime server = Bootique.app("-s")
             .autoLoadModules()
             .module(jetty.moduleReplacingConnectors())
-            .module((binder) -> JerseyModule.extend(binder).addResource(ProtectedApi.class))
+            .module((binder) -> JerseyModule.extend(binder).addApiResource(ProtectedApi.class))
             .createRuntime();
 
     @BQTestTool

@@ -64,7 +64,7 @@ public class BQJerseyJackson_NullsIT {
     @Test
     public void printNulls() {
 
-        WebTarget target = startServer(b -> JerseyModule.extend(b).addResource(JsonResource.class));
+        WebTarget target = startServer(b -> JerseyModule.extend(b).addApiResource(JsonResource.class));
 
         Response r = target.request().get();
         assertEquals(Response.Status.OK.getStatusCode(), r.getStatus());
@@ -75,7 +75,7 @@ public class BQJerseyJackson_NullsIT {
     public void ignoreNulls() {
 
         WebTarget target = startServer(
-                b -> JerseyModule.extend(b).addResource(JsonResource.class),
+                b -> JerseyModule.extend(b).addApiResource(JsonResource.class),
                 b -> JerseyJacksonModule.extend(b).skipNullProperties());
 
         Response r = target.request().get();

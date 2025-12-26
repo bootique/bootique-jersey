@@ -21,7 +21,6 @@ package io.bootique.jersey.beanvalidation;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.jersey.beanvalidation.JerseyBeanValidationModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
@@ -52,7 +51,7 @@ public class ValidationIT {
     @BQApp
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
-            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(b -> JerseyModule.extend(b).addApiResource(Resource.class))
             .module(b -> JerseyBeanValidationModule.extend(b).sendErrorsInResponse())
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();

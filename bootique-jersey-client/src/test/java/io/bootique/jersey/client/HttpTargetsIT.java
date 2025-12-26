@@ -49,7 +49,7 @@ public class HttpTargetsIT {
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
             .modules(JettyModule.class, JerseyModule.class, LogbackModule.class)
-            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(b -> JerseyModule.extend(b).addApiResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 

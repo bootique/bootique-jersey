@@ -51,7 +51,7 @@ public class WireMockTester_Proxy_MultipleIT extends TestWithEmulatedBackend {
             // So let's use the port that is less likely to cause conflicts with anything
             .module(b -> BQCoreModule.extend(b).setProperty("bq.jetty.connectors[0].port", "16349"))
 
-            .module(b -> JerseyModule.extend(b).addResource(Resource2.class))
+            .module(b -> JerseyModule.extend(b).addApiResource(Resource2.class))
             .createRuntime();
 
     @BQTestTool

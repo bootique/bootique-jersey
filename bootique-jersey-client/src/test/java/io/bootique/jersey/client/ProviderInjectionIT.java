@@ -22,8 +22,6 @@ package io.bootique.jersey.client;
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.jersey.client.HttpClientFactory;
-import io.bootique.jersey.client.JerseyClientModule;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
@@ -58,7 +56,7 @@ public class ProviderInjectionIT {
     @BQApp
     static final BQRuntime server = Bootique.app("--server")
             .modules(JettyModule.class, JerseyModule.class)
-            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(b -> JerseyModule.extend(b).addApiResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 

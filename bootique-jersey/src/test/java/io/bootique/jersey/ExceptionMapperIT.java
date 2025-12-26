@@ -38,8 +38,8 @@ public class ExceptionMapperIT {
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
             .module(b -> JerseyModule.extend(b)
-                    .addResource(Resource.class)
-                    .addResource(MyExceptionMapper.class))
+                    .addApiResource(Resource.class)
+                    .addProvider(MyExceptionMapper.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 

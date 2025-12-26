@@ -43,7 +43,7 @@ public class BQJerseyJackson_JsonSerializerIT {
     @BQApp
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
-            .module(b -> JerseyModule.extend(b).addResource(JsonResource.class))
+            .module(b -> JerseyModule.extend(b).addApiResource(JsonResource.class))
             .module(b -> JerseyJacksonModule.extend(b).addSerializer(XSerializer.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();

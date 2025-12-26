@@ -23,8 +23,6 @@ import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.di.Injector;
 import io.bootique.jersey.JerseyModule;
-import io.bootique.jersey.client.auth.OAuth2AuthenticatorFactory;
-import io.bootique.jersey.client.auth.OAuth2Token;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
@@ -47,7 +45,7 @@ public class OAuth2AuthenticatorFactoryIT {
     @BQApp
     static final BQRuntime server = Bootique.app("-s")
             .autoLoadModules()
-            .module((binder) -> JerseyModule.extend(binder).addResource(TokenApi.class))
+            .module((binder) -> JerseyModule.extend(binder).addApiResource(TokenApi.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 

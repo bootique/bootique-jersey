@@ -19,7 +19,6 @@
 
 package io.bootique.jersey;
 
-import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
@@ -52,7 +51,7 @@ public class ApplicationIT {
         testFactory.app("-s")
                 .module(jetty.moduleReplacingConnectors())
                 .module(b -> JerseyModule.extend(b).setApplication(App1.class))
-                .module(b -> JerseyModule.extend(b).addResource(Resource1.class))
+                .module(b -> JerseyModule.extend(b).addApiResource(Resource1.class))
                 .run();
 
         Response r = jetty.getTarget().path("app1path/r1").request().get();

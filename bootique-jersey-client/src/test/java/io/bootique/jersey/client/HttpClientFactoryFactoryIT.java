@@ -58,7 +58,7 @@ public class HttpClientFactoryFactoryIT {
     @BQApp
     static final BQRuntime app = Bootique.app("--server")
             .modules(JettyModule.class, JerseyModule.class)
-            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(b -> JerseyModule.extend(b).addApiResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 

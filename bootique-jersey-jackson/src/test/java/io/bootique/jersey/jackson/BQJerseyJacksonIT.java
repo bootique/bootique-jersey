@@ -41,7 +41,7 @@ public class BQJerseyJacksonIT {
     @BQApp
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
-            .module(binder -> JerseyModule.extend(binder).addResource(JsonResource.class))
+            .module(binder -> JerseyModule.extend(binder).addApiResource(JsonResource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 

@@ -51,7 +51,7 @@ public class MultiPartFeatureIT {
     @BQApp
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
-            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(b -> JerseyModule.extend(b).addApiResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 

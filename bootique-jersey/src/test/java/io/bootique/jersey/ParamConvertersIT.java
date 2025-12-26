@@ -42,7 +42,7 @@ public class ParamConvertersIT {
     @BQApp
     static final BQRuntime app = Bootique.app("--server")
             .autoLoadModules()
-            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(b -> JerseyModule.extend(b).addApiResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 

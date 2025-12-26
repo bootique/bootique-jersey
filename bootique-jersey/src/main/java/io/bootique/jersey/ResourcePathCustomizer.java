@@ -38,14 +38,14 @@ public class ResourcePathCustomizer implements ModelProcessor {
         this.pathsByType = pathsByType;
     }
 
-    public static ResourcePathCustomizer create(Set<MappedResource<?>> mappedResources, Map<String, Object> resourcesByPath) {
+    public static ResourcePathCustomizer create(Set<MappedResource<?>> mappedResources, Map<String, Class<?>> resourcesByPath) {
         if (mappedResources.isEmpty() && resourcesByPath.isEmpty()) {
             throw new IllegalArgumentException("No resources to override");
         }
         Map<Class<?>, List<String>> index = new HashMap<>();
 
         mappedResources.forEach(mr -> index.computeIfAbsent(mr.getResource().getClass(), c -> new ArrayList<>(2)).addAll(mr.getUrlPatterns()));
-        resourcesByPath.forEach((p, o) -> index.computeIfAbsent(o.getClass(), c -> new ArrayList<>(2)).add(p));
+        resourcesByPath.forEach((p, c) -> index.computeIfAbsent(c, pp -> new ArrayList<>(2)).add(p));
 
         return new ResourcePathCustomizer(index);
     }

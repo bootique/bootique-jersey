@@ -22,11 +22,21 @@ package io.bootique.jersey;
 import io.bootique.BQModule;
 import io.bootique.ModuleCrate;
 import io.bootique.config.ConfigurationFactory;
-import io.bootique.di.*;
-import io.bootique.jersey.jaxrs.*;
+import io.bootique.di.BQInject;
+import io.bootique.di.Binder;
+import io.bootique.di.Injector;
+import io.bootique.di.Provides;
+import io.bootique.di.TypeLiteral;
+import io.bootique.jersey.jaxrs.LocalDateConverter;
+import io.bootique.jersey.jaxrs.LocalDateTimeConverter;
+import io.bootique.jersey.jaxrs.LocalTimeConverter;
+import io.bootique.jersey.jaxrs.MappedParamConvertersProvider;
+import io.bootique.jersey.jaxrs.YearConverter;
+import io.bootique.jersey.jaxrs.YearMonthConverter;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.MappedServlet;
 import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import jakarta.ws.rs.container.DynamicFeature;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Feature;
@@ -39,9 +49,11 @@ import org.glassfish.jersey.inject.hk2.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import jakarta.inject.Singleton;
-
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -50,7 +62,9 @@ public class JerseyModule implements BQModule {
 
     private static final String CONFIG_PREFIX = "jersey";
     static final String DISABLE_WADL_PROPERTY = "jersey.config.server.wadl.disableWadl";
-    static final String RESOURCES_BY_PATH_BINDING = "io.bootique.jersey.jakarta.resourcesByPath";
+
+    static final String RESOURCES_PATH_OVERRIDE_BINDING = "io.bootique.jersey.jakarta.resourcePathOverrides";
+    static final String PROVIDERS_BINDING = "io.bootique.jersey.jakarta.providers";
 
     /**
      * Returns an instance of {@link JerseyModuleExtender} used by downstream modules to load custom extensions of
@@ -82,20 +96,24 @@ public class JerseyModule implements BQModule {
 
     @Singleton
     @Provides
-    private ResourceConfig createResourceConfig(
+    ResourceConfig createResourceConfig(
             Injector injector,
             Set<Feature> features,
             Set<DynamicFeature> dynamicFeatures,
-            @JerseyResource Set<Object> resources,
+            @Named(PROVIDERS_BINDING) Set<Object> providers,
+            @JerseyResource Set<ResourceRegistrar<?>> resourceRegistrars,
             @JerseyResource Set<Package> packages,
-            @Named(RESOURCES_BY_PATH_BINDING) Map<String, Object> resourcesByPath,
+            @Named(RESOURCES_PATH_OVERRIDE_BINDING) Map<String, Class<?>> resourcePathOverrides,
             Set<MappedResource<?>> mappedResources,
             Map<Class<?>, ParamConverter<?>> paramConverters,
-            @JerseyResource Map<String, Object> properties) {
+            @JerseyResource Map<String, Object> properties,
+
+            @JerseyResource Set<Object> legacyResources,
+            @Named(RESOURCES_PATH_OVERRIDE_BINDING) Map<String, Object> legacyResourcesByPath) {
 
         ResourceConfig config = createResourceConfig(injector);
 
-        // configure bridge between BQ DI and Jersey HK2
+        // configure a bridge between BQ DI and Jersey HK2
         config.register(new AbstractBinder() {
             @Override
             protected void configure() {
@@ -113,17 +131,33 @@ public class JerseyModule implements BQModule {
 
         config.register((Feature) context -> {
 
-            resources.forEach(context::register);
+            providers.forEach(context::register);
 
-            if (!mappedResources.isEmpty() || !resourcesByPath.isEmpty()) {
+            // TODO: this is deprecated since 4.0, as it does not respect the declared scope of the resources
+            legacyResources.forEach(context::register);
+
+            resourceRegistrars.forEach(rs -> rs.registerResource(context));
+
+            if (!mappedResources.isEmpty() || !resourcePathOverrides.isEmpty() || !legacyResourcesByPath.isEmpty()) {
                 // first register under the @Path from annotation, then override it via ResourcePathCustomizer
                 mappedResources.forEach(mr -> context.register(mr.getResource()));
-                resourcesByPath.values().forEach(context::register);
+                legacyResourcesByPath.values().forEach(context::register);
 
-                context.register(ResourcePathCustomizer.create(mappedResources, resourcesByPath));
+                Map<String, Class<?>> pathOverrides = new HashMap<>(resourcePathOverrides);
+                legacyResourcesByPath.forEach((k, v) -> pathOverrides.put(k, v.getClass()));
+
+                context.register(ResourcePathCustomizer.create(mappedResources, pathOverrides));
             }
 
             return true;
+        });
+
+        // This level of indirection is needed to preserve DI-declared scope
+        config.register(new AbstractBinder() {
+            @Override
+            protected void configure() {
+                resourceRegistrars.forEach(rs -> rs.registerResourceSupplier(this));
+            }
         });
 
         ParamConverterProvider converterProvider = createParamConvertersProvider(paramConverters);

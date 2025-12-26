@@ -43,7 +43,7 @@ public class WadlIT {
         JettyTester jetty = JettyTester.create();
         testFactory.app("-s")
                 .module(jetty.moduleReplacingConnectors())
-                .module(b -> JerseyModule.extend(b).addResource(Resource1.class))
+                .module(b -> JerseyModule.extend(b).addApiResource(Resource1.class))
                 .run();
 
         Response r = jetty.getTarget().path("application.wadl").request().get();
@@ -59,7 +59,7 @@ public class WadlIT {
         JettyTester jetty = JettyTester.create();
         testFactory.app("-s")
                 .module(jetty.moduleReplacingConnectors())
-                .module(b -> JerseyModule.extend(b).addResource(Resource1.class).setProperty(JerseyModule.DISABLE_WADL_PROPERTY, false))
+                .module(b -> JerseyModule.extend(b).addApiResource(Resource1.class).setProperty(JerseyModule.DISABLE_WADL_PROPERTY, false))
                 .run();
 
         Response r = jetty.getTarget().path("application.wadl").request().get();

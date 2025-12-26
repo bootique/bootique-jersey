@@ -19,7 +19,6 @@
 
 package io.bootique.jersey;
 
-import io.bootique.jersey.JerseyModule;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
@@ -50,7 +49,7 @@ public class CustomDynamicFeaturesIT {
 
                         // since 2.35 need at least one resource to exist in the container,
                         // or dynamic features won't be loaded
-                        .addResource(Resource.class))
+                        .addApiResource(Resource.class))
                 .run();
 
         assertTrue(DynamicFeature1.LOADED);

@@ -47,7 +47,7 @@ public class ApiKeyParameterAuthenticatorIT {
     static final BQRuntime server = Bootique.app("-s")
             .autoLoadModules()
             .module(jetty.moduleReplacingConnectors())
-            .module(b -> JerseyModule.extend(b).addResource(ProtectedApi.class))
+            .module(b -> JerseyModule.extend(b).addApiResource(ProtectedApi.class))
             .createRuntime();
 
     @BQTestTool

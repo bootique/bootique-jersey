@@ -62,7 +62,7 @@ public class HttpClientFactoryFactory_LoggingIT {
     private void startApp(String config) {
 
         BQModule extensions = b -> {
-            JerseyModule.extend(b).addResource(Resource.class);
+            JerseyModule.extend(b).addApiResource(Resource.class);
 
             // TODO: this test is seriously dirty.. we don't start the client from Bootique,
             // yet we reuse Bootique Logback configuration for client logging.

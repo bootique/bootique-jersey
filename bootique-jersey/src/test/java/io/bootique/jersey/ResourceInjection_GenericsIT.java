@@ -80,7 +80,7 @@ public class ResourceInjection_GenericsIT {
             })).toInstance(STRING_BOUND);
             b.bind(Key.get(new TypeLiteral<S1<Integer>>() {
             })).toInstance(INT_BOUND);
-            JerseyModule.extend(b).addResource(FieldInjectedResource.class);
+            JerseyModule.extend(b).addApiResource(FieldInjectedResource.class);
         });
 
         Response r = client.path("if").request().get();
@@ -93,7 +93,7 @@ public class ResourceInjection_GenericsIT {
         WebTarget client = startServer(b -> {
             b.bind(Key.get(new TypeLiteral<S1<?>>() {
             })).toInstance(STRING_BOUND);
-            JerseyModule.extend(b).addResource(InjectedResourceWildcard.class);
+            JerseyModule.extend(b).addApiResource(InjectedResourceWildcard.class);
         });
 
         Response r = client.path("iw").request().get();
@@ -106,7 +106,7 @@ public class ResourceInjection_GenericsIT {
         WebTarget client = startServer(b -> {
             b.bind(Key.get(new TypeLiteral<S1<? extends Object>>() {
             })).toInstance(STRING_BOUND);
-            JerseyModule.extend(b).addResource(InjectedResourceExtendedWildcard.class);
+            JerseyModule.extend(b).addApiResource(InjectedResourceExtendedWildcard.class);
         });
 
         Response r = client.path("iw").request().get();
@@ -120,7 +120,7 @@ public class ResourceInjection_GenericsIT {
             b.bind(String[].class).toInstance(STRING_ARRAY_BOUND);
             b.bind(int[].class).toInstance(INT_ARRAY_BOUND);
 
-            JerseyModule.extend(b).addResource(FieldInjectedResourceArray.class);
+            JerseyModule.extend(b).addApiResource(FieldInjectedResourceArray.class);
         });
 
         Response r = client.path("ia").request().get();
@@ -137,7 +137,7 @@ public class ResourceInjection_GenericsIT {
                     })).toInstance(STRING_BOUND);
                     b.bind(Key.get(new TypeLiteral<S1<Integer>>() {
                     })).toInstance(INT_BOUND);
-                    JerseyModule.extend(b).addResource(UnInjectedResource.class);
+                    JerseyModule.extend(b).addApiResource(UnInjectedResource.class);
                 });
 
         Response r = client.path("uf").request().get();
@@ -152,7 +152,7 @@ public class ResourceInjection_GenericsIT {
                 b -> {
                     b.bind(Key.get(new TypeLiteral<S1<?>>() {
                     })).toInstance(STRING_BOUND);
-                    JerseyModule.extend(b).addResource(UnInjectedResourceWildcard.class);
+                    JerseyModule.extend(b).addApiResource(UnInjectedResourceWildcard.class);
                 });
 
         Response r = client.path("uw").request().get();
@@ -167,7 +167,7 @@ public class ResourceInjection_GenericsIT {
                 b -> {
                     b.bind(Key.get(new TypeLiteral<S1<?>>() {
                     })).toInstance(STRING_BOUND);
-                    JerseyModule.extend(b).addResource(UnInjectedResourceExtendedWildcard.class);
+                    JerseyModule.extend(b).addApiResource(UnInjectedResourceExtendedWildcard.class);
                 });
 
         Response r = client.path("uw").request().get();
@@ -182,7 +182,7 @@ public class ResourceInjection_GenericsIT {
                 b -> {
                     b.bind(String[].class).toInstance(STRING_ARRAY_BOUND);
                     b.bind(int[].class).toInstance(INT_ARRAY_BOUND);
-                    JerseyModule.extend(b).addResource(FieldUnInjectedResourceArray.class);
+                    JerseyModule.extend(b).addApiResource(FieldUnInjectedResourceArray.class);
                 });
 
         Response r = client.path("ua").request().get();

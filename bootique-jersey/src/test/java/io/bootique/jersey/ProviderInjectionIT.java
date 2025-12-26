@@ -21,7 +21,6 @@ package io.bootique.jersey;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.junit5.JettyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
@@ -53,7 +52,7 @@ public class ProviderInjectionIT {
     static final BQRuntime app = Bootique.app("-s")
             .autoLoadModules()
             .module(b -> b.bind(InjectedService.class).inSingletonScope())
-            .module(b -> JerseyModule.extend(b).addFeature(StringWriterFeature.class).addResource(Resource.class))
+            .module(b -> JerseyModule.extend(b).addFeature(StringWriterFeature.class).addApiResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 

@@ -49,7 +49,7 @@ public class HttpTargets_TrustStoresIT {
     static final BQRuntime app = Bootique
             .app("-s", "-c", "classpath:io/bootique/jersey/client/TrustStoresIT_server.yml")
             .modules(JettyModule.class, JerseyModule.class, LogbackModule.class)
-            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(b -> JerseyModule.extend(b).addApiResource(Resource.class))
             .createRuntime();
 
     @BQTestTool

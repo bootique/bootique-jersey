@@ -52,7 +52,7 @@ public class InstrumentedClient_ThresholdsIT {
     static final BQRuntime server = Bootique
             .app("--server")
             .autoLoadModules()
-            .module(b -> JerseyModule.extend(b).addResource(Resource.class))
+            .module(b -> JerseyModule.extend(b).addApiResource(Resource.class))
             .module(jetty.moduleReplacingConnectors())
             .createRuntime();
 
