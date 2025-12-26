@@ -68,7 +68,7 @@ class ScopedResourceRegistrar<T> implements ResourceRegistrar<T> {
     }
 
     private T getPerRequest() {
-        Objects.requireNonNull(jerseyServlet, "'jerseyServlet' was not injected in the factory");
+        Objects.requireNonNull(jerseyServlet, "'jerseyServlet' was not injected");
 
         T t = injector.getInstance(resourceKey);
         jerseyServlet.get().getServlet().getApplicationHandler().getInjectionManager().inject(t);
