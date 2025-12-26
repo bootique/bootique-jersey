@@ -34,10 +34,10 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     private SetBuilder<DynamicFeature> dynamicFeatures;
     private SetBuilder<Object> resources;
     private SetBuilder<Package> packages;
-    private SetBuilder<MappedResource> mappedResources;
+    private SetBuilder<MappedResource<?>> mappedResources;
     private MapBuilder<String, Object> resourcesByPath;
     private MapBuilder<String, Object> properties;
-    private MapBuilder<Class<?>, ParamConverter> paramConverters;
+    private MapBuilder<Class<?>, ParamConverter<?>> paramConverters;
 
     JerseyModuleExtender(Binder binder) {
         super(binder);
@@ -211,9 +211,9 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
 
-    protected SetBuilder<MappedResource> contributeMappedResources() {
+    protected SetBuilder<MappedResource<?>> contributeMappedResources() {
         if (mappedResources == null) {
-            mappedResources = newSet(MappedResource.class);
+            mappedResources = newSet(new TypeLiteral<>() {});
         }
         return mappedResources;
     }
@@ -256,9 +256,9 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         return packages;
     }
 
-    protected MapBuilder<Class<?>, ParamConverter> contributeParamConverters() {
+    protected MapBuilder<Class<?>, ParamConverter<?>> contributeParamConverters() {
         if (paramConverters == null) {
-            paramConverters = newMap(new TypeLiteral<Class<?>>() {}, TypeLiteral.of(ParamConverter.class));
+            paramConverters = newMap(new TypeLiteral<>() {}, new TypeLiteral<>() {});
         }
         return paramConverters;
     }

@@ -30,14 +30,14 @@ import java.util.Map;
  */
 public class MappedParamConvertersProvider implements ParamConverterProvider {
 
-    private final Map<Class<?>, ParamConverter> paramConverters;
+    private final Map<Class<?>, ParamConverter<?>> paramConverters;
 
-    public MappedParamConvertersProvider(Map<Class<?>, ParamConverter> paramConverters) {
+    public MappedParamConvertersProvider(Map<Class<?>, ParamConverter<?>> paramConverters) {
         this.paramConverters = paramConverters;
     }
 
     @Override
     public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
-        return paramConverters.get(rawType);
+        return (ParamConverter<T>) paramConverters.get(rawType);
     }
 }

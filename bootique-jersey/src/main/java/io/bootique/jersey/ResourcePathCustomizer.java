@@ -32,13 +32,13 @@ import java.util.*;
  */
 public class ResourcePathCustomizer implements ModelProcessor {
 
-    private Map<Class<?>, List<String>> pathsByType;
+    private final Map<Class<?>, List<String>> pathsByType;
 
     protected ResourcePathCustomizer(Map<Class<?>, List<String>> pathsByType) {
         this.pathsByType = pathsByType;
     }
 
-    public static ResourcePathCustomizer create(Set<MappedResource> mappedResources, Map<String, Object> resourcesByPath) {
+    public static ResourcePathCustomizer create(Set<MappedResource<?>> mappedResources, Map<String, Object> resourcesByPath) {
         if (mappedResources.isEmpty() && resourcesByPath.isEmpty()) {
             throw new IllegalArgumentException("No resources to override");
         }

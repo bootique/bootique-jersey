@@ -89,8 +89,8 @@ public class JerseyModule implements BQModule {
             @JerseyResource Set<Object> resources,
             @JerseyResource Set<Package> packages,
             @Named(RESOURCES_BY_PATH_BINDING) Map<String, Object> resourcesByPath,
-            Set<MappedResource> mappedResources,
-            Map<Class<?>, ParamConverter> paramConverters,
+            Set<MappedResource<?>> mappedResources,
+            Map<Class<?>, ParamConverter<?>> paramConverters,
             @JerseyResource Map<String, Object> properties) {
 
         ResourceConfig config = createResourceConfig(injector);
@@ -99,10 +99,10 @@ public class JerseyModule implements BQModule {
         config.register(new AbstractBinder() {
             @Override
             protected void configure() {
-                bind(injector).to(Injector.class).in(jakarta.inject.Singleton.class);
-                bind(BqInjectorBridge.class).to(JustInTimeInjectionResolver.class).in(jakarta.inject.Singleton.class);
+                bind(injector).to(Injector.class).in(Singleton.class);
+                bind(BqInjectorBridge.class).to(JustInTimeInjectionResolver.class).in(Singleton.class);
                 bind(BqInjectInjector.class).to(new GenericType<InjectionResolver<BQInject>>() {
-                }).in(jakarta.inject.Singleton.class);
+                }).in(Singleton.class);
             }
         });
 
@@ -145,10 +145,10 @@ public class JerseyModule implements BQModule {
         return config;
     }
 
-    protected ParamConverterProvider createParamConvertersProvider(Map<Class<?>, ParamConverter> paramConverters) {
+    protected ParamConverterProvider createParamConvertersProvider(Map<Class<?>, ParamConverter<?>> paramConverters) {
 
         // start with standard converters, and allow customer overrides of those
-        Map<Class<?>, ParamConverter> allConverters = new HashMap<>();
+        Map<Class<?>, ParamConverter<?>> allConverters = new HashMap<>();
         allConverters.put(LocalDate.class, new LocalDateConverter());
         allConverters.put(LocalTime.class, new LocalTimeConverter());
         allConverters.put(LocalDateTime.class, new LocalDateTimeConverter());
