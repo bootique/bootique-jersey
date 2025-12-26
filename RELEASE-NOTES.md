@@ -5,6 +5,7 @@
 * #98 Upgrade to JAX-RS 4.0.0 and Jersey 4.0.0
 * #99 Upgrade Wiremock to 4.0.0-beta.24
 * #100 Disable WADL feature by default
+* #101 Incorrect singleton scope for resources
 
 ## 4.0-M1
 
