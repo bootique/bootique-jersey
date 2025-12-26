@@ -59,6 +59,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         super(binder);
     }
 
+    @Override
     public JerseyModuleExtender initAllExtensions() {
         contributeDynamicFeatures();
         contributeFeatures();
@@ -294,7 +295,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         return this;
     }
 
-    protected MapBuilder<String, Class<?>> contributeResourcePathOverrides() {
+    MapBuilder<String, Class<?>> contributeResourcePathOverrides() {
         if (resourcePathOverrides == null) {
             resourcePathOverrides = newMap(
                     new TypeLiteral<>() {
@@ -307,7 +308,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     }
 
 
-    protected SetBuilder<MappedResource<?>> contributeMappedResources() {
+    SetBuilder<MappedResource<?>> contributeMappedResources() {
         if (mappedResources == null) {
             mappedResources = newSet(new TypeLiteral<>() {
             });
@@ -315,22 +316,21 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         return mappedResources;
     }
 
-    protected MapBuilder<String, Object> contributeProperties() {
+    MapBuilder<String, Object> contributeProperties() {
         if (properties == null) {
-            // TODO: switch to named bindings defined in JerseyModule?
-            properties = newMap(String.class, Object.class, JerseyResource.class);
+            properties = newMap(String.class, Object.class, JerseyModule.PROPERTIES_BINDING);
         }
         return properties;
     }
 
-    protected SetBuilder<Feature> contributeFeatures() {
+    SetBuilder<Feature> contributeFeatures() {
         if (features == null) {
             features = newSet(Feature.class);
         }
         return features;
     }
 
-    protected SetBuilder<DynamicFeature> contributeDynamicFeatures() {
+    SetBuilder<DynamicFeature> contributeDynamicFeatures() {
         if (dynamicFeatures == null) {
             dynamicFeatures = newSet(DynamicFeature.class);
         }
@@ -347,18 +347,20 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
     SetBuilder<ResourceRegistrar<?>> contributeResourceRegistrars() {
         if (resourceRegistrars == null) {
             resourceRegistrars = newSet(Key.get(new TypeLiteral<>() {
-            }, JerseyResource.class));
+            }));
         }
         return resourceRegistrars;
     }
 
+    @Deprecated(since = "4.0", forRemoval = true)
     SetBuilder<Object> contributeLegacyResources() {
         if (legacyResources == null) {
-            legacyResources = newSet(Key.get(Object.class, JerseyResource.class));
+            legacyResources = newSet(Key.get(Object.class, JerseyModule.LEGACY_RESOURCES_BINDING));
         }
         return legacyResources;
     }
 
+    @Deprecated(since = "4.0", forRemoval = true)
     MapBuilder<String, Object> contributeLegacyResourcesByPath() {
         if (legacyResourcesByPath == null) {
             legacyResourcesByPath = newMap(String.class, Object.class, JerseyModule.RESOURCES_PATH_OVERRIDE_BINDING);
@@ -367,19 +369,20 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
         return legacyResourcesByPath;
     }
 
-    protected SetBuilder<Package> contributePackages() {
+    SetBuilder<Package> contributePackages() {
         if (packages == null) {
-            // TODO: switch to named bindings defined in JerseyModule?
-            packages = newSet(Package.class, JerseyResource.class);
+            packages = newSet(Package.class, JerseyModule.RESOURCE_PACKAGES_BINDING);
         }
         return packages;
     }
 
-    protected MapBuilder<Class<?>, ParamConverter<?>> contributeParamConverters() {
+    MapBuilder<Class<?>, ParamConverter<?>> contributeParamConverters() {
         if (paramConverters == null) {
-            paramConverters = newMap(new TypeLiteral<>() {
-            }, new TypeLiteral<>() {
-            });
+            paramConverters = newMap(
+                    new TypeLiteral<>() {
+                    },
+                    new TypeLiteral<>() {
+                    });
         }
         return paramConverters;
     }

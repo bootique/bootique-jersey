@@ -20,6 +20,7 @@
 package io.bootique.jersey;
 
 import jakarta.inject.Qualifier;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -27,11 +28,12 @@ import java.lang.annotation.Target;
 
 /**
  * A binding annotation for explicitly registered Jersey resources.
+ *
+ * @deprecated unused. JerseyModule was switched to Strings for named bindings.
  */
-@Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD })
+@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
-// TODO: should this be called something like "JerseyComponent" ?
+@Deprecated(since = "4.0", forRemoval = true)
 public @interface JerseyResource {
-
 }

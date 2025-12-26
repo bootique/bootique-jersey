@@ -63,8 +63,11 @@ public class JerseyModule implements BQModule {
     private static final String CONFIG_PREFIX = "jersey";
     static final String DISABLE_WADL_PROPERTY = "jersey.config.server.wadl.disableWadl";
 
-    static final String RESOURCES_PATH_OVERRIDE_BINDING = "io.bootique.jersey.jakarta.resourcePathOverrides";
-    static final String PROVIDERS_BINDING = "io.bootique.jersey.jakarta.providers";
+    static final String PROPERTIES_BINDING = "io.bootique.jersey.properties";
+    static final String RESOURCE_PACKAGES_BINDING = "io.bootique.jersey.resourcePackages";
+    static final String RESOURCES_PATH_OVERRIDE_BINDING = "io.bootique.jersey.resourcePathOverrides";
+    static final String PROVIDERS_BINDING = "io.bootique.jersey.providers";
+    static final String LEGACY_RESOURCES_BINDING = "io.bootique.jersey.legacyResources";
 
     /**
      * Returns an instance of {@link JerseyModuleExtender} used by downstream modules to load custom extensions of
@@ -101,14 +104,14 @@ public class JerseyModule implements BQModule {
             Set<Feature> features,
             Set<DynamicFeature> dynamicFeatures,
             @Named(PROVIDERS_BINDING) Set<Object> providers,
-            @JerseyResource Set<ResourceRegistrar<?>> resourceRegistrars,
-            @JerseyResource Set<Package> packages,
+            Set<ResourceRegistrar<?>> resourceRegistrars,
+            @Named(RESOURCE_PACKAGES_BINDING) Set<Package> packages,
             @Named(RESOURCES_PATH_OVERRIDE_BINDING) Map<String, Class<?>> resourcePathOverrides,
             Set<MappedResource<?>> mappedResources,
             Map<Class<?>, ParamConverter<?>> paramConverters,
-            @JerseyResource Map<String, Object> properties,
+            @Named(PROPERTIES_BINDING) Map<String, Object> properties,
 
-            @JerseyResource Set<Object> legacyResources,
+            @Named(LEGACY_RESOURCES_BINDING) Set<Object> legacyResources,
             @Named(RESOURCES_PATH_OVERRIDE_BINDING) Map<String, Object> legacyResourcesByPath) {
 
         ResourceConfig config = createResourceConfig(injector);
