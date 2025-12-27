@@ -30,12 +30,12 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import java.util.Objects;
 
 /**
- * Registers itself with Jersey HK2 as a custom supplier of a given API resource class. This is needed to enforce
- * resource instance scope (singleton vs. per-request) alignment between Jersey and Bootique.
+ * Depending on the API resource scope (singleton or per-request), performs appropriate registration steps with Jersey
+ * and its underlying HK2 container.
  *
  * @since 4.0
  */
-class ScopedResourceRegistrar<T> implements ResourceRegistrar<T> {
+class TypeResourceRegistrar<T> implements ResourceRegistrar<T> {
 
     private final Class<T> resourceType;
     private final Key<T> resourceKey;
@@ -46,7 +46,7 @@ class ScopedResourceRegistrar<T> implements ResourceRegistrar<T> {
     @Inject
     private Provider<MappedServlet<ServletContainer>> jerseyServlet;
 
-    public ScopedResourceRegistrar(Class<T> resourceType) {
+    public TypeResourceRegistrar(Class<T> resourceType) {
         this.resourceType = resourceType;
         this.resourceKey = Key.get(resourceType);
     }

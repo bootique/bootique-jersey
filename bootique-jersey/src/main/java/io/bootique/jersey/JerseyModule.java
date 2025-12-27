@@ -111,6 +111,7 @@ public class JerseyModule implements BQModule {
             Map<Class<?>, ParamConverter<?>> paramConverters,
             @Named(PROPERTIES_BINDING) Map<String, Object> properties,
 
+            // these two are deprecated
             @Named(LEGACY_RESOURCES_BINDING) Set<Object> legacyResources,
             @Named(RESOURCES_PATH_OVERRIDE_BINDING) Map<String, Object> legacyResourcesByPath) {
 
@@ -171,12 +172,11 @@ public class JerseyModule implements BQModule {
 
         config.addProperties(properties);
 
-        // disable WADL byd default, unless explicitly enabled
+        // disable WADL by default, unless explicitly enabled
         if (!properties.containsKey(DISABLE_WADL_PROPERTY)) {
             config.property(DISABLE_WADL_PROPERTY, true);
         }
 
-        // TODO: make this pluggable?
         config.register(ResourceModelDebugger.class);
 
         return config;

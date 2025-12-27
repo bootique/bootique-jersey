@@ -21,11 +21,11 @@ package io.bootique.jersey;
 import jakarta.ws.rs.core.FeatureContext;
 import org.glassfish.jersey.inject.hk2.AbstractBinder;
 
-class SingletonResourceRegistrar<T> implements ResourceRegistrar<T> {
+class InstanceResourceRegistrar<T> implements ResourceRegistrar<T> {
 
     private final T resource;
 
-    public SingletonResourceRegistrar(T resource) {
+    public InstanceResourceRegistrar(T resource) {
         this.resource = resource;
     }
 

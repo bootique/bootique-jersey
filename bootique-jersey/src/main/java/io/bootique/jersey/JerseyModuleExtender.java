@@ -183,7 +183,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
      * @since 4.0
      */
     public JerseyModuleExtender addApiResource(Object resource) {
-        contributeResourceRegistrars().addInstance(new SingletonResourceRegistrar<>(resource));
+        contributeResourceRegistrars().addInstance(new InstanceResourceRegistrar<>(resource));
         return this;
     }
 
@@ -194,7 +194,7 @@ public class JerseyModuleExtender extends ModuleExtender<JerseyModuleExtender> {
      * @since 4.0
      */
     public JerseyModuleExtender addApiResource(Class<?> resourceType) {
-        contributeResourceRegistrars().addInstance(new ScopedResourceRegistrar<>(resourceType));
+        contributeResourceRegistrars().addInstance(new TypeResourceRegistrar<>(resourceType));
         return this;
     }
 
