@@ -68,8 +68,6 @@ public class ResourceModelDebugger implements ModelProcessor {
 	private void debugResource(ReportedResource resource) {
 		resource.methods
 				.stream()
-				// exclude Jersey internal WADL handlers in DEBUG mode (will include in TRACE mode)
-				.filter(rm -> !rm.handler.getName().startsWith("org.glassfish.jersey.server.wadl"))
 				.sorted()
 				.forEach(rm -> LOGGER.debug("    {} {}", rm.method, resource.path));
 	}
