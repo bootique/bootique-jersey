@@ -1,4 +1,4 @@
-## 3.0-RC2 
+## 3.0 
 
 * #102 Upgrade to Jersey 3.0.18
 
