@@ -29,7 +29,7 @@
 
     <groupId>io.bootique.jersey</groupId>
     <artifactId>bootique-jersey-parent</artifactId>
-    <version>3.0</version>
+    <version>3.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>bootique-jersey-parent: Parent of Jersey/Bootique integration</name>
@@ -59,7 +59,7 @@
     <scm>
         <developerConnection>scm:git:ssh://git@github.com/bootique/bootique-jersey</developerConnection>
         <url>https://github.com/bootique/bootique-jersey</url>
-        <tag>3.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencyManagement>
