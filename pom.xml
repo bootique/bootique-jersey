@@ -52,6 +52,7 @@
 
     <properties>
         <jaxb3.version>4.0.2</jaxb3.version>
+        <hk2.version>2.6.1</hk2.version>
         <wiremock.version>3.5.3</wiremock.version>
     </properties>
 

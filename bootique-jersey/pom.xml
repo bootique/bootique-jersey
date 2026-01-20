@@ -134,6 +134,8 @@
             <dependency>
                 <groupId>org.glassfish.hk2</groupId>
                 <artifactId>hk2-api</artifactId>
+                <!-- Need this version defined for Central validation -->
+                <version>${hk2.version}</version>
                 <exclusions>
                     <!-- Bootique includes this one -->
                     <exclusion>
@@ -145,6 +147,8 @@
             <dependency>
                 <groupId>org.glassfish.hk2</groupId>
                 <artifactId>hk2-locator</artifactId>
+                <!-- Need this version defined for Central validation -->
+                <version>${hk2.version}</version>
                 <exclusions>
                     <!-- Bootique includes this one -->
                     <exclusion>
