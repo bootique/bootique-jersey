@@ -16,7 +16,7 @@
 * #93 Remove deprecated modules (javax flavor) and deprecated APIs
 * #94 Stop supporting "javax.inject" injection
 
-## 3.0-RC2
+## 3.0
 
 * #102 Upgrade to Jersey 3.0.18
 
