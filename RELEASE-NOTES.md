@@ -1,3 +1,7 @@
+## 4.0-M3
+
+* #103 Upgrade Jersey to 4.0.1
+
 ## 4.0-M2
 
 * #96 Upgrade to Jersey 3.1
