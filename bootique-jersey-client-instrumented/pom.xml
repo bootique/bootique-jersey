@@ -39,7 +39,7 @@
 		<dependencies>
 			<dependency>
 				<groupId>io.bootique.jetty</groupId>
-				<artifactId>bootique-jetty-junit5</artifactId>
+				<artifactId>bootique-jetty-junit</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -80,7 +80,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.bootique.jetty</groupId>
-			<artifactId>bootique-jetty-junit5</artifactId>
+			<artifactId>bootique-jetty-junit</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<!-- Using logback instead of slf4j-simple to visually check MDC output -->

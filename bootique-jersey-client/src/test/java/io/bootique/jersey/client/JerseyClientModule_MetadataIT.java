@@ -21,8 +21,8 @@ package io.bootique.jersey.client;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.junit5.BQApp;
-import io.bootique.junit5.BQTest;
+import io.bootique.junit.BQApp;
+import io.bootique.junit.BQTest;
 import io.bootique.meta.config.*;
 import io.bootique.meta.module.ModuleMetadata;
 import io.bootique.meta.module.ModulesMetadata;

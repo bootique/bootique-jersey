@@ -20,9 +20,9 @@
 package io.bootique.jersey;
 
 import io.bootique.jetty.junit5.JettyTester;
-import io.bootique.junit5.BQTest;
-import io.bootique.junit5.BQTestFactory;
-import io.bootique.junit5.BQTestTool;
+import io.bootique.junit.BQTest;
+import io.bootique.junit.BQTestFactory;
+import io.bootique.junit.BQTestTool;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;

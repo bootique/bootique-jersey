@@ -19,10 +19,9 @@
 
 package io.bootique.jersey;
 
-import io.bootique.jersey.JerseyModule;
-import io.bootique.junit5.BQTest;
-import io.bootique.junit5.BQTestFactory;
-import io.bootique.junit5.BQTestTool;
+import io.bootique.junit.BQTest;
+import io.bootique.junit.BQTestFactory;
+import io.bootique.junit.BQTestTool;
 import jakarta.ws.rs.core.Feature;
 import jakarta.ws.rs.core.FeatureContext;
 import org.junit.jupiter.api.Test;

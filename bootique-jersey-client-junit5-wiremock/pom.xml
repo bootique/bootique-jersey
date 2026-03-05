@@ -39,7 +39,7 @@
         <!-- Compile dependencies -->
         <dependency>
             <groupId>io.bootique</groupId>
-            <artifactId>bootique-junit5</artifactId>
+            <artifactId>bootique-junit</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -91,7 +91,7 @@
         <!-- Unit test dependencies -->
         <dependency>
             <groupId>io.bootique.jetty</groupId>
-            <artifactId>bootique-jetty-junit5</artifactId>
+            <artifactId>bootique-jetty-junit</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

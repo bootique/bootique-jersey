@@ -26,10 +26,11 @@ import com.github.tomakehurst.wiremock.extension.Extension;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import io.bootique.BQCoreModule;
 import io.bootique.BQModule;
-import io.bootique.junit5.BQTestScope;
-import io.bootique.junit5.scope.BQAfterMethodCallback;
-import io.bootique.junit5.scope.BQAfterScopeCallback;
-import io.bootique.junit5.scope.BQBeforeScopeCallback;
+import io.bootique.junit.BQTestTool;
+import io.bootique.junit.BQTestScope;
+import io.bootique.junit.scope.BQAfterMethodCallback;
+import io.bootique.junit.scope.BQAfterScopeCallback;
+import io.bootique.junit.scope.BQBeforeScopeCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ import java.util.function.UnaryOperator;
 
 /**
  * A Bootique test tool that sets up and manages a WireMock "server". Each tester should be annotated with
- * {@link io.bootique.junit5.BQTestTool}. The tester supports manually configured request "stubs" as well as proxying
+ * {@link BQTestTool}. The tester supports manually configured request "stubs" as well as proxying
  * a real backend and caching that backend's responses as local "snapshot" files.
  *
  * @since 3.0

@@ -24,8 +24,8 @@ import io.bootique.Bootique;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.jersey.client.auth.AuthenticatorFactory;
 import io.bootique.jersey.client.auth.BasicAuthenticatorFactory;
-import io.bootique.junit5.BQApp;
-import io.bootique.junit5.BQTest;
+import io.bootique.junit.BQApp;
+import io.bootique.junit.BQTest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
