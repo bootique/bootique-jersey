@@ -26,7 +26,7 @@ import io.bootique.di.Binder;
 import io.bootique.di.Key;
 import io.bootique.di.Provides;
 import io.bootique.di.TypeLiteral;
-import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.jetty.junit.JettyTester;
 import io.bootique.junit.BQTest;
 import io.bootique.junit.BQTestFactory;
 import io.bootique.junit.BQTestTool;

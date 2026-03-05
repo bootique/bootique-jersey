@@ -27,10 +27,10 @@
         <version>4.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bootique-jersey-client-junit5-wiremock</artifactId>
+    <artifactId>bootique-jersey-client-junit-wiremock</artifactId>
     <packaging>jar</packaging>
 
-    <name>bootique-jersey-client-junit5-wiremock: Wiremock integration for Jersey Client</name>
+    <name>bootique-jersey-client-junit-wiremock: Wiremock integration for Jersey Client</name>
     <description>
         Wiremock testing framework integration for Jersey Client
     </description>

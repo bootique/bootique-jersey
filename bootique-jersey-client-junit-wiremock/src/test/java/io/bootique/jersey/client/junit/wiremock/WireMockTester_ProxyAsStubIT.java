@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.client.junit5.wiremock;
+package io.bootique.jersey.client.junit.wiremock;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.client.HttpTargets;
-import io.bootique.jersey.client.junit5.wiremock.junit.TestWithEmulatedBackend;
-import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.jersey.client.junit.wiremock.junit.TestWithEmulatedBackend;
+import io.bootique.jetty.junit.JettyTester;
 import io.bootique.junit.BQApp;
 import io.bootique.junit.BQTest;
 import io.bootique.junit.BQTestTool;
@@ -30,17 +30,16 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockTester_Proxy_wPathIT extends TestWithEmulatedBackend {
+public class WireMockTester_ProxyAsStubIT extends TestWithEmulatedBackend {
 
     @BQTestTool
     static final WireMockTester tester = WireMockTester
             .create()
-            .filesRoot("src/test/resources/wm16348_p1")
-            .proxy(SERVER_URL + "/p1", true);
+            .stub(proxyAllTo(SERVER_URL).atPriority(10));
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
@@ -49,32 +48,10 @@ public class WireMockTester_Proxy_wPathIT extends TestWithEmulatedBackend {
             .createRuntime();
 
     @Test
-    public void target() {
-        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester");
+    public void test() {
+        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").path("p1");
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
                 .assertContent(c -> assertTrue(c.contains("get:p1")));
-
-        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
-    }
-
-    @Test
-    public void subTarget() {
-        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").path("p11");
-        JettyTester.assertOk(target.request().get())
-                .assertContentType(MediaType.TEXT_PLAIN)
-                .assertContent(c -> assertTrue(c.contains("get:p1:p11")));
-
-        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
-    }
-
-    @Test
-    public void target_wQuery() {
-        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").queryParam("q", "x");
-        JettyTester.assertOk(target.request().get())
-                .assertContentType(MediaType.TEXT_PLAIN)
-                .assertContent(c -> assertTrue(c.contains("get:p1:x")));
-
-        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
     }
 }

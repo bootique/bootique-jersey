@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.client.junit5.wiremock.junit;
+package io.bootique.jersey.client.junit.wiremock.junit;
 
 import io.bootique.BQCoreModule;
 import io.bootique.BQRuntime;

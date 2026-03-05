@@ -21,7 +21,7 @@ package io.bootique.jersey;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.jetty.junit.JettyTester;
 import io.bootique.junit.BQApp;
 import io.bootique.junit.BQTest;
 import jakarta.inject.Inject;

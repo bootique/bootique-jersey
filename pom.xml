@@ -41,7 +41,7 @@
         <module>bootique-jersey-beanvalidation</module>
         <module>bootique-jersey-client</module>
         <module>bootique-jersey-client-instrumented</module>
-        <module>bootique-jersey-client-junit5-wiremock</module>
+        <module>bootique-jersey-client-junit-wiremock</module>
     </modules>
 
     <properties>

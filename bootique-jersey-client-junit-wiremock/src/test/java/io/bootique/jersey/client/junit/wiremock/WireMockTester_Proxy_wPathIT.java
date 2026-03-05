@@ -16,28 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.client.junit5.wiremock;
+package io.bootique.jersey.client.junit.wiremock;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.client.HttpTargets;
-import io.bootique.jersey.client.junit5.wiremock.junit.TestWithEmulatedBackend;
-import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.jersey.client.junit.wiremock.junit.TestWithEmulatedBackend;
+import io.bootique.jetty.junit.JettyTester;
 import io.bootique.junit.BQApp;
+import io.bootique.junit.BQTest;
 import io.bootique.junit.BQTestTool;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class WireMockTester_RedirectsIT extends TestWithEmulatedBackend {
+@BQTest
+public class WireMockTester_Proxy_wPathIT extends TestWithEmulatedBackend {
 
     @BQTestTool
     static final WireMockTester tester = WireMockTester
             .create()
-            .filesRoot("src/test/resources/wm16348")
-            .proxy(SERVER_URL, true);
+            .filesRoot("src/test/resources/wm16348_p1")
+            .proxy(SERVER_URL + "/p1", true);
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
@@ -46,15 +49,31 @@ public class WireMockTester_RedirectsIT extends TestWithEmulatedBackend {
             .createRuntime();
 
     @Test
-    public void redirect() {
-        WebTarget target = app.getInstance(HttpTargets.class)
-                .newTarget("tester")
-                .path("redirect")
-                .queryParam("q", "redirect-test");
-
+    public void target() {
+        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester");
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
-                .assertContent("get:p1:redirect-test");
+                .assertContent(c -> assertTrue(c.contains("get:p1")));
+
+        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
+    }
+
+    @Test
+    public void subTarget() {
+        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").path("p11");
+        JettyTester.assertOk(target.request().get())
+                .assertContentType(MediaType.TEXT_PLAIN)
+                .assertContent(c -> assertTrue(c.contains("get:p1:p11")));
+
+        assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
+    }
+
+    @Test
+    public void target_wQuery() {
+        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").queryParam("q", "x");
+        JettyTester.assertOk(target.request().get())
+                .assertContentType(MediaType.TEXT_PLAIN)
+                .assertContent(c -> assertTrue(c.contains("get:p1:x")));
 
         assertEquals(0, getMethodRequestCount(), "Should not fail except in recording mode");
     }

@@ -24,7 +24,7 @@ import io.bootique.Bootique;
 import io.bootique.di.DIRuntimeException;
 import io.bootique.jersey.JerseyModule;
 import io.bootique.jetty.JettyModule;
-import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.jetty.junit.JettyTester;
 import io.bootique.junit.BQApp;
 import io.bootique.junit.BQTest;
 import io.bootique.junit.BQTestFactory;

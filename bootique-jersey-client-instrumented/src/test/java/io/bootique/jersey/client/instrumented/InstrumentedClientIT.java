@@ -27,7 +27,7 @@ import io.bootique.jersey.JerseyModule;
 import io.bootique.jersey.client.HttpClientFactory;
 import io.bootique.jetty.JettyModule;
 import io.bootique.jetty.connector.PortFinder;
-import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.jetty.junit.JettyTester;
 import io.bootique.jetty.server.ServerHolder;
 import io.bootique.junit.BQApp;
 import io.bootique.junit.BQTest;

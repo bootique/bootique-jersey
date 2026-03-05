@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.client.junit5.wiremock;
+package io.bootique.jersey.client.junit.wiremock;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.client.HttpTargets;
-import io.bootique.jersey.client.junit5.wiremock.junit.TestWithEmulatedBackend;
-import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.jersey.client.junit.wiremock.junit.TestWithEmulatedBackend;
+import io.bootique.jetty.junit.JettyTester;
 import io.bootique.junit.BQApp;
 import io.bootique.junit.BQTest;
 import io.bootique.junit.BQTestTool;

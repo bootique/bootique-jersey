@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.jersey.client.junit5.wiremock;
+package io.bootique.jersey.client.junit.wiremock;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.jersey.client.HttpTargets;
-import io.bootique.jersey.client.junit5.wiremock.junit.TestWithEmulatedBackend;
-import io.bootique.jetty.junit5.JettyTester;
+import io.bootique.jersey.client.junit.wiremock.junit.TestWithEmulatedBackend;
+import io.bootique.jetty.junit.JettyTester;
 import io.bootique.junit.BQApp;
 import io.bootique.junit.BQTest;
 import io.bootique.junit.BQTestTool;
@@ -30,16 +30,16 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.Test;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class WireMockTester_ProxyAsStubIT extends TestWithEmulatedBackend {
+public class WireMockTester_Proxy_NoSnapshotIT extends TestWithEmulatedBackend {
 
     @BQTestTool
     static final WireMockTester tester = WireMockTester
             .create()
-            .stub(proxyAllTo(SERVER_URL).atPriority(10));
+            .proxy(SERVER_URL, false);
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique.app()
@@ -48,10 +48,22 @@ public class WireMockTester_ProxyAsStubIT extends TestWithEmulatedBackend {
             .createRuntime();
 
     @Test
-    public void test() {
+    public void root() {
+        WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester");
+        JettyTester.assertOk(target.request().get())
+                .assertContentType(MediaType.TEXT_PLAIN)
+                .assertContent("get");
+
+        assertEquals(1, getMethodRequestCount(), "Should not fail except in recording mode");
+    }
+
+    @Test
+    public void path() {
         WebTarget target = app.getInstance(HttpTargets.class).newTarget("tester").path("p1");
         JettyTester.assertOk(target.request().get())
                 .assertContentType(MediaType.TEXT_PLAIN)
                 .assertContent(c -> assertTrue(c.contains("get:p1")));
+
+        assertEquals(1, getMethodRequestCount(), "Should not fail except in recording mode");
     }
 }
