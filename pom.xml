@@ -24,7 +24,7 @@
     <parent>
         <groupId>io.bootique.modules.parent</groupId>
         <artifactId>bootique-modules-parent</artifactId>
-        <version>4.0.5</version>
+        <version>4.0.7</version>
     </parent>
 
     <groupId>io.bootique.jersey</groupId>
@@ -47,9 +47,6 @@
     <properties>
         <wiremock.version>4.0.0-beta.24</wiremock.version>
         <commons.text.version>1.14.0</commons.text.version>
-
-        <!-- TODO: different from jackson-core version. Remove this property once they align again -->
-        <jackson.annotations.version>2.21</jackson.annotations.version>
     </properties>
 
     <scm>
@@ -146,7 +143,7 @@
             <dependency>
                 <groupId>jakarta.xml.bind</groupId>
                 <artifactId>jakarta.xml.bind-api</artifactId>
-                <version>${jaxb3.version}</version>
+                <version>${jaxb.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
