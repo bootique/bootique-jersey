@@ -47,6 +47,7 @@
     <properties>
         <wiremock.version>4.0.0-beta.24</wiremock.version>
         <commons.text.version>1.14.0</commons.text.version>
+        <commons.lang.version>3.20.0</commons.lang.version>
     </properties>
 
     <scm>
@@ -261,6 +262,17 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
                 <version>${commons.text.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-lang3</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.lang.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
