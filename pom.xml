@@ -48,6 +48,7 @@
         <wiremock.version>4.0.0-beta.24</wiremock.version>
         <commons.text.version>1.14.0</commons.text.version>
         <commons.lang.version>3.20.0</commons.lang.version>
+        <commons.io.version>2.21.0</commons.io.version>
     </properties>
 
     <scm>
@@ -201,7 +202,7 @@
                         <artifactId>*</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>org.slf4</groupId>
+                        <groupId>org.slf4j</groupId>
                         <artifactId>*</artifactId>
                     </exclusion>
                     <exclusion>
@@ -215,6 +216,11 @@
                     <exclusion>
                         <groupId>org.apache.commons</groupId>
                         <artifactId>commons-text</artifactId>
+                    </exclusion>
+                    <!-- Comes via commons-fileupload. Re-declared in bootique-jersey-client-junit-wiremock -->
+                    <exclusion>
+                        <groupId>commons-io</groupId>
+                        <artifactId>commons-io</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -273,6 +279,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons.lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
