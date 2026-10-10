@@ -1,3 +1,7 @@
+## 4.0-M7
+
+* #105 Upgrade Jersey to 4.0.3
+
 ## 4.0-M4
 
 * #104 Upgrade Jersey to 4.0.2
