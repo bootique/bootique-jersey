@@ -1,6 +1,7 @@
 ## 4.0-M7
 
 * #105 Upgrade Jersey to 4.0.3
+* #106 Upgrade handlebars to 4.5.5 (CVE-2026-55760)
 
 ## 4.0-M4
 

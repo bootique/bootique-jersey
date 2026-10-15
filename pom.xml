@@ -46,6 +46,8 @@
 
     <properties>
         <wiremock.version>4.0.0-beta.24</wiremock.version>
+        <!-- WireMock's transitive, re-declared to get the CVE-2026-55760 fix (4.5.2+) -->
+        <handlebars.version>4.5.5</handlebars.version>
         <commons.text.version>1.14.0</commons.text.version>
         <commons.lang.version>3.20.0</commons.lang.version>
         <commons.io.version>2.21.0</commons.io.version>
@@ -261,10 +263,10 @@
                         <groupId>jakarta.xml.bind</groupId>
                         <artifactId>*</artifactId>
                     </exclusion>
-                    <!-- Only needed by handlebars for JS helpers, which WireMock doesn't use. Brings an ancient ASM -->
+                    <!-- Re-declared in bootique-jersey-client-junit-wiremock at a version with the CVE-2026-55760 fix -->
                     <exclusion>
-                        <groupId>org.openjdk.nashorn</groupId>
-                        <artifactId>nashorn-core</artifactId>
+                        <groupId>com.github.jknack</groupId>
+                        <artifactId>*</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -374,6 +376,38 @@
                     <exclusion>
                         <groupId>org.jspecify</groupId>
                         <artifactId>jspecify</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jknack</groupId>
+                <artifactId>handlebars</artifactId>
+                <version>${handlebars.version}</version>
+                <exclusions>
+                    <!-- Provided at the Bootique-wide versions by bootique-jersey-client-junit-wiremock -->
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                    <!-- Only needed for JS helpers, which WireMock doesn't use. Brings an ancient ASM -->
+                    <exclusion>
+                        <groupId>org.openjdk.nashorn</groupId>
+                        <artifactId>nashorn-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jknack</groupId>
+                <artifactId>handlebars-helpers</artifactId>
+                <version>${handlebars.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>*</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
